@@ -1,4 +1,12 @@
 {
-    "name" : "Post Resan App",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "db" : {
+        "address": {
+            "database" : "Postresan",
+            "host": "localhost",
+            "port": "6000",
+            "user": "postgres",
+            "password": "postgres"
+        }
+    }
 }
