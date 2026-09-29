@@ -12,11 +12,11 @@ async function getAllUsers(req, res) {
       .status(200)
       .json({ message: "data fetched success!", data: result.rows });
   } catch (err) {
-    return res.status(400).json({ message: "have an error", err });
+    next(err)
   }
 }
 
-async function getUser(req, res) {
+async function getUser(req, res, next) {
   try {
     const id = req.params.id;
     if (id == undefined) return res.status(404).send("invalid id!");
@@ -42,14 +42,11 @@ async function getUser(req, res) {
       },
     });
   } catch (err) {
-    return res.status(400).json({
-      message: "have an error",
-      err,
-    });
+    next(err)
   }
 }
 
-async function registerUser(req, res) {
+async function registerUser(req, res, next) {
   try {
     const {
       full_name,
@@ -85,18 +82,11 @@ async function registerUser(req, res) {
                 values($1,$2, now()+ '15 minutes')`,[user.id, verification])
     return res.status(200).json({ message: "registeration successfull!" });
   } catch (err) {
-    if (err.code == "23505") {
-      return res
-        .status(400)
-        .json({ message: "Email or Username already Exist!" });
-    }
-    return res
-      .status(500)
-      .json({ message: "User registration failed", error: err });
+    next(err)
   }
 }
 
-async function loginUser(req, res) {
+async function loginUser(req, res, next) {
   try {
     const { email, password } = req.body;
     const result = await db.query(
@@ -158,21 +148,24 @@ async function loginUser(req, res) {
       },
     });
   } catch (err) {
-    console.log(err);
-    return res.json({ e: err.errors, message: "somethings wrong" });
+    next(err)
   }
 }
 
-async function logoutUser(req, res) {
-  const refreshToken = req.cookies.refresh_token
-  if(refreshToken)return res.status(401).json({message: "Unauthorization..."})
-  await db.query(`delete from refresh_tokens where token=$1`,[refreshToken])
-  res.clearCookie("access_token");
-  res.clearCookie('refresh_token')
-  return res.json("Succesfull logged out!");
+async function logoutUser(req, res, next) {
+  try{
+    const refreshToken = req.cookies.refresh_token
+    if(refreshToken)return res.status(401).json({message: "Unauthorization..."})
+    await db.query(`delete from refresh_tokens where token=$1`,[refreshToken])
+    res.clearCookie("access_token");
+    res.clearCookie('refresh_token')
+    return res.json("Succesfull logged out!");
+  }catch(err){
+    next(err)
+  }
 }
 
-async function refreshToken(req, res) {
+async function refreshToken(req, res, next) {
   try {
     const oldRefreshToken = req.cookies.refresh_token;
     if (!oldRefreshToken) return res.status(401).send("relogin required...");
@@ -228,11 +221,11 @@ async function refreshToken(req, res) {
     })
     res.json({ message: "access token refreshed!" });
   } catch (err) {
-    res.json({ message: "can not refresh the token!", error: err });
+    next(err)
   }
 }
 
-async function changePassword(req,res) {
+async function changePassword(req,res, next) {
     try{
         const {oldPassword, newPassword} = req.body
         const userId = req.user.userId
@@ -248,14 +241,11 @@ async function changePassword(req,res) {
         res.clearCookie("refresh_token")
         return res.json({message: "password changed! please login again..."})
     }catch(err){
-        return res.status(400).json({
-            message: "action field!",
-            err: err.message
-        })
+        next(err)
     }
 }
 
-async function forgotPassword(req,res) {
+async function forgotPassword(req,res, next) {
     try{
         const {email} = req.body
         const result = await db.query(`select id from users where email=$1`,[email])
@@ -267,13 +257,11 @@ async function forgotPassword(req,res) {
         
         return res.json({message: "reset link generated and sented to your email", resetToken})
     }catch(err){
-        if(err.name == "TokenExpiredError")return res.status(401).json({message: "reset token expired!"})
-        if(err.name == "JsonWebTokenError")return res.status(401).json({message: "invalid reset token!"})
-        return res.status(500).json({message: "internal server error!"})
+        next(err)
     }
 }
 
-async function logoutAll(params) {
+async function logoutAll(req,res, next) {
     try{
       const userId = req.user.userId
       await db.query(`delete from refresh_tokens where id=$1`,[userId])
@@ -282,11 +270,11 @@ async function logoutAll(params) {
       res.clearCookie('access_token')
       return res.status(200).json({message: "logged out from all devices! please login again..."})
     }catch(err){
-      return res.status(500).json({message: "internal server error or logout feild!",error: err.message})
+      next(err)
     }
 }
 
-async function verifyEmail(req,res) {
+async function verifyEmail(req,res, next) {
     try{
         const {token} = req.body
         const result = await db.query(`select user_id from verify_token where token=$1`,[token])
@@ -296,11 +284,11 @@ async function verifyEmail(req,res) {
         await db.query(`delete from verify_token where token=$1;`,[token])
         return res.json({massage: "email verify successfull"})
     }catch(err){
-        res.send(err)
+        next(err)
     }
 }
 
-async function changeRole(req,res) {
+async function changeRole(req,res, next) {
     try{
         const userId = Number(req.params.id)
         const {role} = req.body
@@ -321,14 +309,11 @@ async function changeRole(req,res) {
             message: "Role Updated!"
         })
     }catch(err){
-        res.status(500).json({
-            message: "Server Error",
-            error: err
-        })
+        next(err)
     }
 }
 
-async function resetPassword(req,res) {
+async function resetPassword(req,res, next) {
     try{
         const {token, newPassword} = req.body
         const result = await db.query(`select user_id from password_reset_token
@@ -340,21 +325,21 @@ async function resetPassword(req,res) {
         await db.query(`delete from password_verify_token where token=$1`,[token])
         return res.json({message: "password reseted success!"})
     }catch(err){
-        res.json({massage: "error is: "+err, err: err})
+        next(err)
     }
 }
 
-async function getSessions(req,res) {
+async function getSessions(req,res, next) {
     try{
         const id = req.user.userId
         const result = await db.query(`select id, device, ip_address, created_at, expire_at from refresh_tokens where user_id=$1 order by created_at desc`,[id])
         return res.json({data: result.rows})
     }catch(err){
-        res.json({message: "somethings wrong!"})
+        next(err)
     }
 }
 
-async function deleteSession(req,res) {
+async function deleteSession(req,res, next) {
     try{
         const sessionId = req.params.id
         const userId = req.user.userId
@@ -362,7 +347,7 @@ async function deleteSession(req,res) {
         if(result.rowCount == 0)return res.json({message: "session not found!"})
         return res.json({message: "session logged out!"})
     }catch(err){
-        res.json({message: "logout of session feild!", err})
+        next(err)
     }
 }
 
