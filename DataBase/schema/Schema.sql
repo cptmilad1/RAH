@@ -7,6 +7,7 @@ CREATE TABLE users (
     phone VARCHAR(20),
     user_address Text,
     avatar_url TEXT,
+    is_verify boolean default false,
     role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin', 'driver')),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

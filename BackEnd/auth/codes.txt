@@ -1,0 +1,19 @@
+register
+
+{
+  "full_name": "milad bh",
+  "username": "miladbh1",
+  "password": "123456",
+  "email": "milad@gmail.com",
+  "phone": "0702816001",
+  "user_address": "herat",
+  "avatar_url": "0000"
+  
+}
+
+login
+
+{
+  "email": "milad@gmail.com",
+  "password": "123456"
+}
