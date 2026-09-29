@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const db = require("../../../DataBase/base/dbBase");
 const jwt = require("jsonwebtoken");
 const crypto = require('crypto')
+const sendResetEmail = require('./utils/emailVerifySenter')
 
 async function getAllUsers(req, res) {
   try {
@@ -254,7 +255,7 @@ async function forgotPassword(req,res, next) {
         const resetToken = crypto.randomBytes(32).toString('hex')
         await db.query(`insert into password_verify_token (user_id, token, expire_at) 
             values ($1, $2, now() +'15 minutes')`,[userId ,resetToken])
-        
+        sendResetEmail(email, resetToken)
         return res.json({message: "reset link generated and sented to your email", resetToken})
     }catch(err){
         next(err)
@@ -287,7 +288,6 @@ async function verifyEmail(req,res, next) {
         next(err)
     }
 }
-
 async function changeRole(req,res, next) {
     try{
         const userId = Number(req.params.id)
@@ -312,7 +312,6 @@ async function changeRole(req,res, next) {
         next(err)
     }
 }
-
 async function resetPassword(req,res, next) {
     try{
         const {token, newPassword} = req.body
@@ -328,7 +327,6 @@ async function resetPassword(req,res, next) {
         next(err)
     }
 }
-
 async function getSessions(req,res, next) {
     try{
         const id = req.user.userId
@@ -338,7 +336,6 @@ async function getSessions(req,res, next) {
         next(err)
     }
 }
-
 async function deleteSession(req,res, next) {
     try{
         const sessionId = req.params.id
