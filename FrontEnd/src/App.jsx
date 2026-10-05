@@ -1,8 +1,10 @@
+import Routers from "./features/router/routes";
+
 const App = () => {
   return (
-    <main>
-      hello world
-    </main>
+    <>
+        <Routers/>
+    </>
   );
 }
  

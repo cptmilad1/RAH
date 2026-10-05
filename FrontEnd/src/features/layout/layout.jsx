@@ -1,9 +1,9 @@
 import React from 'react'
 
-function layout() {
+function Layout(children) {
   return (
-    <div>layout</div>
+    <div>MiLad {children}</div>
   )
 }
 
-export default layout
+export default Layout
