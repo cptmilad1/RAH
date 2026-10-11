@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AuthPage from '../login/login'
+import Dashboard from '../dashboard/dashboard'
+import ProtectedRoute from './protectedRoute'
 
 function Routers() {
   return (
@@ -9,7 +11,17 @@ function Routers() {
       <Route path="/signup" element={<AuthPage initialMode="signup" />} />
       <Route path="/verify-email" element={<AuthPage initialMode="verify" />} />
       <Route path="/reset-password" element={<AuthPage initialMode="reset" />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   )
 }
