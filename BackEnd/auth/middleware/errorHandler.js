@@ -4,7 +4,7 @@ function errorHandler(err, req,res,next){
             message: "Token Expired!"
         })
     }
-    if(err.name == "jsonWebTokenError"){
+    if(err.name == "JsonWebTokenError"){
         return res.status(401).json({
             message: "Invalid Token!"
         })
@@ -57,11 +57,6 @@ function errorHandler(err, req,res,next){
     if(err.code == '42601'){
         return res.status(500).json({
             message: "database syntax error!"
-        })
-    }
-    if(err.code == '23502'){
-        return res.status(500).json({
-            message: "Required feilds is missing!"
         })
     }
     if(err.code == '42501'){

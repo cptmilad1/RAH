@@ -1,18 +1,16 @@
-import { Route, Routes } from "react-router-dom";
-import Layout from "../layout/layout";
+import { Navigate, Route, Routes } from 'react-router-dom'
+import AuthPage from '../login/login'
 
 function Routers() {
-    const routers = [
-    {path: "/", element: <h1>Home</h1>, layout: false},
-]
   return (
-    <div>
-        {routers.map(route=>(
-            <Routes>
-                <Route path={route.path} element={route.layout ? <Layout>{route.element}</Layout> : route.element} />
-            </Routes>
-        ))}
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<AuthPage initialMode="login" />} />
+      <Route path="/signup" element={<AuthPage initialMode="signup" />} />
+      <Route path="/verify-email" element={<AuthPage initialMode="verify" />} />
+      <Route path="/reset-password" element={<AuthPage initialMode="reset" />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   )
 }
 

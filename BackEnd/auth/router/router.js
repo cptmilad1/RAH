@@ -35,15 +35,18 @@ router.get("/profile/:id", authentication, ownerShip, getUser);
 router.post("/auth/register", authLimit, validator(registerShema), registerUser);
 router.post("/auth/login", authLimit, validator(loginSchema), loginUser);
 router.post("/logout", authentication, logoutUser);
-router.post("/auth/refresh", authentication, refreshToken);
+router.post("/auth/refresh", refreshToken);
 router.post("/change-password", authentication, changePassword);
 router.post("/forgot-password", authLimit, forgotPassword);
-router.get("/logout-all", authentication, logoutAll);
-router.post("/auth/verify-email", authLimit,authentication, verifyEmail);
+router.post("/logout-all", authentication, logoutAll);
+router.post("/auth/verify-email", authLimit, verifyEmail);
 router.post("/change-role", authentication, authorize("admin"), changeRole);
+router.post("/users/:id/role", authentication, authorize("admin"), changeRole);
 router.post("/auth/reset-password", resetPassword);
-router.get('/sessions/:id', authentication, ownerShip, getSessions)
-router.get('/auth/delete-session/:id', authentication, ownerShip, deleteSession)
+router.get('/sessions', authentication, getSessions)
+router.get('/sessions/:id', authentication, getSessions)
+router.delete('/sessions/:id', authentication, deleteSession)
+router.get('/auth/delete-session/:id', authentication, deleteSession)
 
 
 module.exports = router;

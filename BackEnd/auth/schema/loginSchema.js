@@ -1,7 +1,7 @@
-const { default: z, email, string } = require("zod");
+const { z } = require("zod");
 
 const loginSchema = z.object({
-    email: string().trim().email("invalid email type").toLowerCase(),
-    password: string().min(5,"less password").max(72)
+    email: z.email().trim().toLowerCase(),
+    password: z.string().min(8).max(72)
 })
 module.exports = loginSchema;

@@ -20,6 +20,13 @@ CREATE TABLE roles (
     description TEXT
 );
 
+INSERT INTO roles (name, description)
+VALUES
+    ('user', 'Standard user'),
+    ('admin', 'Administrator'),
+    ('driver', 'Driver')
+ON CONFLICT (name) DO NOTHING;
+
 CREATE TABLE permissions (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,

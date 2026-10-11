@@ -1,10 +1,11 @@
-const { default: z, string, email } = require("zod");
+const { z } = require("zod");
 
-const registerShema = z.object({
-    full_name: string().trim().min(5,"full name must be least 5 char...").max(100,"full name must be less than 100 char"),
-    username: string().trim().toLowerCase().min(5,"username must be least 5 char..."),
-    email: string().email("invalid email type!").trim().toLowerCase(),
-    password: string().min(5,"password must be least 5 char").max(72),
-    phone: string().min(10).max(12)
+const registerSchema = z.object({
+    full_name: z.string().trim().min(2).max(100),
+    username: z.string().trim().toLowerCase().min(3).max(50).regex(/^[a-z0-9_]+$/),
+    email: z.email().trim().toLowerCase(),
+    password: z.string().min(8).max(72),
+    phone: z.string().trim().min(7).max(30).optional().or(z.literal('')),
+    user_address: z.string().trim().max(500).optional(),
 })
-module.exports = registerShema
+module.exports = registerSchema
