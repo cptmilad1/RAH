@@ -1,3 +1,5 @@
+require('../../config/loadEnv')
+
 const jwt = require('jsonwebtoken')
 const db = require('../../../DataBase/base/dbBase')
 
@@ -9,7 +11,6 @@ const authentication = async(req,res,next)=>{
         const result = await db.query(`select token_version AS "tokenVersion", is_active from users where id=$1`, [decode.userId])
         if(result.rowCount == 0) return res.status(401).json({message: "User Not found"})
         const user = result.rows[0]
-        if (!user.is_active) return res.status(403).json({ message: "This account is inactive." })
         if (Number(decode.tokenVersion) !== Number(user.tokenVersion)) return res.status(401).json({message: "token has been invalidated!"})
         req.user = decode
         next()

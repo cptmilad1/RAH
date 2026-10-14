@@ -1,3 +1,5 @@
+require('../../BackEnd/config/loadEnv')
+
 const {Pool} = require('pg')
 const db = new Pool({
     database: process.env.DB_DATABASE || "Postresan",

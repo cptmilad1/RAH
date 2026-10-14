@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('../config/loadEnv')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const helmet = require('helmet')

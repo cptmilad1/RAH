@@ -1,23 +1,36 @@
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: '/api',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
 async function request(path, options = {}) {
-  const response = await fetch(`/api${path.startsWith('/') ? path : `/${path}`}`, {
+  const normalizedPath = path.replace(/^\/+/, '')
+
+  const response = await api.request({
+    url: normalizedPath,
     method: options.method || 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    data: options.body,
+    headers: options.headers,
+    params: options.params,
   })
 
-  const result = await response.json().catch(() => ({}))
-
-  if (!response.ok) {
-    const details = result.error?.map((issue) => issue.message).join(' ')
-    throw new Error(details || result.message || 'Something went wrong. Please try again.')
-  }
-
-  return result
+  return response.data
 }
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const payload = error.response?.data || {}
+    const details = payload.error?.map((issue) => issue.message).join(' ')
+    const message = details || payload.message || 'Something went wrong. Please try again.'
+    return Promise.reject(new Error(message))
+  }
+)
 
 export function register(data) {
   return request('/auth/register', { method: 'POST', body: data })
@@ -27,8 +40,8 @@ export function login(data) {
   return request('/auth/login', { method: 'POST', body: data })
 }
 
-export function verifyEmail(token) {
-  return request('/auth/verify-email', { method: 'POST', body: { token } })
+export function verifyEmail(code) {
+  return request('/auth/verify-email', { method: 'POST', body: { code } })
 }
 
 export function forgotPassword(email) {

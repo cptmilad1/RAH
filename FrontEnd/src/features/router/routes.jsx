@@ -1,28 +1,35 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import AuthPage from '../login/login'
-import Dashboard from '../dashboard/dashboard'
 import ProtectedRoute from './protectedRoute'
+
+const LoginPage = lazy(() => import('../login/pages/LoginPage'))
+const SignupPage = lazy(() => import('../login/pages/SignupPage'))
+const VerifyEmailPage = lazy(() => import('../login/pages/VerifyEmailPage'))
+const ResetPasswordPage = lazy(() => import('../login/pages/ResetPasswordPage'))
+const Dashboard = lazy(() => import('../dashboard/dashboard'))
 
 function Routers() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<AuthPage initialMode="login" />} />
-      <Route path="/signup" element={<AuthPage initialMode="signup" />} />
-      <Route path="/verify-email" element={<AuthPage initialMode="verify" />} />
-      <Route path="/reset-password" element={<AuthPage initialMode="reset" />} />
+    <Suspense fallback={<div className="loading-state">در حال بارگذاری صفحه...</div>}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </Suspense>
   )
 }
 

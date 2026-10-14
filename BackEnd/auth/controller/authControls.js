@@ -1,18 +1,18 @@
-const bcrypt = require("bcrypt");
 const db = require("../../../DataBase/base/dbBase");
 const jwt = require("jsonwebtoken");
-const crypto = require('crypto')
 const { sendResetEmail, sendVerificationEmail } = require('./utils/emailVerifySenter')
-const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService')
+const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService');
+const hashedPassword = require("./utils/bcryptPassword");
+const createVerificationCode = require("./utils/emailVerificationCode");
+const Compare = require("./utils/comparePassword");
+const HandleResult = require("./utils/authResHandler");
 
 async function getAllUsers(req, res, next) {
   try {
     const result = await db.query(
       `SELECT id, full_name, username, email, role, phone, is_verify, user_address, created_at FROM users`,
     );
-    return res
-      .status(200)
-      .json({ message: "data fetched success!", data: result.rows });
+    return HandleResult({status: 200, message: "data fetched success!", data: result.rows, res})
   } catch (err) {
     next(err)
   }
@@ -21,15 +21,16 @@ async function getAllUsers(req, res, next) {
 async function getUser(req, res, next) {
   try {
     const id = req.params.id;
-    if (id == undefined) return res.status(404).send("invalid id!");
+    if (id == undefined || id == null) return HandleResult({ status: 404, message: "invalid id!", res });
     const result = await db.query(
       `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at from users where id=$1`,
       [id],
     );
     if (result.rowCount == 0)
-      return res.status(403).json({ message: "user not found" });
+      return HandleResult({ status: 403, message: "user not found", res });
     const user = result.rows[0];
-    return res.status(200).json({
+    return HandleResult({
+      status: 200,
       message: "user finded!",
       data: {
         id: user.id,
@@ -42,6 +43,7 @@ async function getUser(req, res, next) {
         address: user.user_address,
         signUp_At: user.created_at,
       },
+      res,
     });
   } catch (err) {
     next(err)
@@ -59,36 +61,78 @@ async function registerUser(req, res, next) {
       user_address,
       avatar_url,
     } = req.body;
-    const passwordHash = await bcrypt.hash(password, 10);
-    const result = await db.query(
-      `
-        INSERT INTO users
-        (full_name, username, email, password_hash, phone, user_address, avatar_url, role_id)
-        SELECT $1, $2, $3, $4, $5, $6, $7, roles.id
-        FROM roles WHERE roles.name = 'user'
-        RETURNING id
+    const passwordHash = await hashedPassword(password)
+    const client = await db.connect()
+    let verification
+    let transactionStarted = false
+
+    try {
+      await client.query('BEGIN')
+      transactionStarted = true
+      const result = await client.query(
+        `
+          INSERT INTO users
+          (full_name, username, email, password_hash, phone, user_address, avatar_url, role_id)
+          SELECT $1, $2, $3, $4, $5, $6, $7, roles.id
+          FROM roles WHERE roles.name = 'user'
+          RETURNING id
         `,
-      [
-        full_name,
-        username,
-        email,
-        passwordHash,
-        phone || null,
-        user_address,
-        avatar_url,
-      ],
-    );
-    if (result.rowCount == 0)
-      return res.status(500).json({ message: "Default user role is not configured." });
-    const user = result.rows[0]
-    const verification = crypto.randomBytes(32).toString('hex')
-    await db.query(`insert into verify_token (user_id, token, expire_at)
-      values($1, $2, NOW() + INTERVAL '15 minutes')`, [user.id, verification])
-    await sendVerificationEmail(email, verification)
-    return res.status(201).json({
-      message: "Registration successful. Verify your email before signing in.",
-      ...(process.env.NODE_ENV !== 'production' && { verificationToken: verification }),
-    });
+        [
+          full_name,
+          username,
+          email,
+          passwordHash,
+          phone || null,
+          user_address,
+          avatar_url,
+        ],
+      )
+      if (result.rowCount === 0) {
+        const error = new Error("Can not register user please try again later")
+        error.status = 500
+        throw error
+      }
+
+      const user = result.rows[0]
+      let codeStored = false
+      for (let attempt = 0; attempt < 10 && !codeStored; attempt += 1) {
+        verification = createVerificationCode()
+        const codeResult = await client.query(
+          `insert into verify_token (user_id, token, expire_at)
+           values($1, $2, NOW() + INTERVAL '15 minutes')
+           on conflict (token) do nothing
+           returning token`,
+          [user.id, verification],
+        )
+        codeStored = codeResult.rowCount === 1
+      }
+      if (!codeStored) {
+        const error = new Error('Could not generate a unique email verification code.')
+        error.status = 503
+        throw error
+      }
+
+      await sendVerificationEmail(email, verification)
+      await client.query('COMMIT')
+      transactionStarted = false
+
+      return HandleResult({
+        status: 201,
+        message: "Registration successful. Verify your email before signing in.",
+        res,
+      })
+    } catch (err) {
+      if (transactionStarted) {
+        try {
+          await client.query('ROLLBACK')
+        } catch (rollbackError) {
+          console.error('Registration rollback failed:', rollbackError.code || rollbackError.message)
+        }
+      }
+      throw err
+    } finally {
+      client.release()
+    }
   } catch (err) {
     next(err)
   }
@@ -102,16 +146,13 @@ async function loginUser(req, res, next) {
       [email],
     );
     if (result.rows.length == 0)
-      return res.status(400).json({ message: "incorrect email or password!" });
+      return HandleResult({ status: 400, message: "incorrect email or password!", res });
     const user = result.rows[0];
-    if (!user.is_active) return res.status(403).json({ message: "This account is inactive." });
-    const passwordIsCorrect = await bcrypt.compare(
-      password,
-      user.password_hash,
-    );
+    if (!user.is_active) await db.query(`update users set is_active=true where email=$1`,[email]);
+    const passwordIsCorrect = await Compare(password, user.password_hash);
     if (!passwordIsCorrect)
-      return res.status(400).json({ message: "incorrect email or password!" });
-    if (!user.is_verify) return res.status(403).json({ message: "Please verify your email before signing in." });
+      return HandleResult({ status: 400, message: "incorrect email or password!", res });
+    if (!user.is_verify) return HandleResult({ status: 403, message: "Please verify your email before signing in.", res });
 
     const token = createAccessToken(user);
     const refreshToken = createRefreshToken(user.id);
@@ -123,9 +164,10 @@ async function loginUser(req, res, next) {
       [user.id, hashToken(refreshToken), device, ip],
     );
     if (createToken.rowCount == 0)
-      return res.json({ message: "creating token feild!" });
+      return HandleResult({ status: 200, message: "creating token feild!", res });
     setAuthCookies(res, token, refreshToken);
-    return res.status(200).json({
+    return HandleResult({
+      status: 200,
       message: "Login successfull",
       data: {
         id: user.id,
@@ -136,6 +178,7 @@ async function loginUser(req, res, next) {
         address: user.user_address,
         signUp_At: user.created_at,
       },
+      res,
     });
   } catch (err) {
     next(err)
@@ -144,10 +187,12 @@ async function loginUser(req, res, next) {
 
 async function logoutUser(req, res, next) {
   try{
+    const id = user.userId
+    await db.query(`update users set is_active=false where id=$1`,[id])
     const refreshToken = req.cookies?.refresh_token
     if (refreshToken) await db.query(`delete from refresh_tokens where token_hash=$1`, [hashToken(refreshToken)])
     clearAuthCookies(res);
-    return res.status(200).json({ message: "Successfully logged out." });
+    return HandleResult({ status: 200, message: "Successfully logged out.", res });
   }catch(err){
     next(err)
   }
@@ -156,18 +201,18 @@ async function logoutUser(req, res, next) {
 async function refreshToken(req, res, next) {
   try {
     const oldRefreshToken = req.cookies?.refresh_token;
-    if (!oldRefreshToken) return res.status(401).send("relogin required...");
+    if (!oldRefreshToken) return HandleResult({ status: 401, message: "relogin required...", res });
     const decode = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET);
     const result = await db.query(
       `select id, user_id, expires_at from refresh_tokens where token_hash=$1`,
       [hashToken(oldRefreshToken)],
     );
     if (result.rowCount == 0)
-      return res.status(400).send("invalid or expired refresh token");
+      return HandleResult({ status: 400, message: "invalid or expired refresh token", res });
 
     const oldToken = result.rows[0];
     if (String(decode.userId) !== String(oldToken.user_id) || new Date(oldToken.expires_at) < new Date())
-      return res.status(401).json({ message: "refresh token expired!" });
+      return HandleResult({ status: 401, message: "refresh token expired!", res });
     await db.query(`delete from refresh_tokens where id=$1`, [oldToken.id]);
 
     const newRefreshToken = createRefreshToken(decode.userId);
@@ -183,12 +228,12 @@ async function refreshToken(req, res, next) {
       [decode.userId],
     );
     if (userResult.rowCount == 0)
-      return res.status(400).send("user not found!");
+      return HandleResult({ status: 400, message: "user not found!", res });
     const user = userResult.rows[0];
-    if (!user.is_active) return res.status(403).json({ message: "This account is inactive." });
+    if (!user.is_active) return HandleResult({ status: 403, message: "This account is inactive.", res });
     const newAccessToken = createAccessToken(user);
     setAuthCookies(res, newAccessToken, newRefreshToken);
-    return res.json({ message: "Access token refreshed." });
+    return HandleResult({ status: 200, message: "Access token refreshed.", res });
   } catch (err) {
     next(err)
   }
@@ -199,16 +244,15 @@ async function changePassword(req,res, next) {
         const {oldPassword, newPassword} = req.body
         const userId = req.user.userId
         const result = await db.query(`SELECT password_hash from users where id=$1`,[userId])
-        if (result.rowCount == 0) return res.json({message: "user not found!"})
+        if (result.rowCount == 0) return HandleResult({ status: 200, message: "user not found!", res })
         const user = result.rows[0]
-        const isMAtch = await bcrypt.compare(oldPassword, user.password_hash)
-        if(!isMAtch) return res.json({message: "password not match please try again"})
-        const passwordHash = await bcrypt.hash(newPassword, 10)
+        const isMAtch = await Compare(oldPassword, user.password_hash)
+        if(!isMAtch) return HandleResult({ status: 200, message: "password not match please try again", res })
+        const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`, [userId])
-        res.clearCookie("access_token")
-        res.clearCookie("refresh_token")
-        return res.json({message: "password changed! please login again..."})
+        clearAuthCookies(res)
+        return HandleResult({ status: 200, message: "password changed! please login again...", res })
     }catch(err){
         next(err)
     }
@@ -219,16 +263,18 @@ async function forgotPassword(req,res, next) {
         const {email} = req.body
         const result = await db.query(`select id from users where email=$1`,[email])
         if (result.rowCount === 0) {
-          return res.json({ message: "If the account exists, a reset link has been sent." })
+          return HandleResult({ status: 200, message: "If the account exists, a reset link has been sent.", res })
         }
         const userId = result.rows[0].id
         const resetToken = crypto.randomBytes(32).toString('hex')
         await db.query(`insert into password_reset_token (user_id, token, expire_at)
           values ($1, $2, NOW() + INTERVAL '15 minutes')`,[userId ,resetToken])
         const emailSent = await sendResetEmail(email, resetToken)
-        return res.json({
+        return HandleResult({
+          status: 200,
           message: "If the account exists, a reset link has been sent.",
-          ...(process.env.NODE_ENV !== 'production' && !emailSent && { resetToken }),
+          // ...(process.env.NODE_ENV !== 'production' && !emailSent && { resetToken }),
+          res
         })
     }catch(err){
         next(err)
@@ -240,9 +286,8 @@ async function logoutAll(req,res, next) {
       const userId = req.user.userId
       await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
       await db.query(`update users set token_version=token_version+1 where id=$1`,[userId])
-      res.clearCookie('refresh_token')
-      res.clearCookie('access_token')
-      return res.status(200).json({message: "logged out from all devices! please login again..."})
+      clearAuthCookies(res)
+      return HandleResult({ status: 200, message: "logged out from all devices! please login again...", res })
     }catch(err){
       next(err)
     }
@@ -250,73 +295,77 @@ async function logoutAll(req,res, next) {
 
 async function verifyEmail(req,res, next) {
     try{
-        const {token} = req.body
-        const result = await db.query(`select user_id from verify_token where token=$1 and expire_at > NOW()`,[token])
-        if(result.rowCount == 0)return res.json({message: "invalid or expired token"})
+        const {code} = req.body
+        const result = await db.query(`select user_id from verify_token where token=$1 and expire_at > NOW()`,[code])
+        if(result.rowCount == 0)return HandleResult({ status: 400, message: "invalid or expired token", res })
         const userId = result.rows[0].user_id
         await db.query(`update users set is_verify=true where id=$1`,[userId])
-        await db.query(`delete from verify_token where token=$1;`,[token])
-        return res.json({message: "Email verified successfully."})
+        await db.query(`delete from verify_token where token=$1;`,[code])
+        return HandleResult({ status: 200, message: "Email verified successfully.", res })
     }catch(err){
         next(err)
     }
 }
+
 async function changeRole(req,res, next) {
     try{
         const userId = Number(req.params.id || req.body.userId)
         const {role} = req.body
         const allowedRoles = ["admin", "driver", "user"]
         if(!Number.isSafeInteger(userId) || userId < 1 || !allowedRoles.includes(role)){
-            return res.status(400).json({
-                message: "Invalid Role"
-            })
+            return HandleResult({ status: 400, message: "Invalid Role or user not found!", res })
         }
         const result = await db.query(`UPDATE users SET role=$1, role_id=(SELECT id FROM roles WHERE name=$1) WHERE id=$2 RETURNING id, username, email, role`,[role, userId])
         if(result.rowCount == 0){
-            return res.status(404).json({
-                message: "User not found!"
-            })
+            return HandleResult({ status: 404, message: "User not found!", res })
         }
-        res.status(200).json({
+        return HandleResult({
+            status: 200,
             data: result.rows[0],
-            message: "Role Updated!"
+            message: "Role Updated!",
+            res,
         })
     }catch(err){
         next(err)
     }
 }
+
+// check syntax needed
 async function resetPassword(req,res, next) {
     try{
         const {token, newPassword} = req.body
         const result = await db.query(`select user_id from password_reset_token
           where token=$1 and expire_at > now() and used_at is null`,[token])
-        if(result.rowCount == 0) return res.status(400).json({message: "Invalid or expired reset token."})
+        if(result.rowCount == 0) return HandleResult({ status: 400, message: "Invalid or expired reset token.", res })
         const userId = result.rows[0].user_id
-        const passwordHash = await bcrypt.hash(newPassword, 10)
+        const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
         await db.query(`delete from password_reset_token where token=$1`,[token])
-        return res.json({message: "Password reset successfully."})
+        return HandleResult({ status: 200, message: "Password reset successfully.", res })
     }catch(err){
         next(err)
     }
 }
+
+// check syntax needed
 async function getSessions(req,res, next) {
     try{
         const id = req.user.userId
         const result = await db.query(`select id, device, ip_address, created_at, expires_at from refresh_tokens where user_id=$1 order by created_at desc`,[id])
-        return res.json({data: result.rows})
+        return HandleResult({ status: 200, data: result.rows, res })
     }catch(err){
         next(err)
     }
 }
+
 async function deleteSession(req,res, next) {
     try{
         const sessionId = req.params.id
         const userId = req.user.userId
         const result = await db.query(`delete from refresh_tokens where id=$1 and user_id=$2 returning id`, [sessionId, userId])
-        if(result.rowCount == 0)return res.json({message: "session not found!"})
-        return res.json({message: "session logged out!"})
+        if(result.rowCount == 0)return HandleResult({ status: 200, message: "session not found!", res })
+        return HandleResult({ status: 200, message: "session logged out!", res })
     }catch(err){
         next(err)
     }

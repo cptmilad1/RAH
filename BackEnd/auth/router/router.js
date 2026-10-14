@@ -3,6 +3,7 @@ const router = express.Router();
 const validator = require("../middleware/validator");
 const registerShema = require("../schema/registerSchema");
 const loginSchema = require("../schema/loginSchema");
+const verifyEmailSchema = require("../schema/verifyEmailSchema");
 const {
   loginUser,
   registerUser,
@@ -39,7 +40,7 @@ router.post("/auth/refresh", refreshToken);
 router.post("/change-password", authentication, changePassword);
 router.post("/forgot-password", authLimit, forgotPassword);
 router.post("/logout-all", authentication, logoutAll);
-router.post("/auth/verify-email", authLimit, verifyEmail);
+router.post("/auth/verify-email", authLimit, validator(verifyEmailSchema), verifyEmail);
 router.post("/change-role", authentication, authorize("admin"), changeRole);
 router.post("/users/:id/role", authentication, authorize("admin"), changeRole);
 router.post("/auth/reset-password", resetPassword);
