@@ -7,6 +7,8 @@ const SignupPage = lazy(() => import('../login/pages/SignupPage'))
 const VerifyEmailPage = lazy(() => import('../login/pages/VerifyEmailPage'))
 const ResetPasswordPage = lazy(() => import('../login/pages/ResetPasswordPage'))
 const Dashboard = lazy(() => import('../dashboard/dashboard'))
+const Post = lazy(()=> import('../post/Post'))
+const Profile = lazy(() => import('../profiles/Profile'))
 
 function Routers() {
   return (
@@ -17,16 +19,9 @@ function Routers() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
+        <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+        
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Suspense>

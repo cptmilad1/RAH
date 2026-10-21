@@ -23,7 +23,7 @@ async function getUser(req, res, next) {
     const id = req.params.id;
     if (id == undefined || id == null) return HandleResult({ status: 404, message: "invalid id!", res });
     const result = await db.query(
-      `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at from users where id=$1`,
+      `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url from users where id=$1`,
       [id],
     );
     if (result.rowCount == 0)
@@ -40,8 +40,10 @@ async function getUser(req, res, next) {
         role: user.role,
         phone: user.phone,
         verify: user.is_verify,
+        isActive: user.is_active,
         address: user.user_address,
         signUp_At: user.created_at,
+        image: user.avatar_url,
       },
       res,
     });
@@ -177,6 +179,8 @@ async function loginUser(req, res, next) {
         verify: user.is_verify,
         address: user.user_address,
         signUp_At: user.created_at,
+        is_active : user.is_active,
+        phone : user.phone
       },
       res,
     });

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
+import { useNavigate } from 'react-router-dom'
 
 function Dashboard() {
   const { user, logout } = useAuth()
   const dashboardRef = useRef(null)
-  const [selectedService, setSelectedService] = useState('')
   const roleLabels = { user: 'کاربر', admin: 'مدیر', driver: 'راننده' }
   const roleLabel = roleLabels[user?.role] || 'کاربر'
 
@@ -47,7 +47,7 @@ function Dashboard() {
       handlers.forEach((cleanup) => cleanup())
     }
   }, [])
-
+  const navigate = useNavigate()
   return (
     <main ref={dashboardRef} className="grid min-h-screen grid-cols-1 bg-[radial-gradient(ellipse_at_72%_-10%,rgba(215,243,106,0.16),transparent_38%),#f6f7f2] text-[#17352e] lg:grid-cols-[286px_minmax(0,1fr)]">
       <aside className="relative flex min-w-0 flex-col bg-[radial-gradient(circle_at_10%_82%,rgba(215,243,106,0.1),transparent_30%),linear-gradient(165deg,#123e32_0%,#0c3028_100%)] px-[18px] pt-[18px] pb-[13px] text-[#f3f7ef] sm:px-[22px] sm:pt-[25px] lg:sticky lg:top-0 lg:h-screen lg:px-[22px] lg:pt-[34px] lg:pb-[26px]">
@@ -89,17 +89,16 @@ function Dashboard() {
             <h1 className="m-0 text-[22px] font-extrabold tracking-tight text-[#163a30] sm:text-[clamp(26px,3vw,37px)]">سلام، {user?.name || 'دوست عزیز'} <span className="text-[.72em]">👋</span></h1>
             <p className="mt-2 max-w-[270px] text-[11px] leading-[1.9] text-[#839088] sm:max-w-none sm:text-[13px]">خوشحالیم که دوباره همراه مایی. امروز کجا می‌رویم؟</p>
           </div>
-          <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-[#e6ebe4] bg-white/[0.78] p-[7px] shadow-[0_8px_24px_rgba(26,63,49,0.04)] sm:min-w-[190px] sm:gap-[11px] sm:px-[13px] sm:py-[10px]">
+          <button onClick={()=>navigate(`/profile/${user.id}`)} className="flex hover:-translate-y-1 duration-300 min-w-0 items-center gap-2 rounded-2xl border border-[#e6ebe4] bg-white/[0.78] p-[7px] shadow-[0_8px_24px_rgba(26,63,49,0.04)] sm:min-w-[190px] sm:gap-[11px] sm:px-[13px] sm:py-[10px]">
             <div className="grid size-[34px] shrink-0 place-items-center rounded-[13px] bg-[#e6edda] text-[17px] font-extrabold text-[#315946] sm:size-10">{(user?.name || 'ر').slice(0, 1)}</div>
             <div className="hidden min-w-0 flex-1 gap-1 sm:grid"><strong className="max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-[#264538]">{user?.name || 'کاربر راه'}</strong><span className="text-[10px] text-[#8a9991]">{roleLabel}</span></div>
             <span className="mr-auto size-2 rounded-full bg-[#7fba68] shadow-[0_0_0_4px_#edf6e9]" aria-label="آنلاین" />
-          </div>
+          </button>
         </header>
 
         <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
             type="button"
-            onClick={() => setSelectedService('مرسوله‌ها')}
             className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d9eaa3] bg-gradient-to-l from-[#e5f5b3] to-[#d8ef83] px-5 text-right text-sm font-extrabold text-[#193e31] shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]"
           >
             <span className="flex items-center gap-3">
@@ -110,7 +109,6 @@ function Dashboard() {
           </button>
           <button
             type="button"
-            onClick={() => setSelectedService('تاکسی آنلاین')}
             className="flex min-h-[72px] items-center justify-between rounded-[17px] bg-gradient-to-l from-[#1c5942] to-[#174735] px-5 text-right text-sm font-extrabold text-white shadow-[0_8px_24px_rgba(22,57,43,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.18)]"
           >
             <span className="flex items-center gap-3">
@@ -120,11 +118,7 @@ function Dashboard() {
             <span className="text-xl text-[#d7f36a]" aria-hidden="true">←</span>
           </button>
         </div>
-        {selectedService && (
-          <p className="mb-5 rounded-xl border border-[#e6ebe4] bg-white px-4 py-3 text-xs text-[#718078]" role="status">
-            بخش {selectedService} به‌زودی در دسترس خواهد بود.
-          </p>
-        )}
+        
 
         <div className="mb-5 grid grid-cols-1 gap-[11px] sm:grid-cols-3 sm:gap-3 lg:gap-[17px]">
           <article data-dashboard-stat className="group relative grid min-h-[150px] justify-items-start gap-[11px] overflow-hidden rounded-[19px] border border-[#d9eaa3] bg-gradient-to-br from-[#e5f5b3] to-[#d8ef83] p-[19px_17px] shadow-[0_10px_32px_rgba(22,57,43,0.035)] transition-shadow duration-300 hover:shadow-[0_18px_38px_rgba(22,57,43,0.12)] before:absolute before:-bottom-[45px] before:-left-[27px] before:size-28 before:rounded-full before:border before:border-[#1a4c3b]/[0.055] before:shadow-[0_0_0_16px_rgba(26,76,59,0.025),0_0_0_32px_rgba(26,76,59,0.018)] before:content-[''] lg:min-h-[178px] lg:p-[22px_23px]">
