@@ -9,6 +9,7 @@ const ResetPasswordPage = lazy(() => import('../login/pages/ResetPasswordPage'))
 const Dashboard = lazy(() => import('../dashboard/dashboard'))
 const Post = lazy(()=> import('../post/Post'))
 const Profile = lazy(() => import('../profiles/Profile'))
+const ProfileEditPage = lazy(() => import('../profiles/ProfileEditPage'))
 
 function Routers() {
   return (
@@ -19,6 +20,7 @@ function Routers() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
         <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
         

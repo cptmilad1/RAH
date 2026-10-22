@@ -26,3 +26,7 @@ export function logout() {
 export function getProfile(id){
   return request(`/profile/${id}`, {method: "GET"})
 }
+
+export function updateProfile(id, data) {
+  return request(`/profile/${id}`, { method: 'PATCH', body: data })
+}

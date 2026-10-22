@@ -5,6 +5,7 @@ import milad from '/imgs/milad.png'
 import useProfile from './hooks/UseProfile'
 import roleChecker from './utils/roleChecker'
 import CardProfile from './components/card'
+import { useAuthStore } from '../auth/authStore'
 
 function formatDate(value) {
   if (!value) return ''
@@ -21,10 +22,12 @@ function Profile() {
   const { id } = useParams()
   const users = useProfile((state) => state.users)
   const setUsers = useProfile((state) => state.setUsers)
+  const currentUser = useAuthStore((state) => state.user)
   const profileRef = useRef(null)
+  const canEdit = currentUser?.role === 'admin' || String(currentUser?.id) === String(id)
 
   useEffect(() => {
-    setUsers(id)
+    setUsers(id).catch(() => undefined)
   }, [id, setUsers])
 
   useEffect(() => {
@@ -72,6 +75,15 @@ function Profile() {
               {roleLabel}
               <span className="size-1.5 rounded-full bg-[#d7f36a]" />
             </span>
+            {canEdit && (
+              <Link
+                to={`/profile/${id}/edit`}
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-[#d7f36a] px-4 text-xs font-extrabold text-[#17352e] transition hover:-translate-y-0.5 hover:bg-[#e2f88c]"
+              >
+                <span aria-hidden="true">✎</span>
+                ویرایش پروفایل
+              </Link>
+            )}
           </div>
         </section>
 

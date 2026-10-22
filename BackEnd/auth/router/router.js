@@ -4,11 +4,13 @@ const validator = require("../middleware/validator");
 const registerShema = require("../schema/registerSchema");
 const loginSchema = require("../schema/loginSchema");
 const verifyEmailSchema = require("../schema/verifyEmailSchema");
+const updateProfileSchema = require("../schema/updateProfileSchema");
 const {
   loginUser,
   registerUser,
   getAllUsers,
   getUser,
+  updateUser,
   logoutUser,
   refreshToken,
   changePassword,
@@ -27,6 +29,7 @@ const authLimit = require('../middleware/rateLimite')
 
 router.get("/users",authentication,ownerShip,authorize("admin"),getAllUsers);
 router.get("/profile/:id", authentication, ownerShip, getUser);
+router.patch("/profile/:id", authentication, ownerShip, validator(updateProfileSchema), updateUser);
 router.post("/auth/register", authLimit, validator(registerShema), registerUser);
 router.post("/auth/login", authLimit, validator(loginSchema), loginUser);
 router.post("/logout", authentication, logoutUser);
