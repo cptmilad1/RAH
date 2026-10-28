@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './protectedRoute'
+import Loader from '../loaders/loader1'
 
 const LoginPage = lazy(() => import('../login/pages/LoginPage'))
 const SignupPage = lazy(() => import('../login/pages/SignupPage'))
@@ -13,7 +14,7 @@ const ProfileEditPage = lazy(() => import('../profiles/ProfileEditPage'))
 
 function Routers() {
   return (
-    <Suspense fallback={<div className="loading-state">در حال بارگذاری صفحه...</div>}>
+    <Suspense fallback={<Loader />}>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
@@ -23,6 +24,7 @@ function Routers() {
         <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
         <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+        <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>}/>
         
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

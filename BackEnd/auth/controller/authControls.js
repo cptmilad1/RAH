@@ -161,7 +161,7 @@ async function registerUser(req, res, next) {
         message: "Registration successful. Verify your email before signing in.",
         res,
       })
-    } catch (err) {
+  } catch (err) {
       if (transactionStarted) {
         try {
           await client.query('ROLLBACK')

@@ -98,6 +98,7 @@ function Dashboard() {
 
         <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
+          onClick={()=>{navigate('/post')}}
             type="button"
             className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d9eaa3] bg-gradient-to-l from-[#e5f5b3] to-[#d8ef83] px-5 text-right text-sm font-extrabold text-[#193e31] shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]"
           >
