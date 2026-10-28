@@ -7,7 +7,7 @@ const authentication = async(req,res,next)=>{
     try{
         const token = req.cookies?.access_token
         if(!token)return res.status(401).json({message: "Authenticate required"})
-        const decode = jwt.verify(token, process.env.JWT_SECRET)
+            const decode = jwt.verify(token, process.env.JWT_SECRET)
         const result = await db.query(`select token_version AS "tokenVersion", is_active from users where id=$1`, [decode.userId])
         if(result.rowCount == 0) return res.status(401).json({message: "User Not found"})
         const user = result.rows[0]
@@ -18,7 +18,7 @@ const authentication = async(req,res,next)=>{
         if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
             return res.status(401).json({ message: "Invalid or expired access token." })
         }
-        return next(err)
+        return res.json({message: "Validation Error!"})
     }
 }
 module.exports = authentication;

@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../auth/authStore'
 
 function ProtectedRoute({ children, allowedRoles = ['user', 'admin', 'driver'] }) {

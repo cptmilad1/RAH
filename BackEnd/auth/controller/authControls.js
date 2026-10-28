@@ -23,7 +23,7 @@ async function getUser(req, res, next) {
     const id = req.params.id;
     if (id == undefined || id == null) return HandleResult({ status: 404, message: "invalid id!", res });
     const result = await db.query(
-      `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at from users where id=$1`,
+      `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url from users where id=$1`,
       [id],
     );
     if (result.rowCount == 0)
@@ -40,13 +40,53 @@ async function getUser(req, res, next) {
         role: user.role,
         phone: user.phone,
         verify: user.is_verify,
+        isActive: user.is_active,
         address: user.user_address,
         signUp_At: user.created_at,
+        image: user.avatar_url,
       },
       res,
     });
   } catch (err) {
     next(err)
+  }
+}
+
+async function updateUser(req, res, next) {
+  try {
+    const { full_name, username, phone, user_address } = req.body;
+    const result = await db.query(
+      `update users
+       set full_name=$1, username=$2, phone=NULLIF($3, ''), user_address=NULLIF($4, '')
+       where id=$5
+       returning id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url`,
+      [full_name, username, phone, user_address, req.params.id],
+    );
+    if (result.rowCount === 0) {
+      return HandleResult({ status: 404, message: 'User not found.', res });
+    }
+
+    const user = result.rows[0];
+    return HandleResult({
+      status: 200,
+      message: 'Profile updated.',
+      data: {
+        id: user.id,
+        name: user.full_name,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        verify: user.is_verify,
+        isActive: user.is_active,
+        address: user.user_address,
+        signUp_At: user.created_at,
+        image: user.avatar_url,
+      },
+      res,
+    });
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -121,7 +161,7 @@ async function registerUser(req, res, next) {
         message: "Registration successful. Verify your email before signing in.",
         res,
       })
-    } catch (err) {
+  } catch (err) {
       if (transactionStarted) {
         try {
           await client.query('ROLLBACK')
@@ -177,6 +217,8 @@ async function loginUser(req, res, next) {
         verify: user.is_verify,
         address: user.user_address,
         signUp_At: user.created_at,
+        is_active : user.is_active,
+        phone : user.phone
       },
       res,
     });
@@ -376,6 +418,7 @@ module.exports = {
   loginUser,
   getAllUsers,
   getUser,
+  updateUser,
   logoutUser,
   refreshToken,
   changePassword,

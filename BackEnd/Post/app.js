@@ -1,4 +1,3 @@
-const express = require('express')
-const app = require("../auth/app")
+const router = require('./factor/utils/factor')
 
-module.exports = app
+module.exports = router
