@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
 import { useNavigate } from 'react-router-dom'
@@ -63,7 +63,7 @@ function Dashboard() {
           <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">↗</span> سفرهای من
           </button>
-          <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+          <button type="button" onClick={() => navigate('/shipments')} className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">▣</span> مرسوله‌ها
           </button>
           <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
@@ -98,7 +98,7 @@ function Dashboard() {
 
         <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
-          onClick={()=>{navigate('/post')}}
+          onClick={()=>{navigate('/shipments')}}
             type="button"
             className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d9eaa3] bg-gradient-to-l from-[#e5f5b3] to-[#d8ef83] px-5 text-right text-sm font-extrabold text-[#193e31] shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]"
           >

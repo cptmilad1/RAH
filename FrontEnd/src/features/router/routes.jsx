@@ -11,6 +11,8 @@ const Dashboard = lazy(() => import('../dashboard/dashboard'))
 const Post = lazy(()=> import('../post/Post'))
 const Profile = lazy(() => import('../profiles/Profile'))
 const ProfileEditPage = lazy(() => import('../profiles/ProfileEditPage'))
+const ShipmentPage = lazy(() => import('../shipments/ShipmentPage'))
+const ShipmentDetailsPage = lazy(() => import('../shipments/ShipmentDetailsPage'))
 
 function Routers() {
   return (
@@ -25,6 +27,8 @@ function Routers() {
         <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
         <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>}/>
+        <Route path="/shipments" element={<ProtectedRoute><ShipmentPage /></ProtectedRoute>} />
+        <Route path="/shipments/:trackingCode" element={<ProtectedRoute><ShipmentDetailsPage /></ProtectedRoute>} />
         
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
