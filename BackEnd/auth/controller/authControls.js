@@ -2,10 +2,15 @@ const db = require("../../../DataBase/base/dbBase");
 const jwt = require("jsonwebtoken");
 const { sendResetEmail, sendVerificationEmail } = require('./utils/emailVerifySenter')
 const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService');
+const userRoom = require('../../presence/userRoom')
 const hashedPassword = require("./utils/bcryptPassword");
 const createVerificationCode = require("./utils/emailVerificationCode");
 const Compare = require("./utils/comparePassword");
 const HandleResult = require("./utils/authResHandler");
+
+function disconnectUserSockets(req, userId) {
+  req.app.get('io')?.in(userRoom(userId)).disconnectSockets(true)
+}
 
 async function getAllUsers(req, res, next) {
   try {
@@ -229,8 +234,7 @@ async function loginUser(req, res, next) {
 
 async function logoutUser(req, res, next) {
   try{
-    const id = user.userId
-    await db.query(`update users set is_active=false where id=$1`,[id])
+    const id = req.user.userId
     const refreshToken = req.cookies?.refresh_token
     if (refreshToken) await db.query(`delete from refresh_tokens where token_hash=$1`, [hashToken(refreshToken)])
     clearAuthCookies(res);
@@ -293,6 +297,7 @@ async function changePassword(req,res, next) {
         const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`, [userId])
+        disconnectUserSockets(req, userId)
         clearAuthCookies(res)
         return HandleResult({ status: 200, message: "password changed! please login again...", res })
     }catch(err){
@@ -328,6 +333,7 @@ async function logoutAll(req,res, next) {
       const userId = req.user.userId
       await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
       await db.query(`update users set token_version=token_version+1 where id=$1`,[userId])
+      disconnectUserSockets(req, userId)
       clearAuthCookies(res)
       return HandleResult({ status: 200, message: "logged out from all devices! please login again...", res })
     }catch(err){
@@ -383,6 +389,7 @@ async function resetPassword(req,res, next) {
         const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
+        disconnectUserSockets(req, userId)
         await db.query(`delete from password_reset_token where token=$1`,[token])
         return HandleResult({ status: 200, message: "Password reset successfully.", res })
     }catch(err){

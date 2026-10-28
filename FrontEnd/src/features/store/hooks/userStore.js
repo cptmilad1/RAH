@@ -1,11 +1,13 @@
 import {create} from 'zustand'
 import request from './api'
+import { usePresenceStore } from '../../presence/presenceStore'
 
 const useUser = create((set) => ({
     isUser : false,
     isAdmin : false,
     isDriver: false,
     isOnline : false,
+    presenceUserId: null,
     setRole : async(id)=>{
         const response = await request(`profile/${id}`,{method: "GET"})
         response.data.role.toLowerCase() == "admin" 
@@ -14,10 +16,20 @@ const useUser = create((set) => ({
         ? set({isDriver : true}) 
         : set({isUser : true})
     },
-    setIsOnline: async(id)=>{
-        const response = await request(`profile/${id}`,{method: "GET"})
-        response.data.is_active ? set({ isOnline : true }) : set({ isOnline : false })
+    setIsOnline: (id)=>{
+        const presenceUserId = String(id)
+        set({
+            presenceUserId,
+            isOnline: Boolean(usePresenceStore.getState().onlineUsers[presenceUserId]),
+        })
     }
 }))
+
+usePresenceStore.subscribe((state) => {
+    const presenceUserId = useUser.getState().presenceUserId
+    if (presenceUserId) {
+        useUser.setState({ isOnline: Boolean(state.onlineUsers[presenceUserId]) })
+    }
+})
 
 export default useUser;

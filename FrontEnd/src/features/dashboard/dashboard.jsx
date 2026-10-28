@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
+import { usePresenceStore } from '../presence/presenceStore'
 import { useNavigate } from 'react-router-dom'
 
 function Dashboard() {
   const { user, logout } = useAuth()
+  const isOnline = usePresenceStore((state) => Boolean(user?.id && state.onlineUsers[String(user.id)]))
   const dashboardRef = useRef(null)
   const roleLabels = { user: 'کاربر', admin: 'مدیر', driver: 'راننده' }
   const roleLabel = roleLabels[user?.role] || 'کاربر'
@@ -92,7 +94,7 @@ function Dashboard() {
           <button onClick={()=>navigate(`/profile/${user.id}`)} className="flex hover:-translate-y-1 duration-300 min-w-0 items-center gap-2 rounded-2xl border border-[#e6ebe4] bg-white/[0.78] p-[7px] shadow-[0_8px_24px_rgba(26,63,49,0.04)] sm:min-w-[190px] sm:gap-[11px] sm:px-[13px] sm:py-[10px]">
             <div className="grid size-[34px] shrink-0 place-items-center rounded-[13px] bg-[#e6edda] text-[17px] font-extrabold text-[#315946] sm:size-10">{(user?.name || 'ر').slice(0, 1)}</div>
             <div className="hidden min-w-0 flex-1 gap-1 sm:grid"><strong className="max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-[#264538]">{user?.name || 'کاربر راه'}</strong><span className="text-[10px] text-[#8a9991]">{roleLabel}</span></div>
-            <span className="mr-auto size-2 rounded-full bg-[#7fba68] shadow-[0_0_0_4px_#edf6e9]" aria-label="آنلاین" />
+            <span className={`mr-auto size-2 rounded-full ${isOnline ? 'bg-[#7fba68] shadow-[0_0_0_4px_#edf6e9]' : 'bg-[#a9b2ac] shadow-[0_0_0_4px_#f0f2ef]'}`} aria-label={isOnline ? 'آنلاین' : 'آفلاین'} />
           </button>
         </header>
 
