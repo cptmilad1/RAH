@@ -21,3 +21,18 @@ export function cancelShipment(trackingCode, reason) {
     body: { reason },
   })
 }
+
+export function confirmShipmentHandoff(trackingCode) {
+  return request(`/parcels/${encodeURIComponent(trackingCode)}/confirm-handoff`, { method: 'PATCH' })
+}
+
+export function updateShipmentStatus(trackingCode, status) {
+  return request(`/parcels/${encodeURIComponent(trackingCode)}/driver-status`, {
+    method: 'PATCH',
+    body: { status },
+  })
+}
+
+export function confirmShipmentDelivery(trackingCode) {
+  return request(`/parcels/${encodeURIComponent(trackingCode)}/confirm-delivery`, { method: 'PATCH' })
+}

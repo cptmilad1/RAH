@@ -15,24 +15,18 @@ async function findParcelsForUser(userId, role) {
      LEFT JOIN users receiver ON receiver.id = p.receiver_id
      JOIN addresses pickup ON pickup.id = p.pickup_address_id
      JOIN addresses delivery ON delivery.id = p.delivery_address_id
-     WHERE $1 = 'admin'
+     WHERE $1 IN ('admin', 'driver')
         OR p.sender_id = $2
         OR p.receiver_id = $2
         OR p.receiver_phone = (SELECT phone FROM users WHERE id = $2)
-        OR ($1 = 'driver' AND EXISTS (
-          SELECT 1
-          FROM parcel_assignments pa
-          JOIN driver_profiles dp ON dp.id = pa.driver_id
-          WHERE pa.parcel_id = p.id AND dp.user_id = $2
-        ))
      ORDER BY p.created_at DESC
-     LIMIT 100`,
+     `,
     [role, userId],
   )
   return result.rows
 }
 
-async function findParcelForUser(userId, role, trackingCode) {
+async function findParcelForUser(userId, trackingCode) {
   const result = await db.query(
     `SELECT p.id, p.sender_id AS "senderId", p.tracking_code AS "trackingCode", p.status,
             p.description, p.weight_kg AS "weightKg", p.created_at AS "createdAt",
@@ -40,6 +34,29 @@ async function findParcelForUser(userId, role, trackingCode) {
             COALESCE(p.receiver_name, receiver.full_name) AS "receiverName",
             COALESCE(p.receiver_phone, receiver.phone) AS "receiverPhone",
             sender.full_name AS "senderName",
+            (p.sender_id = $1) AS "isSender",
+            COALESCE(
+              p.receiver_id = $1 OR p.receiver_phone = (SELECT phone FROM users WHERE id = $1),
+              FALSE
+            ) AS "isReceiver",
+            EXISTS (
+              SELECT 1 FROM parcel_assignments pa
+              WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
+            ) AS "hasAssignedDriver",
+            EXISTS (
+              SELECT 1 FROM parcel_assignments pa
+              JOIN driver_profiles dp ON dp.id = pa.driver_id
+              WHERE pa.parcel_id = p.id AND dp.user_id = $1 AND pa.status IN ('accepted', 'completed')
+            ) AS "isAssignedDriver",
+            COALESCE((
+              SELECT driver.full_name
+              FROM parcel_assignments pa
+              JOIN driver_profiles dp ON dp.id = pa.driver_id
+              JOIN users driver ON driver.id = dp.user_id
+              WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
+              ORDER BY pa.accepted_at DESC NULLS LAST
+              LIMIT 1
+            ), '') AS "driverName",
             pickup.province AS "pickupProvince", pickup.address_line AS "pickupAddress",
             delivery.province AS "deliveryProvince", delivery.address_line AS "deliveryAddress",
             COALESCE((
@@ -65,18 +82,8 @@ async function findParcelForUser(userId, role, trackingCode) {
      LEFT JOIN users receiver ON receiver.id = p.receiver_id
      JOIN addresses pickup ON pickup.id = p.pickup_address_id
      JOIN addresses delivery ON delivery.id = p.delivery_address_id
-     WHERE p.tracking_code = $3
-       AND ($1 = 'admin'
-         OR p.sender_id = $2
-         OR p.receiver_id = $2
-         OR p.receiver_phone = (SELECT phone FROM users WHERE id = $2)
-         OR ($1 = 'driver' AND EXISTS (
-           SELECT 1
-           FROM parcel_assignments pa
-           JOIN driver_profiles dp ON dp.id = pa.driver_id
-           WHERE pa.parcel_id = p.id AND dp.user_id = $2
-         )))`,
-    [role, userId, trackingCode],
+     WHERE p.tracking_code = $2`,
+    [userId, trackingCode],
   )
   return result.rows[0] || null
 }

@@ -197,7 +197,7 @@ CREATE TABLE parcels (
     description TEXT,
     weight_kg NUMERIC(10,2) CHECK (weight_kg IS NULL OR weight_kg > 0),
     status VARCHAR(30) NOT NULL DEFAULT 'created'
-        CHECK (status IN ('created','assigned','picked_up','in_transit','delivered','cancelled')),
+        CHECK (status IN ('created','assigned','picked_up','in_transit','delivery_pending_confirmation','delivered','cancelled')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -221,6 +221,17 @@ CREATE TABLE parcel_status_history (
     note TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE parcel_messages (
+    id BIGSERIAL PRIMARY KEY,
+    parcel_id BIGINT NOT NULL REFERENCES parcels(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL CHECK (char_length(message) BETWEEN 1 AND 2000),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_parcel_messages_parcel_created
+    ON parcel_messages (parcel_id, created_at, id);
 
 CREATE TABLE parcel_items (
     id BIGSERIAL PRIMARY KEY,

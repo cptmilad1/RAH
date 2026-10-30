@@ -57,7 +57,9 @@ async function acceptAvailableParcel(userId, trackingCode) {
     if (!driver.province) throw createHttpError(409, 'ابتدا ولایت کاری خود را در پروفایل ثبت کنید.')
 
     const parcelResult = await client.query(
-      `SELECT p.id, p.status, pickup.province AS "pickupProvince"
+      `SELECT p.id, p.status, p.sender_id AS "senderId",
+              p.receiver_id AS "receiverId", p.receiver_phone AS "receiverPhone",
+              p.tracking_code AS "trackingCode", pickup.province AS "pickupProvince"
        FROM parcels p
        JOIN addresses pickup ON pickup.id = p.pickup_address_id
        WHERE p.tracking_code = $1
@@ -93,10 +95,32 @@ async function acceptAvailableParcel(userId, trackingCode) {
        VALUES ($1, 'assigned', $2, 'مرسوله توسط راننده پذیرفته شد.')`,
       [parcel.id, userId],
     )
+    await client.query(
+      `INSERT INTO notifications (user_id, title, body, type, data)
+       SELECT DISTINCT users.id, 'راننده مرسوله را پذیرفت',
+              'یک راننده مرسولهٔ شما را پذیرفته است.',
+              'parcel_assigned',
+              jsonb_build_object('trackingCode', $2::text, 'status', 'assigned')
+       FROM users
+       WHERE users.id = ANY($1::bigint[])
+          OR ($3::text IS NOT NULL AND users.phone = $3)`,
+      [[parcel.senderId, parcel.receiverId].filter(Boolean), parcel.trackingCode, parcel.receiverPhone],
+    )
+    const participants = await client.query(
+      `SELECT id FROM users
+       WHERE id = ANY($1::bigint[])
+          OR ($2::text IS NOT NULL AND phone = $2)`,
+      [[parcel.senderId, parcel.receiverId].filter(Boolean), parcel.receiverPhone],
+    )
 
     await client.query('COMMIT')
     transactionStarted = false
-    return { trackingCode, status: 'assigned' }
+    return {
+      id: parcel.id,
+      trackingCode,
+      status: 'assigned',
+      participantIds: participants.rows.map((row) => String(row.id)),
+    }
   } catch (error) {
     if (transactionStarted) await client.query('ROLLBACK')
     throw error

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
 import CancelShipmentDialog from './components/CancelShipmentDialog'
@@ -12,6 +13,7 @@ import { useShipmentPage } from './hooks/useShipmentPage'
 
 function ShipmentPage() {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const rootRef = useRef(null)
   const page = useShipmentPage()
 
@@ -54,7 +56,7 @@ function ShipmentPage() {
       <div className="mx-auto grid min-h-screen max-w-[1480px] lg:grid-cols-[250px_minmax(0,1fr)]">
         <ShipmentSidebar user={user} logout={logout} />
         <section className="min-w-0 px-4 py-7 sm:px-8 sm:py-10 lg:px-[clamp(28px,5vw,76px)] lg:py-12">
-          <ShipmentPageHeader onCreate={openCreateDialog} />
+          <ShipmentPageHeader onCreate={openCreateDialog} onTrack={(code) => navigate(`/shipments/${encodeURIComponent(code)}`)} />
           <ShipmentStats stats={page.stats} loading={page.loading} />
           <section aria-label="فهرست مرسوله‌ها" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
             <ShipmentFilters

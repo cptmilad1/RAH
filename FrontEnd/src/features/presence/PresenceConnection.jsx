@@ -30,12 +30,14 @@ function PresenceConnection() {
     socket.on('presence:update', ({ userId, isOnline }) => {
       usePresenceStore.getState().setPresence(userId, isOnline)
     })
-    socket.on('connect_error', () => {
+    socket.on('connect_error', (error) => {
+      usePresenceStore.getState().setConnectionError(error.message || 'اتصال سوکت برقرار نشد.')
       if (accessRefreshAttempted) return
       accessRefreshAttempted = true
       getProfile(user.id)
         .then(() => socket.connect())
-        .catch(() => {
+        .catch((refreshError) => {
+          usePresenceStore.getState().setConnectionError(refreshError.message || error.message || 'اتصال سوکت برقرار نشد.')
           accessRefreshAttempted = false
         })
     })

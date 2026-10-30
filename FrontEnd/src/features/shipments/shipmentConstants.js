@@ -3,6 +3,7 @@ export const statusLabels = {
   assigned: 'در صف دریافت',
   picked_up: 'دریافت‌شده',
   in_transit: 'در مسیر',
+  delivery_pending_confirmation: 'تحویل‌شده؛ منتظر تأیید',
   delivered: 'تحویل‌شده',
   cancelled: 'لغوشده',
 }
@@ -20,6 +21,7 @@ export const shipmentFilters = [
   { id: 'assigned', label: 'در صف دریافت' },
   { id: 'picked_up', label: 'دریافت‌شده' },
   { id: 'in_transit', label: 'در مسیر' },
+  { id: 'delivery_pending_confirmation', label: 'منتظر تأیید دریافت' },
   { id: 'delivered', label: 'تحویل‌شده' },
   { id: 'cancelled', label: 'لغوشده' },
 ]

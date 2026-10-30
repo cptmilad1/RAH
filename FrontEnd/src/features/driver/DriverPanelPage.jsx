@@ -28,7 +28,10 @@ function DriverPanelPage() {
             <h1 className="m-0 text-2xl font-black text-[#163a30] sm:text-3xl">پنل راننده</h1>
             <p className="mb-0 mt-2 text-sm text-[#7b8c82]">مرسوله‌های آزاد ولایت خود را بررسی و قبول کنید، {user?.name || 'راننده'}.</p>
           </div>
-          <Link to="/dashboard" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">داشبورد</Link>
+          <nav aria-label="ناوبری پنل راننده" className="flex gap-2">
+            <Link to="/shipments" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">مدیریت مرسوله‌ها</Link>
+            <Link to="/dashboard" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">داشبورد</Link>
+          </nav>
         </header>
 
         <section className="border-y border-[#dfe8df] py-5">
