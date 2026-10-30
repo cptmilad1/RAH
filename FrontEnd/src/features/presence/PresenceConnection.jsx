@@ -14,6 +14,7 @@ function PresenceConnection() {
     }
 
     const socket = io({ withCredentials: true })
+    usePresenceStore.getState().setSocket(socket)
     let accessRefreshAttempted = false
 
     socket.on('connect', () => {
@@ -41,6 +42,7 @@ function PresenceConnection() {
 
     return () => {
       socket.disconnect()
+      usePresenceStore.getState().setSocket(null)
       usePresenceStore.getState().setConnected(false)
     }
   }, [user?.id])

@@ -7,6 +7,13 @@ export const statusLabels = {
   cancelled: 'لغوشده',
 }
 
+export const afghanistanProvinces = [
+  'کابل', 'کاپیسا', 'پروان', 'وردک', 'لوگر', 'غزنی', 'پکتیا', 'پکتیکا', 'خوست',
+  'ننگرهار', 'لغمان', 'کنر', 'نورستان', 'بدخشان', 'تخار', 'کندز', 'بغلان', 'سمنگان',
+  'بلخ', 'جوزجان', 'سرپل', 'فاریاب', 'بادغیس', 'هرات', 'فراه', 'نیمروز', 'هلمند',
+  'قندهار', 'زابل', 'ارزگان', 'دایکندی', 'بامیان', 'پنجشیر',
+]
+
 export const shipmentFilters = [
   { id: 'all', label: 'همه' },
   { id: 'created', label: 'در انتظار' },
@@ -19,8 +26,8 @@ export const shipmentFilters = [
 
 export const initialShipmentForm = {
   receiver: { name: '', phone: '' },
-  pickup: { city: '', addressLine: '' },
-  delivery: { city: '', addressLine: '' },
+  pickup: { province: '', city: '', addressLine: '' },
+  delivery: { province: '', city: '', addressLine: '' },
   itemName: '',
   quantity: '1',
   weightKg: '',

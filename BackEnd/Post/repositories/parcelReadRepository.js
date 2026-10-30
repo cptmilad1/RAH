@@ -8,8 +8,8 @@ async function findParcelsForUser(userId, role) {
             COALESCE(p.receiver_name, receiver.full_name) AS "receiverName",
             COALESCE(p.receiver_phone, receiver.phone) AS "receiverPhone",
             sender.full_name AS "senderName",
-            pickup.city AS "pickupCity", pickup.address_line AS "pickupAddress",
-            delivery.city AS "deliveryCity", delivery.address_line AS "deliveryAddress"
+            pickup.province AS "pickupProvince", pickup.city AS "pickupCity", pickup.address_line AS "pickupAddress",
+            delivery.province AS "deliveryProvince", delivery.city AS "deliveryCity", delivery.address_line AS "deliveryAddress"
      FROM parcels p
      JOIN users sender ON sender.id = p.sender_id
      LEFT JOIN users receiver ON receiver.id = p.receiver_id
@@ -40,8 +40,8 @@ async function findParcelForUser(userId, role, trackingCode) {
             COALESCE(p.receiver_name, receiver.full_name) AS "receiverName",
             COALESCE(p.receiver_phone, receiver.phone) AS "receiverPhone",
             sender.full_name AS "senderName",
-            pickup.city AS "pickupCity", pickup.address_line AS "pickupAddress",
-            delivery.city AS "deliveryCity", delivery.address_line AS "deliveryAddress",
+            pickup.province AS "pickupProvince", pickup.city AS "pickupCity", pickup.address_line AS "pickupAddress",
+            delivery.province AS "deliveryProvince", delivery.city AS "deliveryCity", delivery.address_line AS "deliveryAddress",
             COALESCE((
               SELECT json_agg(json_build_object(
                 'status', history.status,

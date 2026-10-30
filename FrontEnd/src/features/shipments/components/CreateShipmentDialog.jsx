@@ -1,7 +1,15 @@
+import { afghanistanProvinces } from '../shipmentConstants'
+
 function AddressFields({ section, title, cityLabel, addressLabel, value, onChange }) {
   return (
     <fieldset className="grid content-start gap-3 rounded-2xl border border-[#e8ede5] bg-white p-4">
       <legend className="px-1 text-sm font-extrabold text-[#31513e]">{title}</legend>
+      <label className="grid gap-2 text-xs font-bold text-[#66776d]">ولایت
+        <select required value={value.province} onChange={(event) => onChange(section, 'province', event.target.value)} className="rounded-xl border border-[#e2e8de] bg-white px-3 py-2.5 text-sm font-normal text-[#17352e]">
+          <option value="">انتخاب ولایت</option>
+          {afghanistanProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
+        </select>
+      </label>
       <label className="grid gap-2 text-xs font-bold text-[#66776d]">{cityLabel}<input required maxLength={100} value={value.city} onChange={(event) => onChange(section, 'city', event.target.value)} className="rounded-xl border border-[#e2e8de] px-3 py-2.5 text-sm font-normal" /></label>
       <label className="grid gap-2 text-xs font-bold text-[#66776d]">{addressLabel}<textarea required maxLength={2000} rows={3} value={value.addressLine} onChange={(event) => onChange(section, 'addressLine', event.target.value)} className="resize-y rounded-xl border border-[#e2e8de] px-3 py-2.5 text-sm font-normal" /></label>
     </fieldset>

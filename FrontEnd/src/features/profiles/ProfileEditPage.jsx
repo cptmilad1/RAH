@@ -5,7 +5,8 @@ import { useForm } from 'react-hook-form'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
 import useProfile from './hooks/UseProfile'
-import { profileEditSchema } from './profileEditSchema'
+import { driverProfileEditSchema, profileEditSchema } from './profileEditSchema'
+import { afghanistanProvinces } from '../shipments/shipmentConstants'
 
 const fields = [
   { name: 'full_name', label: 'نام کامل', autoComplete: 'name', maxLength: 100 },
@@ -31,8 +32,8 @@ function ProfileEditPage() {
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(profileEditSchema),
-    defaultValues: { full_name: '', username: '', phone: '', user_address: '' },
+    resolver: zodResolver(currentUser?.role === 'driver' ? driverProfileEditSchema : profileEditSchema),
+    defaultValues: { full_name: '', username: '', phone: '', user_address: '', driver_province: '' },
   })
 
   useEffect(() => {
@@ -51,6 +52,7 @@ function ProfileEditPage() {
             username: profile.username || '',
             phone: profile.phone || '',
             user_address: profile.address || '',
+            driver_province: profile.driverProvince || '',
           })
         }
       } catch {
@@ -119,6 +121,16 @@ function ProfileEditPage() {
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
                 <div className="grid gap-4 sm:grid-cols-2">
+                  {currentUser?.role === 'driver' && (
+                    <label className="grid min-w-0 gap-2 text-[11px] font-bold text-[#385247]">
+                      <span>ولایت کاری راننده</span>
+                      <select {...register('driver_province')} required className="min-h-12 w-full rounded-xl border border-[#e1e8e0] bg-[#fbfcf9] px-3.5 text-xs text-[#244738] focus:border-[#8eae91] focus:outline-none focus:ring-4 focus:ring-[#82aa85]/[0.12]">
+                        <option value="">انتخاب ولایت</option>
+                        {afghanistanProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                      </select>
+                      {errors.driver_province && <small className="text-[10px] font-medium text-[#9d4b40]">{errors.driver_province.message}</small>}
+                    </label>
+                  )}
                   {fields.map((field) => {
                     const error = errors[field.name]
                     return (

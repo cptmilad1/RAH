@@ -29,6 +29,10 @@ function normalizePhoneNumber(value) {
   })
 }
 
+function normalizeProvince(value, label) {
+  return requiredText(value, label, 100).normalize('NFC').replace(/\s+/g, ' ')
+}
+
 function validateCreatePayload(body) {
   const receiverName = requiredText(body?.receiver?.name, 'نام گیرنده', 100)
   const receiverPhone = normalizePhoneNumber(requiredText(body?.receiver?.phone, 'شمارهٔ گیرنده', 30))
@@ -37,8 +41,10 @@ function validateCreatePayload(body) {
   }
 
   const pickupCity = requiredText(body?.pickup?.city, 'شهر مبدأ', 100)
+  const pickupProvince = normalizeProvince(body?.pickup?.province, 'ولایت مبدأ')
   const pickupAddress = requiredText(body?.pickup?.addressLine, 'آدرس مبدأ', 2000)
   const deliveryCity = requiredText(body?.delivery?.city, 'شهر مقصد', 100)
+  const deliveryProvince = normalizeProvince(body?.delivery?.province, 'ولایت مقصد')
   const deliveryAddress = requiredText(body?.delivery?.addressLine, 'آدرس مقصد', 2000)
   const description = optionalText(body?.description, 'توضیحات', 2000)
   const itemName = optionalText(body?.itemName, 'نام کالا', 150)
@@ -63,8 +69,10 @@ function validateCreatePayload(body) {
     receiverName,
     receiverPhone,
     pickupCity,
+    pickupProvince,
     pickupAddress,
     deliveryCity,
+    deliveryProvince,
     deliveryAddress,
     description,
     itemName,
@@ -73,4 +81,4 @@ function validateCreatePayload(body) {
   }
 }
 
-module.exports = { createHttpError, requiredText, validateCreatePayload }
+module.exports = { createHttpError, requiredText, normalizeProvince, validateCreatePayload }

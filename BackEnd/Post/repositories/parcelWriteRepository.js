@@ -9,16 +9,16 @@ async function createParcel(userId, data) {
     await client.query('BEGIN')
     transactionStarted = true
     const pickupResult = await client.query(
-      `INSERT INTO addresses (user_id, title, city, address_line)
-       VALUES ($1, 'مبدأ مرسوله', $2, $3)
+      `INSERT INTO addresses (user_id, title, province, city, address_line)
+       VALUES ($1, 'مبدأ مرسوله', $2, $3, $4)
        RETURNING id`,
-      [userId, data.pickupCity, data.pickupAddress],
+      [userId, data.pickupProvince, data.pickupCity, data.pickupAddress],
     )
     const deliveryResult = await client.query(
-      `INSERT INTO addresses (user_id, title, city, address_line)
-       VALUES ($1, 'مقصد مرسوله', $2, $3)
+      `INSERT INTO addresses (user_id, title, province, city, address_line)
+       VALUES ($1, 'مقصد مرسوله', $2, $3, $4)
        RETURNING id`,
-      [userId, data.deliveryCity, data.deliveryAddress],
+      [userId, data.deliveryProvince, data.deliveryCity, data.deliveryAddress],
     )
     const parcelResult = await client.query(
       `INSERT INTO parcels (
@@ -63,8 +63,10 @@ async function createParcel(userId, data) {
       receiverName: data.receiverName,
       receiverPhone: data.receiverPhone,
       pickupCity: data.pickupCity,
+      pickupProvince: data.pickupProvince,
       pickupAddress: data.pickupAddress,
       deliveryCity: data.deliveryCity,
+      deliveryProvince: data.deliveryProvince,
       deliveryAddress: data.deliveryAddress,
     }
   } catch (error) {

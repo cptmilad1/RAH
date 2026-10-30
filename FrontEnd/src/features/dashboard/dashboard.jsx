@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
 import { usePresenceStore } from '../presence/presenceStore'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Dashboard() {
   const { user, logout } = useAuth()
@@ -68,9 +68,16 @@ function Dashboard() {
           <button type="button" onClick={() => navigate('/shipments')} className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">▣</span> مرسوله‌ها
           </button>
+          {user?.role === 'driver' && <Link to="/driver" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+            <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]" aria-hidden="true">⇢</span> پنل راننده
+          </Link>}
           <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">◉</span> حساب کاربری
           </button>
+          {user?.role === 'driver' && <button onClick={() => navigate('/driver')} type="button" className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]">
+            <span className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">⇢</span>پنل راننده</span>
+            <span className="text-xl" aria-hidden="true">←</span>
+          </button>}
         </nav>
 
         <div className="mt-auto hidden lg:block">

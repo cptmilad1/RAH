@@ -13,6 +13,7 @@ const Profile = lazy(() => import('../profiles/Profile'))
 const ProfileEditPage = lazy(() => import('../profiles/ProfileEditPage'))
 const ShipmentPage = lazy(() => import('../shipments/ShipmentPage'))
 const ShipmentDetailsPage = lazy(() => import('../shipments/ShipmentDetailsPage'))
+const DriverPanelPage = lazy(() => import('../driver/DriverPanelPage'))
 
 function Routers() {
   return (
@@ -29,6 +30,7 @@ function Routers() {
         <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>}/>
         <Route path="/shipments" element={<ProtectedRoute><ShipmentPage /></ProtectedRoute>} />
         <Route path="/shipments/:trackingCode" element={<ProtectedRoute><ShipmentDetailsPage /></ProtectedRoute>} />
+        <Route path="/driver" element={<ProtectedRoute allowedRoles={['driver']}><DriverPanelPage /></ProtectedRoute>} />
         
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
