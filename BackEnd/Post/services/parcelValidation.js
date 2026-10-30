@@ -40,10 +40,8 @@ function validateCreatePayload(body) {
     throw createHttpError(400, 'شمارهٔ گیرنده معتبر نیست.')
   }
 
-  const pickupCity = requiredText(body?.pickup?.city, 'شهر مبدأ', 100)
   const pickupProvince = normalizeProvince(body?.pickup?.province, 'ولایت مبدأ')
   const pickupAddress = requiredText(body?.pickup?.addressLine, 'آدرس مبدأ', 2000)
-  const deliveryCity = requiredText(body?.delivery?.city, 'شهر مقصد', 100)
   const deliveryProvince = normalizeProvince(body?.delivery?.province, 'ولایت مقصد')
   const deliveryAddress = requiredText(body?.delivery?.addressLine, 'آدرس مقصد', 2000)
   const description = optionalText(body?.description, 'توضیحات', 2000)
@@ -68,10 +66,8 @@ function validateCreatePayload(body) {
   return {
     receiverName,
     receiverPhone,
-    pickupCity,
     pickupProvince,
     pickupAddress,
-    deliveryCity,
     deliveryProvince,
     deliveryAddress,
     description,

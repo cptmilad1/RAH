@@ -227,10 +227,11 @@ async function loginUser(req, res, next) {
     if (result.rows.length == 0)
       return HandleResult({ status: 400, message: "incorrect email or password!", res });
     const user = result.rows[0];
-    if (!user.is_active) await db.query(`update users set is_active=true where email=$1`,[email]);
     const passwordIsCorrect = await Compare(password, user.password_hash);
     if (!passwordIsCorrect)
       return HandleResult({ status: 400, message: "incorrect email or password!", res });
+    if (!user.is_active)
+      return HandleResult({ status: 403, message: "This account is inactive.", res });
     if (!user.is_verify) return HandleResult({ status: 403, message: "Please verify your email before signing in.", res });
 
     const token = createAccessToken(user);
@@ -393,23 +394,23 @@ async function changeRole(req,res, next) {
     try{
         const userId = Number(req.params.id || req.body.userId)
         const {role} = req.body
-        const allowedRoles = ["admin", "driver", "user"]
+        const allowedRoles = ["admin", "user"]
         if(!Number.isSafeInteger(userId) || userId < 1 || !allowedRoles.includes(role)){
             return HandleResult({ status: 400, message: "Invalid Role or user not found!", res })
+        }
+        if (String(req.user.userId) === String(userId)) {
+            return HandleResult({ status: 400, message: "You cannot change your own role.", res })
         }
         const client = await db.connect()
         let result
         try {
           await client.query('BEGIN')
-          result = await client.query(`UPDATE users SET role=$1, role_id=(SELECT id FROM roles WHERE name=$1) WHERE id=$2 RETURNING id, username, email, role`,[role, userId])
-          if (result.rowCount && role === 'driver') {
-            await client.query(
-              `INSERT INTO driver_profiles (user_id, status)
-               VALUES ($1, 'approved')
-               ON CONFLICT (user_id) DO NOTHING`,
-              [userId],
-            )
-          }
+          result = await client.query(
+            `UPDATE users SET role=$1, role_id=(SELECT id FROM roles WHERE name=$1)
+             WHERE id=$2 AND role <> 'driver'
+             RETURNING id, username, email, role`,
+            [role, userId],
+          )
           await client.query('COMMIT')
         } catch (error) {
           await client.query('ROLLBACK')

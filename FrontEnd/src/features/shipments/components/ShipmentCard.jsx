@@ -21,9 +21,9 @@ function ShipmentCard({ shipment, canCancel, onCancel }) {
         <span className={`rounded-full px-3 py-1.5 text-[11px] font-bold ${statusClass}`}>{statusLabels[shipment.status] || shipment.status}</span>
       </div>
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-        <div className="min-w-0"><span className="block text-[10px] text-[#99a39d]">مبدأ</span><strong className="mt-1 block truncate text-sm font-bold">{shipment.pickupCity || '—'}</strong></div>
+        <div className="min-w-0"><span className="block text-[10px] text-[#99a39d]">مبدأ</span><strong className="mt-1 block truncate text-sm font-bold">{shipment.pickupProvince || '—'}</strong></div>
         <span aria-hidden="true" className="hidden text-[#a5b297] sm:block">←</span>
-        <div className="min-w-0"><span className="block text-[10px] text-[#99a39d]">مقصد</span><strong className="mt-1 block truncate text-sm font-bold">{shipment.deliveryCity || '—'}</strong></div>
+        <div className="min-w-0"><span className="block text-[10px] text-[#99a39d]">مقصد</span><strong className="mt-1 block truncate text-sm font-bold">{shipment.deliveryProvince || '—'}</strong></div>
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#f0f2ed] pt-3">
         <Link to={`/shipments/${encodeURIComponent(shipment.trackingCode)}`} className="text-xs font-bold text-[#547460] no-underline hover:text-[#1c5942]">جزئیات و رهگیری ←</Link>

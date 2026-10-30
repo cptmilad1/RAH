@@ -26,8 +26,8 @@ export const shipmentFilters = [
 
 export const initialShipmentForm = {
   receiver: { name: '', phone: '' },
-  pickup: { province: '', city: '', addressLine: '' },
-  delivery: { province: '', city: '', addressLine: '' },
+  pickup: { province: '', addressLine: '' },
+  delivery: { province: '', addressLine: '' },
   itemName: '',
   quantity: '1',
   weightKg: '',

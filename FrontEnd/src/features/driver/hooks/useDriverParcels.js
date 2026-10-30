@@ -24,7 +24,7 @@ export function useDriverParcels(search) {
   }, [fetchParcels, socket])
 
   const filteredParcels = useMemo(() => parcels.filter((parcel) => {
-    const searchable = `${parcel.trackingCode} ${parcel.senderName || ''} ${parcel.pickupCity || ''} ${parcel.deliveryCity || ''}`.toLocaleLowerCase()
+    const searchable = `${parcel.trackingCode} ${parcel.senderName || ''} ${parcel.pickupProvince || ''} ${parcel.deliveryProvince || ''}`.toLocaleLowerCase()
     return searchable.includes(deferredSearch)
   }), [deferredSearch, parcels])
 

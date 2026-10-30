@@ -36,8 +36,8 @@ function Profile() {
 
     const context = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
-        .from('[data-profile-hero]', { autoAlpha: 0, y: 22, duration: 0.65 })
-        .from('[data-profile-card]', { y: 18, duration: 0.5, stagger: 0.1 }, '-=0.25')
+        .fromTo('[data-profile-hero]', { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.65 })
+        .fromTo('[data-profile-card]', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }, '-=0.25')
     }, root)
 
     return () => context.revert()

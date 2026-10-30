@@ -4,8 +4,8 @@ const { validateCreatePayload } = require('../services/parcelValidation')
 
 const validPayload = {
   receiver: { name: 'رضا رضایی', phone: '۰۹۱۲۳۴۵۶۷۸۹' },
-  pickup: { province: 'تهران', city: 'تهران', addressLine: 'خیابان ولیعصر' },
-  delivery: { province: 'فارس', city: 'شیراز', addressLine: 'بلوار ارم' },
+  pickup: { province: 'تهران', addressLine: 'خیابان ولیعصر' },
+  delivery: { province: 'فارس', addressLine: 'بلوار ارم' },
   itemName: 'کتاب',
   quantity: 2,
   weightKg: 1.5,
@@ -18,6 +18,7 @@ test('validates shipment input and normalizes Persian phone digits', () => {
   assert.equal(result.quantity, 2)
   assert.equal(result.weightKg, 1.5)
   assert.equal(result.pickupProvince, 'تهران')
+  assert.equal(Object.hasOwn(result, 'pickupCity'), false)
 })
 
 test('rejects a missing receiver name', () => {

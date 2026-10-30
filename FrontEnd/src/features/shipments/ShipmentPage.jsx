@@ -18,15 +18,21 @@ function ShipmentPage() {
   useEffect(() => {
     const context = gsap.context(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-      gsap.from('[data-shipment-intro]', { autoAlpha: 0, y: 22, duration: 0.65, ease: 'power3.out' })
-      gsap.from('[data-shipment-card]', {
-        autoAlpha: 0,
-        y: 18,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: 'power2.out',
-        delay: 0.12,
-      })
+      gsap.fromTo('[data-shipment-intro]',
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
+      )
+      gsap.fromTo('[data-shipment-card]',
+        { opacity: 0, y: 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out',
+          delay: 0.12,
+        },
+      )
     }, rootRef)
     return () => context.revert()
   }, [page.filteredShipments.length, page.activeFilter, page.deferredSearch])

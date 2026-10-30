@@ -18,11 +18,11 @@ function Dashboard() {
 
       const entrance = gsap.timeline({ defaults: { ease: 'power3.out' } })
       entrance
-        .from('[data-dashboard-brand]', { autoAlpha: 0, x: 18, duration: 0.55 })
-        .from('[data-dashboard-nav] > *', { autoAlpha: 0, x: 16, duration: 0.42, stagger: 0.08 }, '-=0.3')
-        .from('[data-dashboard-header]', { autoAlpha: 0, y: 20, duration: 0.65 }, '-=0.12')
-        .from('[data-dashboard-stat]', { autoAlpha: 0, y: 26, scale: 0.97, duration: 0.6, stagger: 0.12 }, '-=0.28')
-        .from('[data-dashboard-lower]', { autoAlpha: 0, y: 22, duration: 0.65, stagger: 0.12 }, '-=0.3')
+        .fromTo('[data-dashboard-brand]', { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.55 })
+        .fromTo('[data-dashboard-nav] > *', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.42, stagger: 0.08 }, '-=0.3')
+        .fromTo('[data-dashboard-header]', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, '-=0.12')
+        .fromTo('[data-dashboard-stat]', { opacity: 0, y: 26, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12 }, '-=0.28')
+        .fromTo('[data-dashboard-lower]', { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.65, stagger: 0.12 }, '-=0.3')
 
       const cards = gsap.utils.toArray('[data-dashboard-stat]')
       handlers = cards.map((card) => {
@@ -71,13 +71,15 @@ function Dashboard() {
           {user?.role === 'driver' && <Link to="/driver" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]" aria-hidden="true">⇢</span> پنل راننده
           </Link>}
-          <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+          {user?.role === 'user' && <Link to="/driver-application" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+            <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]" aria-hidden="true">＋</span> درخواست رانندگی
+          </Link>}
+          {user?.role === 'admin' && <Link to="/admin" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+            <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]" aria-hidden="true">⚙</span> پنل ادمین
+          </Link>}
+          <Link to={`/profile/${user?.id}`} className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">◉</span> حساب کاربری
-          </button>
-          {user?.role === 'driver' && <button onClick={() => navigate('/driver')} type="button" className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]">
-            <span className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">⇢</span>پنل راننده</span>
-            <span className="text-xl" aria-hidden="true">←</span>
-          </button>}
+          </Link>
         </nav>
 
         <div className="mt-auto hidden lg:block">
@@ -105,7 +107,7 @@ function Dashboard() {
           </button>
         </header>
 
-        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <button
           onClick={()=>{navigate('/shipments')}}
             type="button"
@@ -127,6 +129,28 @@ function Dashboard() {
             </span>
             <span className="text-xl text-[#d7f36a]" aria-hidden="true">←</span>
           </button>
+          {user?.role === 'driver' && <Link to="/driver" className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] no-underline shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]">
+            <span className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">⇢</span>پنل راننده</span>
+            <span className="text-xl" aria-hidden="true">←</span>
+          </Link>}
+          {user?.role === 'user' && <Link to="/driver-application" className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] no-underline shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]">
+            <span className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">＋</span>ثبت‌نام به‌عنوان راننده</span>
+            <span className="text-xl" aria-hidden="true">←</span>
+          </Link>}
+          {user?.role === 'admin' && <Link to="/admin" className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] no-underline shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]">
+            <span className="flex items-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">⚙</span>پنل ادمین</span>
+            <span className="text-xl" aria-hidden="true">←</span>
+          </Link>}
+          {user?.role === 'driver' && <Link
+            to="/driver"
+            className="flex min-h-[72px] items-center justify-between rounded-[17px] border border-[#d6e5dc] bg-white px-5 text-right text-sm font-extrabold text-[#193e31] no-underline shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid size-10 place-items-center rounded-xl bg-[#edf4eb] text-lg text-[#315946]" aria-hidden="true">⇢</span>
+              پنل راننده
+            </span>
+            <span className="text-xl" aria-hidden="true">←</span>
+          </Link>}
         </div>
         
 

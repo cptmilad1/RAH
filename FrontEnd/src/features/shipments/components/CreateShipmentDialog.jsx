@@ -1,6 +1,6 @@
 import { afghanistanProvinces } from '../shipmentConstants'
 
-function AddressFields({ section, title, cityLabel, addressLabel, value, onChange }) {
+function AddressFields({ section, title, addressLabel, value, onChange }) {
   return (
     <fieldset className="grid content-start gap-3 rounded-2xl border border-[#e8ede5] bg-white p-4">
       <legend className="px-1 text-sm font-extrabold text-[#31513e]">{title}</legend>
@@ -10,7 +10,6 @@ function AddressFields({ section, title, cityLabel, addressLabel, value, onChang
           {afghanistanProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
         </select>
       </label>
-      <label className="grid gap-2 text-xs font-bold text-[#66776d]">{cityLabel}<input required maxLength={100} value={value.city} onChange={(event) => onChange(section, 'city', event.target.value)} className="rounded-xl border border-[#e2e8de] px-3 py-2.5 text-sm font-normal" /></label>
       <label className="grid gap-2 text-xs font-bold text-[#66776d]">{addressLabel}<textarea required maxLength={2000} rows={3} value={value.addressLine} onChange={(event) => onChange(section, 'addressLine', event.target.value)} className="resize-y rounded-xl border border-[#e2e8de] px-3 py-2.5 text-sm font-normal" /></label>
     </fieldset>
   )
@@ -35,8 +34,8 @@ function CreateShipmentDialog({ open, onClose, form, onChange, onSubmit, saving,
             </div>
           </fieldset>
           <div className="grid gap-4 sm:grid-cols-2">
-            <AddressFields section="pickup" title="مبدأ" cityLabel="شهر مبدأ" addressLabel="آدرس کامل مبدأ" value={form.pickup} onChange={onChange} />
-            <AddressFields section="delivery" title="مقصد" cityLabel="شهر مقصد" addressLabel="آدرس کامل مقصد" value={form.delivery} onChange={onChange} />
+            <AddressFields section="pickup" title="مبدأ" addressLabel="آدرس کامل مبدأ" value={form.pickup} onChange={onChange} />
+            <AddressFields section="delivery" title="مقصد" addressLabel="آدرس کامل مقصد" value={form.delivery} onChange={onChange} />
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <label className="grid gap-2 text-xs font-bold text-[#66776d]">نام کالا<input maxLength={150} value={form.itemName} onChange={(event) => onChange(null, 'itemName', event.target.value)} className="rounded-xl border border-[#e2e8de] bg-white px-3 py-2.5 text-sm font-normal" /></label>

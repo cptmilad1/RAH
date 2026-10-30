@@ -27,7 +27,7 @@ export function useShipmentPage() {
 
   const filteredShipments = useMemo(() => shipments.filter((shipment) => {
     const matchesStatus = activeFilter === 'all' || shipment.status === activeFilter
-    const searchable = `${shipment.trackingCode} ${shipment.receiverName || ''} ${shipment.receiverPhone || ''} ${shipment.pickupCity || ''} ${shipment.deliveryCity || ''}`.toLocaleLowerCase()
+    const searchable = `${shipment.trackingCode} ${shipment.receiverName || ''} ${shipment.receiverPhone || ''} ${shipment.pickupProvince || ''} ${shipment.deliveryProvince || ''}`.toLocaleLowerCase()
     return matchesStatus && searchable.includes(deferredSearch)
   }), [shipments, activeFilter, deferredSearch])
 

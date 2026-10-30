@@ -17,8 +17,8 @@ async function findAvailableParcels(userId) {
     `SELECT p.id, p.tracking_code AS "trackingCode", p.description,
             p.weight_kg AS "weightKg", p.created_at AS "createdAt",
             sender.full_name AS "senderName",
-            pickup.province AS "pickupProvince", pickup.city AS "pickupCity",
-            delivery.province AS "deliveryProvince", delivery.city AS "deliveryCity"
+            pickup.province AS "pickupProvince",
+            delivery.province AS "deliveryProvince"
      FROM parcels p
      JOIN users sender ON sender.id = p.sender_id
      JOIN addresses pickup ON pickup.id = p.pickup_address_id

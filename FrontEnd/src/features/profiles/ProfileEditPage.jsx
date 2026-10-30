@@ -73,7 +73,7 @@ function ProfileEditPage() {
     if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const context = gsap.context(() => {
-      gsap.from('[data-edit-panel]', { y: 16, duration: 0.45, ease: 'power3.out' })
+      gsap.fromTo('[data-edit-panel]', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' })
     }, panel)
 
     return () => context.revert()

@@ -8,10 +8,12 @@ const authentication = async(req,res,next)=>{
         const token = req.cookies?.access_token
         if(!token)return res.status(401).json({message: "Authenticate required"})
             const decode = jwt.verify(token, process.env.JWT_SECRET)
-        const result = await db.query(`select token_version AS "tokenVersion", is_active from users where id=$1`, [decode.userId])
+        const result = await db.query(`select token_version AS "tokenVersion", is_active, role from users where id=$1`, [decode.userId])
         if(result.rowCount == 0) return res.status(401).json({message: "User Not found"})
         const user = result.rows[0]
+        if (!user.is_active) return res.status(403).json({ message: "This account is inactive." })
         if (Number(decode.tokenVersion) !== Number(user.tokenVersion)) return res.status(401).json({message: "token has been invalidated!"})
+        decode.role = user.role
         req.user = decode
         next()
     }catch(err){

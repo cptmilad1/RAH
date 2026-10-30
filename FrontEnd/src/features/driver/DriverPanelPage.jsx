@@ -28,7 +28,7 @@ function DriverPanelPage() {
             <h1 className="m-0 text-2xl font-black text-[#163a30] sm:text-3xl">پنل راننده</h1>
             <p className="mb-0 mt-2 text-sm text-[#7b8c82]">مرسوله‌های آزاد ولایت خود را بررسی و قبول کنید، {user?.name || 'راننده'}.</p>
           </div>
-          <Link to={`/profile/${user?.id}/edit`} className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">تنظیم پروفایل</Link>
+          <Link to="/dashboard" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">داشبورد</Link>
         </header>
 
         <section className="border-y border-[#dfe8df] py-5">
@@ -63,8 +63,8 @@ function DriverPanelPage() {
                     <span className="text-xs text-[#8c9991]">{parcel.weightKg ? `${parcel.weightKg} کیلوگرم` : 'وزن ثبت نشده'}</span>
                   </div>
                   <div className="grid gap-3 text-sm sm:grid-cols-2">
-                    <p className="m-0"><span className="ml-2 text-xs text-[#8b9990]">مبدأ</span><strong>{parcel.pickupCity}، {parcel.pickupProvince}</strong></p>
-                    <p className="m-0"><span className="ml-2 text-xs text-[#8b9990]">مقصد</span><strong>{parcel.deliveryCity}، {parcel.deliveryProvince || 'ولایت نامشخص'}</strong></p>
+                    <p className="m-0"><span className="ml-2 text-xs text-[#8b9990]">مبدأ</span><strong>{parcel.pickupProvince}</strong></p>
+                    <p className="m-0"><span className="ml-2 text-xs text-[#8b9990]">مقصد</span><strong>{parcel.deliveryProvince || 'ولایت نامشخص'}</strong></p>
                   </div>
                   {parcel.description && <p className="mb-0 mt-3 max-w-3xl text-xs leading-6 text-[#76877d]">{parcel.description}</p>}
                 </div>
