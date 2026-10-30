@@ -14,10 +14,10 @@ function useAuthAnimations(message) {
     const context = gsap.context(() => {
       const entrance = gsap.timeline({ defaults: { ease: 'power3.out' } })
       entrance
-        .from('[data-hero-item]', { autoAlpha: 0, y: 24, duration: 0.8, stagger: 0.14 })
-        .from(formRef.current, { autoAlpha: 0, y: 18, duration: 0.7 }, 0.15)
-        .from('[data-route-orbit]', { autoAlpha: 0, scale: 0.82, transformOrigin: 'center', duration: 1.1, stagger: 0.12 }, 0.35)
-        .from('[data-route-path]', { strokeDashoffset: 380, duration: 1.3, ease: 'power2.inOut' }, 0.55)
+        .fromTo('[data-hero-item]', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.14 })
+        .fromTo(formRef.current, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, 0.15)
+        .fromTo('[data-route-orbit]', { opacity: 0, scale: 0.82, transformOrigin: 'center' }, { opacity: 1, scale: 1, duration: 1.1, stagger: 0.12 }, 0.35)
+        .fromTo('[data-route-path]', { strokeDashoffset: 380 }, { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut' }, 0.55)
 
       gsap.to('[data-route-float]', {
         y: -8,

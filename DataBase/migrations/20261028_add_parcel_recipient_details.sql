@@ -1,0 +1,4 @@
+ALTER TABLE parcels
+    ALTER COLUMN receiver_id DROP NOT NULL,
+    ADD COLUMN IF NOT EXISTS receiver_name VARCHAR(100),
+    ADD COLUMN IF NOT EXISTS receiver_phone VARCHAR(30);

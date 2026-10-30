@@ -2,10 +2,15 @@ const db = require("../../../DataBase/base/dbBase");
 const jwt = require("jsonwebtoken");
 const { sendResetEmail, sendVerificationEmail } = require('./utils/emailVerifySenter')
 const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService');
+const userRoom = require('../../presence/userRoom')
 const hashedPassword = require("./utils/bcryptPassword");
 const createVerificationCode = require("./utils/emailVerificationCode");
 const Compare = require("./utils/comparePassword");
 const HandleResult = require("./utils/authResHandler");
+
+function disconnectUserSockets(req, userId) {
+  req.app.get('io')?.in(userRoom(userId)).disconnectSockets(true)
+}
 
 async function getAllUsers(req, res, next) {
   try {
@@ -23,7 +28,11 @@ async function getUser(req, res, next) {
     const id = req.params.id;
     if (id == undefined || id == null) return HandleResult({ status: 404, message: "invalid id!", res });
     const result = await db.query(
-      `select id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url from users where id=$1`,
+      `select u.id, u.full_name, u.username, u.email, u.phone, u.user_address, u.role,
+          u.is_verify, u.is_active, u.created_at, u.avatar_url, dp.province AS driver_province
+       from users u
+       left join driver_profiles dp on dp.user_id = u.id
+       where u.id=$1`,
       [id],
     );
     if (result.rowCount == 0)
@@ -44,6 +53,7 @@ async function getUser(req, res, next) {
         address: user.user_address,
         signUp_At: user.created_at,
         image: user.avatar_url,
+        driverProvince: user.driver_province,
       },
       res,
     });
@@ -54,19 +64,47 @@ async function getUser(req, res, next) {
 
 async function updateUser(req, res, next) {
   try {
-    const { full_name, username, phone, user_address } = req.body;
-    const result = await db.query(
-      `update users
-       set full_name=$1, username=$2, phone=NULLIF($3, ''), user_address=NULLIF($4, '')
-       where id=$5
-       returning id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url`,
-      [full_name, username, phone, user_address, req.params.id],
-    );
-    if (result.rowCount === 0) {
-      return HandleResult({ status: 404, message: 'User not found.', res });
+    const { full_name, username, phone, user_address, driver_province: driverProvince } = req.body;
+    const client = await db.connect()
+    let transactionStarted = false
+    let user
+    try {
+      await client.query('BEGIN')
+      transactionStarted = true
+      const result = await client.query(
+        `update users
+         set full_name=$1, username=$2, phone=NULLIF($3, ''), user_address=NULLIF($4, '')
+         where id=$5
+         returning id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url`,
+        [full_name, username, phone, user_address, req.params.id],
+      )
+      if (result.rowCount === 0) {
+        await client.query('ROLLBACK')
+        transactionStarted = false
+        return HandleResult({ status: 404, message: 'User not found.', res })
+      }
+      user = result.rows[0]
+      if (driverProvince !== undefined && user.role === 'driver') {
+        await client.query(
+          `INSERT INTO driver_profiles (user_id, province)
+           VALUES ($1, NULLIF($2, ''))
+           ON CONFLICT (user_id) DO UPDATE SET province = EXCLUDED.province, updated_at = NOW()`,
+          [user.id, driverProvince],
+        )
+      }
+      await client.query('COMMIT')
+      transactionStarted = false
+    } catch (error) {
+      if (transactionStarted) await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
     }
-
-    const user = result.rows[0];
+    if (user.role === 'driver') {
+      user.driver_province = driverProvince === undefined
+        ? (await db.query('SELECT province FROM driver_profiles WHERE user_id = $1', [user.id])).rows[0]?.province
+        : driverProvince || null
+    }
     return HandleResult({
       status: 200,
       message: 'Profile updated.',
@@ -80,6 +118,7 @@ async function updateUser(req, res, next) {
         verify: user.is_verify,
         isActive: user.is_active,
         address: user.user_address,
+        driverProvince: user.driver_province,
         signUp_At: user.created_at,
         image: user.avatar_url,
       },
@@ -188,10 +227,11 @@ async function loginUser(req, res, next) {
     if (result.rows.length == 0)
       return HandleResult({ status: 400, message: "incorrect email or password!", res });
     const user = result.rows[0];
-    if (!user.is_active) await db.query(`update users set is_active=true where email=$1`,[email]);
     const passwordIsCorrect = await Compare(password, user.password_hash);
     if (!passwordIsCorrect)
       return HandleResult({ status: 400, message: "incorrect email or password!", res });
+    if (!user.is_active)
+      return HandleResult({ status: 403, message: "This account is inactive.", res });
     if (!user.is_verify) return HandleResult({ status: 403, message: "Please verify your email before signing in.", res });
 
     const token = createAccessToken(user);
@@ -229,8 +269,7 @@ async function loginUser(req, res, next) {
 
 async function logoutUser(req, res, next) {
   try{
-    const id = user.userId
-    await db.query(`update users set is_active=false where id=$1`,[id])
+    const id = req.user.userId
     const refreshToken = req.cookies?.refresh_token
     if (refreshToken) await db.query(`delete from refresh_tokens where token_hash=$1`, [hashToken(refreshToken)])
     clearAuthCookies(res);
@@ -293,6 +332,7 @@ async function changePassword(req,res, next) {
         const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`, [userId])
+        disconnectUserSockets(req, userId)
         clearAuthCookies(res)
         return HandleResult({ status: 200, message: "password changed! please login again...", res })
     }catch(err){
@@ -328,6 +368,7 @@ async function logoutAll(req,res, next) {
       const userId = req.user.userId
       await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
       await db.query(`update users set token_version=token_version+1 where id=$1`,[userId])
+      disconnectUserSockets(req, userId)
       clearAuthCookies(res)
       return HandleResult({ status: 200, message: "logged out from all devices! please login again...", res })
     }catch(err){
@@ -353,11 +394,30 @@ async function changeRole(req,res, next) {
     try{
         const userId = Number(req.params.id || req.body.userId)
         const {role} = req.body
-        const allowedRoles = ["admin", "driver", "user"]
+        const allowedRoles = ["admin", "user"]
         if(!Number.isSafeInteger(userId) || userId < 1 || !allowedRoles.includes(role)){
             return HandleResult({ status: 400, message: "Invalid Role or user not found!", res })
         }
-        const result = await db.query(`UPDATE users SET role=$1, role_id=(SELECT id FROM roles WHERE name=$1) WHERE id=$2 RETURNING id, username, email, role`,[role, userId])
+        if (String(req.user.userId) === String(userId)) {
+            return HandleResult({ status: 400, message: "You cannot change your own role.", res })
+        }
+        const client = await db.connect()
+        let result
+        try {
+          await client.query('BEGIN')
+          result = await client.query(
+            `UPDATE users SET role=$1, role_id=(SELECT id FROM roles WHERE name=$1)
+             WHERE id=$2 AND role <> 'driver'
+             RETURNING id, username, email, role`,
+            [role, userId],
+          )
+          await client.query('COMMIT')
+        } catch (error) {
+          await client.query('ROLLBACK')
+          throw error
+        } finally {
+          client.release()
+        }
         if(result.rowCount == 0){
             return HandleResult({ status: 404, message: "User not found!", res })
         }
@@ -383,6 +443,7 @@ async function resetPassword(req,res, next) {
         const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
+        disconnectUserSockets(req, userId)
         await db.query(`delete from password_reset_token where token=$1`,[token])
         return HandleResult({ status: 200, message: "Password reset successfully.", res })
     }catch(err){

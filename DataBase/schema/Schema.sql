@@ -131,6 +131,12 @@ CREATE TABLE driver_profiles (
     user_id BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     license_number VARCHAR(100) UNIQUE,
     license_expiry DATE,
+    province VARCHAR(100),
+    vehicle_make VARCHAR(100),
+    vehicle_model VARCHAR(100),
+    vehicle_year INTEGER CHECK (vehicle_year IS NULL OR vehicle_year >= 1900),
+    vehicle_color VARCHAR(50),
+    plate_number VARCHAR(50) UNIQUE,
     status VARCHAR(30) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending','approved','suspended','rejected')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -182,14 +188,16 @@ CREATE TABLE parcels (
     id BIGSERIAL PRIMARY KEY,
     tracking_code VARCHAR(100) NOT NULL UNIQUE,
     sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-    receiver_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    receiver_id BIGINT REFERENCES users(id) ON DELETE RESTRICT,
+    receiver_name VARCHAR(100),
+    receiver_phone VARCHAR(30),
     pickup_address_id BIGINT NOT NULL REFERENCES addresses(id) ON DELETE RESTRICT,
     delivery_address_id BIGINT NOT NULL REFERENCES addresses(id) ON DELETE RESTRICT,
     parcel_type_id BIGINT REFERENCES parcel_types(id) ON DELETE SET NULL,
     description TEXT,
     weight_kg NUMERIC(10,2) CHECK (weight_kg IS NULL OR weight_kg > 0),
     status VARCHAR(30) NOT NULL DEFAULT 'created'
-        CHECK (status IN ('created','assigned','picked_up','in_transit','delivered','cancelled')),
+        CHECK (status IN ('created','assigned','picked_up','in_transit','delivery_pending_confirmation','delivered','cancelled')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -213,6 +221,17 @@ CREATE TABLE parcel_status_history (
     note TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE parcel_messages (
+    id BIGSERIAL PRIMARY KEY,
+    parcel_id BIGINT NOT NULL REFERENCES parcels(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL CHECK (char_length(message) BETWEEN 1 AND 2000),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_parcel_messages_parcel_created
+    ON parcel_messages (parcel_id, created_at, id);
 
 CREATE TABLE parcel_items (
     id BIGSERIAL PRIMARY KEY,

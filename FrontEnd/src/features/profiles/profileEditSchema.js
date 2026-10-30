@@ -17,4 +17,9 @@ export const profileEditSchema = z.object({
     message: 'شماره تماس باید بین ۷ تا ۳۰ نویسه باشد.',
   }),
   user_address: z.string().trim().max(500, 'نشانی نمی‌تواند بیشتر از ۵۰۰ نویسه باشد.'),
+  driver_province: z.string().trim().max(100).optional(),
+})
+
+export const driverProfileEditSchema = profileEditSchema.extend({
+  driver_province: z.string().trim().min(1, 'ولایت کاری را انتخاب کنید.').max(100),
 })

@@ -5,7 +5,9 @@ import { useForm } from 'react-hook-form'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
 import useProfile from './hooks/UseProfile'
-import { profileEditSchema } from './profileEditSchema'
+import { driverProfileEditSchema, profileEditSchema } from './profileEditSchema'
+import { afghanistanProvinces } from '../shipments/shipmentConstants'
+import Card from '../../global/Card'
 
 const fields = [
   { name: 'full_name', label: 'نام کامل', autoComplete: 'name', maxLength: 100 },
@@ -31,8 +33,8 @@ function ProfileEditPage() {
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(profileEditSchema),
-    defaultValues: { full_name: '', username: '', phone: '', user_address: '' },
+    resolver: zodResolver(currentUser?.role === 'driver' ? driverProfileEditSchema : profileEditSchema),
+    defaultValues: { full_name: '', username: '', phone: '', user_address: '', driver_province: '' },
   })
 
   useEffect(() => {
@@ -51,6 +53,7 @@ function ProfileEditPage() {
             username: profile.username || '',
             phone: profile.phone || '',
             user_address: profile.address || '',
+            driver_province: profile.driverProvince || '',
           })
         }
       } catch {
@@ -71,7 +74,7 @@ function ProfileEditPage() {
     if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const context = gsap.context(() => {
-      gsap.from('[data-edit-panel]', { y: 16, duration: 0.45, ease: 'power3.out' })
+      gsap.fromTo('[data-edit-panel]', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' })
     }, panel)
 
     return () => context.revert()
@@ -104,7 +107,7 @@ function ProfileEditPage() {
           </span>
         </header>
 
-        <section data-edit-panel className="overflow-hidden rounded-[20px] border border-[#e5ebe2] bg-white/[0.92] shadow-[0_18px_50px_rgba(22,57,43,0.07)]">
+        <Card as="section" data-edit-panel variant="unstyled" className="overflow-hidden rounded-[20px] border border-[#e5ebe2] bg-white/[0.92] shadow-[0_18px_50px_rgba(22,57,43,0.07)]">
           <div className="bg-[linear-gradient(115deg,#123e32,#1c5942)] px-5 py-6 text-white sm:px-8 sm:py-7">
             <p className="mb-2 text-[10px] font-bold text-[#d8e8bc]">حساب کاربری</p>
             <h1 className="m-0 text-2xl font-extrabold text-[#f4f7ef]">ویرایش پروفایل</h1>
@@ -119,6 +122,16 @@ function ProfileEditPage() {
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
                 <div className="grid gap-4 sm:grid-cols-2">
+                  {currentUser?.role === 'driver' && (
+                    <label className="grid min-w-0 gap-2 text-[11px] font-bold text-[#385247]">
+                      <span>ولایت کاری راننده</span>
+                      <select {...register('driver_province')} required className="min-h-12 w-full rounded-xl border border-[#e1e8e0] bg-[#fbfcf9] px-3.5 text-xs text-[#244738] focus:border-[#8eae91] focus:outline-none focus:ring-4 focus:ring-[#82aa85]/[0.12]">
+                        <option value="">انتخاب ولایت</option>
+                        {afghanistanProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                      </select>
+                      {errors.driver_province && <small className="text-[10px] font-medium text-[#9d4b40]">{errors.driver_province.message}</small>}
+                    </label>
+                  )}
                   {fields.map((field) => {
                     const error = errors[field.name]
                     return (
@@ -169,7 +182,7 @@ function ProfileEditPage() {
               </form>
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </main>
   )
