@@ -62,6 +62,10 @@ function Dashboard() {
           <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] bg-[#d7f36a]/[0.13] px-3 py-2.5 text-[11px] font-extrabold text-[#e7f5b5] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#d7f36a] lg:size-[23px] lg:text-[17px]">⌂</span> نمای کلی
           </button>
+          <Link to="/inbox" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] no-underline transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
+            <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]" aria-hidden="true">✉</span>
+            صندوق ورودی
+          </Link>
           <button type="button" className="flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] font-semibold text-[#b8c9c0] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]">
             <span className="grid size-[19px] place-items-center rounded-lg text-[14px] text-[#8eaa9b] lg:size-[23px] lg:text-[17px]">↗</span> سفرهای من
           </button>

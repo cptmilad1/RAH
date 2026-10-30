@@ -22,7 +22,12 @@ async function getParcel(req, res, next) {
     return res.status(200).json({
       data: {
         ...parcel,
-        canChat: parcel.hasAssignedDriver && (parcel.isSender || parcel.isReceiver || parcel.isAssignedDriver),
+        canChat: parcel.hasAssignedDriver && (
+          req.user.role === 'admin' ||
+          parcel.isSender ||
+          parcel.isReceiver ||
+          parcel.isAssignedDriver
+        ),
       },
     })
   } catch (error) {

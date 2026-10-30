@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { useAuthStore } from '../../auth/authStore'
 import { usePresenceStore } from '../../presence/presenceStore'
 
 function ShipmentConversation({ trackingCode }) {
+  const userId = useAuthStore((state) => state.user?.id)
   const socket = usePresenceStore((state) => state.socket)
   const connected = usePresenceStore((state) => state.connected)
   const connectionError = usePresenceStore((state) => state.connectionError)
@@ -65,7 +67,7 @@ function ShipmentConversation({ trackingCode }) {
     <section className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-5 sm:p-7">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="m-0 text-lg font-extrabold">گفت‌وگو با راننده</h2>
+          <h2 className="m-0 text-lg font-extrabold">گفت‌وگوی مرسوله</h2>
           <p className="mb-0 mt-1 text-xs text-[#8c9991]">
             {connected ? 'اتصال بلادرنگ برقرار است' : connectionError ? `اتصال برقرار نشد: ${connectionError}` : 'در انتظار اتصال…'}
           </p>
@@ -75,13 +77,15 @@ function ShipmentConversation({ trackingCode }) {
       <div aria-live="polite" className="mt-5 grid max-h-80 gap-3 overflow-y-auto rounded-2xl bg-[#f7f9f4] p-4">
         {messages.length === 0 && <p className="my-4 text-center text-xs text-[#84918a]">هنوز پیامی در این گفت‌وگو نیست.</p>}
         {messages.map((item) => (
-          <article key={item.id} className="max-w-[90%] rounded-2xl bg-white px-4 py-3 shadow-sm">
-            <p className="mb-1 text-[11px] font-bold text-[#557460]">{item.senderName || 'کاربر'}</p>
-            <p className="m-0 whitespace-pre-wrap break-words text-sm leading-6">{item.message}</p>
-            <time className="mt-2 block text-left text-[10px] text-[#9aa49e]">
-              {new Intl.DateTimeFormat('fa-IR', { timeStyle: 'short' }).format(new Date(item.createdAt))}
-            </time>
-          </article>
+          <div key={item.id} className={`flex ${String(item.senderId) === String(userId) ? 'justify-start' : 'justify-end'}`}>
+            <article className={`max-w-[90%] rounded-2xl px-4 py-3 shadow-sm ${String(item.senderId) === String(userId) ? 'bg-[#f5df62] text-[#3d3513]' : 'bg-white text-[#17352e]'}`}>
+              <p className="mb-1 text-[11px] font-bold opacity-70">{item.senderName || 'کاربر'}</p>
+              <p className="m-0 whitespace-pre-wrap break-words text-sm leading-6">{item.message}</p>
+              <time className="mt-2 block text-left text-[10px] opacity-60">
+                {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.createdAt))}
+              </time>
+            </article>
+          </div>
         ))}
         <div ref={messagesEndRef} />
       </div>

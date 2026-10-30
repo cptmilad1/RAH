@@ -11,6 +11,7 @@ const {
 const router = express.Router()
 const listAvailableParcels = require('./controller/listAvailableParcels')
 const acceptAvailableParcel = require('./controller/acceptAvailableParcel')
+const listParcelConversations = require('./controller/listParcelConversations')
 const {
   confirmHandoffHandler,
   updateDriverStatusHandler,
@@ -23,6 +24,7 @@ router.post('/driver/available/:trackingCode/accept', authorize('driver'), accep
 router.patch('/:trackingCode/confirm-handoff', confirmHandoffHandler)
 router.patch('/:trackingCode/driver-status', authorize('driver'), updateDriverStatusHandler)
 router.patch('/:trackingCode/confirm-delivery', confirmDeliveryHandler)
+router.get('/conversations', listParcelConversations)
 router.get('/', listParcels)
 router.post('/', createParcel)
 router.patch('/:trackingCode/cancel', cancelParcel)

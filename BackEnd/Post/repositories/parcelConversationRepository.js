@@ -1,16 +1,31 @@
 const db = require('../../../DataBase/base/dbBase')
 
-async function findChatAccess(userId, trackingCode) {
+async function findChatAccess(userId, trackingCode, role) {
   const result = await db.query(
-    `SELECT p.id, p.tracking_code AS "trackingCode"
+    `SELECT p.id, p.tracking_code AS "trackingCode",
+            ARRAY(
+              SELECT participant.id
+              FROM users participant
+              WHERE participant.id = p.sender_id
+                 OR participant.id = p.receiver_id
+                 OR participant.phone = p.receiver_phone
+                 OR participant.id = (
+                   SELECT dp.user_id
+                   FROM parcel_assignments pa
+                   JOIN driver_profiles dp ON dp.id = pa.driver_id
+                   WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
+                   ORDER BY pa.accepted_at DESC NULLS LAST
+                   LIMIT 1
+                 )
+            ) AS "participantIds"
      FROM parcels p
      WHERE p.tracking_code = $2
-       AND EXISTS (
+       AND ($3 = 'admin' OR EXISTS (
            SELECT 1
            FROM parcel_assignments pa
            WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
-         )
-       AND (
+         ))
+       AND ($3 = 'admin' OR (
          p.sender_id = $1
          OR p.receiver_id = $1
          OR p.receiver_phone = (SELECT phone FROM users WHERE id = $1)
@@ -20,8 +35,8 @@ async function findChatAccess(userId, trackingCode) {
            JOIN driver_profiles dp ON dp.id = pa.driver_id
            WHERE pa.parcel_id = p.id AND dp.user_id = $1 AND pa.status IN ('accepted', 'completed')
          )
-       )`,
-    [userId, trackingCode],
+       ))`,
+    [userId, trackingCode, role],
   )
   return result.rows[0] || null
 }

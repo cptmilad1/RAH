@@ -60,9 +60,10 @@ function attachPresence(io) {
 
     try {
       await socket.join(userRoom(userId))
+      if (socket.data.user.role === 'admin') await socket.join('role:admin')
       socket.on('parcel:join', async (payload = {}) => {
         try {
-          const access = await findChatAccess(userId, String(payload.trackingCode || ''))
+          const access = await findChatAccess(userId, String(payload.trackingCode || ''), socket.data.user.role)
           if (!access) {
             socket.emit('parcel:chat:error', { trackingCode: payload.trackingCode, message: 'شما عضو گفت‌وگوی این مرسوله نیستید.' })
             return
@@ -88,7 +89,7 @@ function attachPresence(io) {
       socket.on('parcel:chat:send', async (payload = {}, acknowledge = () => {}) => {
         const respond = typeof acknowledge === 'function' ? acknowledge : () => {}
         try {
-          const access = await findChatAccess(userId, String(payload.trackingCode || ''))
+          const access = await findChatAccess(userId, String(payload.trackingCode || ''), socket.data.user.role)
           if (!access || !joinedParcels.has(String(access.id))) {
             respond({ error: 'شما اجازهٔ ارسال پیام در این گفت‌وگو را ندارید.' })
             return
@@ -103,6 +104,10 @@ function attachPresence(io) {
             trackingCode: access.trackingCode,
             message: savedMessage,
           })
+          access.participantIds.forEach((participantId) => {
+            io.to(userRoom(participantId)).emit('inbox:updated', { trackingCode: access.trackingCode })
+          })
+          io.to('role:admin').emit('inbox:updated', { trackingCode: access.trackingCode })
           respond({ success: true })
         } catch (error) {
           console.error('Parcel chat message failed:', error.message)
