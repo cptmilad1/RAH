@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../../auth/authStore'
 import { usePresenceStore } from '../../presence/presenceStore'
+import Card from '../../../global/Card'
 
 function ShipmentConversation({ trackingCode }) {
   const userId = useAuthStore((state) => state.user?.id)
@@ -64,7 +65,7 @@ function ShipmentConversation({ trackingCode }) {
   }
 
   return (
-    <section className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-5 sm:p-7">
+    <Card as="section" variant="unstyled" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-5 sm:p-7">
       <div className="flex items-center justify-between gap-3">
         <div>
           <h2 className="m-0 text-lg font-extrabold">گفت‌وگوی مرسوله</h2>
@@ -105,7 +106,7 @@ function ShipmentConversation({ trackingCode }) {
           {sending ? '…' : 'ارسال'}
         </button>
       </form>
-    </section>
+    </Card>
   )
 }
 

@@ -7,6 +7,7 @@ import { afghanistanProvinces } from '../shipments/shipmentConstants'
 import { useDriverApplicationStore } from './driverApplicationStore'
 import { driverApplicationSchema } from './driverApplicationSchema'
 import DriverApplicationField from './components/DriverApplicationField'
+import Card from '../../global/Card'
 
 const initialValues = {
   province: '',
@@ -52,7 +53,7 @@ function DriverApplicationPage() {
 
   return (
     <main dir="rtl" className="min-h-screen bg-[radial-gradient(ellipse_at_84%_-8%,rgba(215,243,106,.2),transparent_34%),#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
-      <section className="mx-auto max-w-3xl rounded-[24px] border border-[#e5ebe3] bg-white p-5 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-8">
+      <Card as="section" variant="unstyled" className="mx-auto max-w-3xl rounded-[24px] border border-[#e5ebe3] bg-white p-5 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-8">
         <Link to="/dashboard" className="text-xs font-bold text-[#658071] no-underline">← بازگشت به داشبورد</Link>
         <p className="mb-2 mt-7 text-xs font-bold text-[#789083]">درخواست همکاری</p>
         <h1 className="m-0 text-2xl font-black text-[#163a30]">ثبت‌نام به‌عنوان راننده</h1>
@@ -97,7 +98,7 @@ function DriverApplicationPage() {
         )}
         {error && !application && <p role="alert" className="mt-5 text-sm text-[#a94f3d]">{error}</p>}
         {notice && application?.status === 'pending' && <p role="status" className="mt-5 text-sm text-[#416d43]">{notice}</p>}
-      </section>
+      </Card>
     </main>
   )
 }

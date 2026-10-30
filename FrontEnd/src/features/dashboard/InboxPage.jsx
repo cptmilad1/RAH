@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { usePresenceStore } from '../presence/presenceStore'
 import { getInboxMessages } from './dashboardInboxApi'
+import Card from '../../global/Card'
 
 function formatMessageDate(value) {
   return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
@@ -45,7 +46,7 @@ function InboxPage() {
           <p className="m-0 text-sm text-[#d3e2d7]">{connected ? 'پیام‌های تازه به‌صورت زنده نمایش داده می‌شوند.' : 'برای دیدن پیام‌های تازه صفحه را تازه‌سازی کنید.'}</p>
         </header>
 
-        <section aria-label="فهرست پیام‌های دریافتی" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-4 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-6">
+        <Card as="section" aria-label="فهرست پیام‌های دریافتی" variant="unstyled" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-4 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-6">
           {result.error && (
             <div role="alert" className="rounded-xl border border-[#f1d4ce] bg-[#fff5f2] px-4 py-3 text-sm text-[#a94f3d]">
               {result.error}
@@ -58,8 +59,10 @@ function InboxPage() {
             <ul className="m-0 grid list-none gap-3 p-0">
               {result.messages.map((item) => (
                 <li key={`${item.id}-${item.trackingCode}`}>
-                  <Link
+                  <Card
+                    as={Link}
                     to={`/inbox/${encodeURIComponent(item.trackingCode)}`}
+                    variant="unstyled"
                     className="grid gap-3 rounded-2xl border border-[#e9eee7] p-4 text-inherit no-underline transition hover:border-[#d3e2ca] hover:bg-[#fbfcf8] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
                   >
                     <span className="min-w-0">
@@ -70,14 +73,14 @@ function InboxPage() {
                       <span className="mt-2 block truncate text-sm text-[#5f7268]">{item.message}</span>
                     </span>
                     <time className="text-[11px] text-[#8c9991]">{formatMessageDate(item.createdAt)}</time>
-                  </Link>
+                  </Card>
                 </li>
               ))}
             </ul>
           ) : !result.error ? (
             <p className="m-0 rounded-xl bg-[#f7f9f4] px-4 py-10 text-center text-sm text-[#829188]">هنوز پیامی دریافت نکرده‌اید.</p>
           ) : null}
-        </section>
+        </Card>
       </div>
     </main>
   )

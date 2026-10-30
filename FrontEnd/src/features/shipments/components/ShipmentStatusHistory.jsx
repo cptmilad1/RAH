@@ -1,8 +1,9 @@
 import { statusLabels } from '../shipmentConstants'
+import Card from '../../../global/Card'
 
 function ShipmentStatusHistory({ history }) {
   return (
-    <section className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-5 sm:p-7">
+    <Card as="section" variant="unstyled" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-5 sm:p-7">
       <h2 className="m-0 text-lg font-extrabold">مراحل مرسوله</h2>
       <ol className="mt-5 grid list-none gap-5 p-0">
         {history.map((item, index) => (
@@ -16,7 +17,7 @@ function ShipmentStatusHistory({ history }) {
           </li>
         ))}
       </ol>
-    </section>
+    </Card>
   )
 }
 

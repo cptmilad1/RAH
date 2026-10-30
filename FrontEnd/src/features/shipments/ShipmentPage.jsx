@@ -10,6 +10,7 @@ import ShipmentPageHeader from './components/ShipmentPageHeader'
 import ShipmentSidebar from './components/ShipmentSidebar'
 import ShipmentStats from './components/ShipmentStats'
 import { useShipmentPage } from './hooks/useShipmentPage'
+import Card from '../../global/Card'
 
 function ShipmentPage() {
   const { user, logout } = useAuth()
@@ -58,7 +59,7 @@ function ShipmentPage() {
         <section className="min-w-0 px-4 py-7 sm:px-8 sm:py-10 lg:px-[clamp(28px,5vw,76px)] lg:py-12">
           <ShipmentPageHeader onCreate={openCreateDialog} onTrack={(code) => navigate(`/shipments/${encodeURIComponent(code)}`)} />
           <ShipmentStats stats={page.stats} loading={page.loading} />
-          <section aria-label="فهرست مرسوله‌ها" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
+          <Card as="section" aria-label="فهرست مرسوله‌ها" variant="unstyled" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
             <ShipmentFilters
               activeFilter={page.activeFilter}
               onFilterChange={page.setActiveFilter}
@@ -75,7 +76,7 @@ function ShipmentPage() {
               user={user}
               onCancel={openCancelDialog}
             />
-          </section>
+          </Card>
           <p className="mt-5 text-center text-[11px] text-[#9aa49e]">اطلاعات مرسوله‌ها فقط برای فرستنده، گیرنده و افراد مجاز نمایش داده می‌شود.</p>
         </section>
       </div>

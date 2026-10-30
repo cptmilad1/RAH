@@ -7,6 +7,7 @@ import { useAuthStore } from '../auth/authStore'
 import useProfile from './hooks/UseProfile'
 import { driverProfileEditSchema, profileEditSchema } from './profileEditSchema'
 import { afghanistanProvinces } from '../shipments/shipmentConstants'
+import Card from '../../global/Card'
 
 const fields = [
   { name: 'full_name', label: 'نام کامل', autoComplete: 'name', maxLength: 100 },
@@ -106,7 +107,7 @@ function ProfileEditPage() {
           </span>
         </header>
 
-        <section data-edit-panel className="overflow-hidden rounded-[20px] border border-[#e5ebe2] bg-white/[0.92] shadow-[0_18px_50px_rgba(22,57,43,0.07)]">
+        <Card as="section" data-edit-panel variant="unstyled" className="overflow-hidden rounded-[20px] border border-[#e5ebe2] bg-white/[0.92] shadow-[0_18px_50px_rgba(22,57,43,0.07)]">
           <div className="bg-[linear-gradient(115deg,#123e32,#1c5942)] px-5 py-6 text-white sm:px-8 sm:py-7">
             <p className="mb-2 text-[10px] font-bold text-[#d8e8bc]">حساب کاربری</p>
             <h1 className="m-0 text-2xl font-extrabold text-[#f4f7ef]">ویرایش پروفایل</h1>
@@ -181,7 +182,7 @@ function ProfileEditPage() {
               </form>
             )}
           </div>
-        </section>
+        </Card>
       </div>
     </main>
   )

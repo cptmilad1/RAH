@@ -1,6 +1,6 @@
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const createPresenceManager = require('./createPresenceManager')
+const PresenceManager = require('./createPresenceManager')
 
 test('keeps a user online until the last device disconnects', async () => {
   const connectedSockets = new Set()
@@ -11,7 +11,7 @@ test('keeps a user online until the last device disconnects', async () => {
     }),
     emit: (event, payload) => emitted.push({ event, payload }),
   }
-  const presence = createPresenceManager(io)
+  const presence = new PresenceManager(io)
 
   connectedSockets.add('phone')
   assert.equal(await presence.syncUserPresence(42), true)
@@ -44,7 +44,7 @@ test('serializes simultaneous presence checks for one user', async () => {
     }),
     emit: (event, payload) => emitted.push(payload),
   }
-  const presence = createPresenceManager(io)
+  const presence = new PresenceManager(io)
 
   const firstCheck = presence.syncUserPresence(42)
   await new Promise((resolve) => setImmediate(resolve))

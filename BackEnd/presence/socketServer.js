@@ -3,7 +3,7 @@ require('../config/loadEnv')
 const jwt = require('jsonwebtoken')
 const db = require('../../DataBase/base/dbBase')
 const userRoom = require('./userRoom')
-const createPresenceManager = require('./createPresenceManager')
+const PresenceManager = require('./createPresenceManager')
 const {
   findChatAccess,
   listParcelMessages,
@@ -22,7 +22,8 @@ function readCookie(cookieHeader, name) {
 }
 
 function attachPresence(io) {
-  const { syncUserPresence } = createPresenceManager(io)
+  const presenceManager = new PresenceManager(io)
+  const syncUserPresence = presenceManager.syncUserPresence.bind(presenceManager)
 
   io.use(async (socket, next) => {
     try {

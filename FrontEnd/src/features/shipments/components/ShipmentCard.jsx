@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { formatShipmentDate, statusLabels } from '../shipmentConstants'
+import Card from '../../../global/Card'
 
 function ShipmentCard({ shipment, canCancel, onCancel }) {
   const statusClass = shipment.status === 'delivered'
@@ -9,7 +10,7 @@ function ShipmentCard({ shipment, canCancel, onCancel }) {
       : 'bg-[#f4f3df] text-[#887b3d]'
 
   return (
-    <article data-shipment-card className="group rounded-2xl border border-[#ebefea] bg-white p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[#d8e5cb] hover:shadow-[0_12px_28px_rgba(22,57,43,.07)] sm:p-5">
+    <Card as="article" data-shipment-card variant="interactive" className="p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#eff4e8] text-xl text-[#547460]">▣</span>
@@ -29,7 +30,7 @@ function ShipmentCard({ shipment, canCancel, onCancel }) {
         <Link to={`/shipments/${encodeURIComponent(shipment.trackingCode)}`} className="text-xs font-bold text-[#547460] no-underline hover:text-[#1c5942]">جزئیات و رهگیری ←</Link>
         {canCancel && ['created', 'assigned'].includes(shipment.status) && <button type="button" onClick={() => onCancel(shipment)} className="text-xs font-bold text-[#ab6253] hover:text-[#803c30]">لغو مرسوله</button>}
       </div>
-    </article>
+    </Card>
   )
 }
 

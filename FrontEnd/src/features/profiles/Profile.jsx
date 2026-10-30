@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import milad from '/imgs/milad.png'
 import useProfile from './hooks/UseProfile'
 import roleChecker from './utils/roleChecker'
-import CardProfile from './components/card'
+import InfoCard from '../../global/InfoCard'
 import { useAuthStore } from '../auth/authStore'
 
 function formatDate(value) {
@@ -96,15 +96,15 @@ function Profile() {
             <span className="text-[10px] text-[#8a9991]">اطلاعات ثبت‌شده</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-            <CardProfile title="شناسه حساب" value={users?.id} icon="#" dir="ltr" />
-            <CardProfile title="نام کاربری" value={users?.username} icon="@" dir="ltr" />
-            <CardProfile title="نشانی ایمیل" value={users?.email} icon="✉" dir="ltr" />
-            <CardProfile title="شماره تماس" value={users?.phone} icon="☎" dir="ltr" />
-            <CardProfile title="نوع حساب" value={roleLabel} icon="✦" />
-            <CardProfile title="تأیید ایمیل" value={users?.verify == null ? 'نامشخص' : users.verify ? 'تأیید شده' : 'در انتظار تأیید'} icon="✓" tone={users?.verify ? 'success' : 'warning'} />
-            <CardProfile title="وضعیت حساب" value={users?.isActive == null ? 'نامشخص' : users.isActive ? 'فعال' : 'غیرفعال'} icon="◉" tone={users?.isActive ? 'success' : 'warning'} />
-            <CardProfile title="تاریخ عضویت" value={formatDate(users?.signUp_At)} icon="◷" />
-            <CardProfile title="نشانی" value={users?.address} icon="⌖" />
+            <InfoCard data-profile-card title="شناسه حساب" value={users?.id} icon="#" dir="ltr" />
+            <InfoCard data-profile-card title="نام کاربری" value={users?.username} icon="@" dir="ltr" />
+            <InfoCard data-profile-card title="نشانی ایمیل" value={users?.email} icon="✉" dir="ltr" />
+            <InfoCard data-profile-card title="شماره تماس" value={users?.phone} icon="☎" dir="ltr" />
+            <InfoCard data-profile-card title="نوع حساب" value={roleLabel} icon="✦" />
+            <InfoCard data-profile-card title="تأیید ایمیل" value={users?.verify == null ? 'نامشخص' : users.verify ? 'تأیید شده' : 'در انتظار تأیید'} icon="✓" tone={users?.verify ? 'success' : 'warning'} />
+            <InfoCard data-profile-card title="وضعیت حساب" value={users?.isActive == null ? 'نامشخص' : users.isActive ? 'فعال' : 'غیرفعال'} icon="◉" tone={users?.isActive ? 'success' : 'warning'} />
+            <InfoCard data-profile-card title="تاریخ عضویت" value={formatDate(users?.signUp_At)} icon="◷" />
+            <InfoCard data-profile-card title="نشانی" value={users?.address} icon="⌖" />
           </div>
         </section>
       </div>

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
 import { useAdminStore } from './adminStore'
 import AdminUserCard from './components/AdminUserCard'
+import MetricCard from '../../global/MetricCard'
+import Card from '../../global/Card'
 
 const tabs = [
   { id: 'all', label: 'همه', count: (users) => users.length },
@@ -154,19 +156,13 @@ function AdminPanelPage() {
         </header>
 
         <section aria-label="آمار سامانه" className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {stats.map((stat) => <article data-admin-stat key={stat.label} className="rounded-2xl border border-[#e6ebe4] bg-white p-4 shadow-[0_8px_24px_rgba(22,57,43,.035)] sm:p-5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[11px] font-semibold text-[#829188]">{stat.label}</span>
-              <span className={`grid size-9 place-items-center rounded-xl text-base ${stat.tone}`}>{stat.icon}</span>
-            </div>
-            <strong className="mt-3 block text-2xl font-black text-[#193e31]">{stat.value}</strong>
-          </article>)}
+          {stats.map((stat) => <MetricCard data-admin-stat key={stat.label} layout="header" label={stat.label} value={stat.value} icon={stat.icon} iconClassName={stat.tone} />)}
         </section>
 
         {error && <p role="alert" className="mb-4 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{error}</p>}
         {notice && <p role="status" className="mb-4 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{notice}</p>}
 
-        <section className="overflow-hidden rounded-[22px] border border-[#e5ebe3] bg-white shadow-[0_18px_52px_rgba(22,57,43,.045)]">
+        <Card as="section" variant="unstyled" className="overflow-hidden rounded-[22px] border border-[#e5ebe3] bg-white shadow-[0_18px_52px_rgba(22,57,43,.045)]">
           <div className="border-b border-[#edf0eb] p-4 sm:p-6">
             <form onSubmit={submitSearch} className="flex flex-col gap-3 sm:flex-row">
               <label className="min-w-0 flex-1">
@@ -229,7 +225,7 @@ function AdminPanelPage() {
                   <p className="m-0 text-xs text-[#89958e]">عبارت جست‌وجو یا فیلترها را تغییر دهید.</p>
                 </div>}
           </section>
-        </section>
+        </Card>
       </div>
     </main>
   )
