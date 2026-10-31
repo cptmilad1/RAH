@@ -4,6 +4,7 @@ async function listAdminUsers(req, res, next) {
   try {
     const result = await db.query(
       `SELECT u.id, u.full_name AS "fullName", u.username, u.email, u.role,
+              COALESCE(u.avatar_url, '/imgs/default-avatar.svg') AS image,
               u.phone, u.user_address AS address, u.created_at AS "createdAt",
               u.is_active AS "isActive", u.is_verify AS "isVerify",
               COALESCE(

@@ -5,6 +5,7 @@ import { usePresenceStore } from '../presence/presenceStore'
 import { Link, useNavigate } from 'react-router-dom'
 import Card from '../../global/Card'
 import MetricCard from '../../global/MetricCard'
+import { getUnreadDirectMessageCount } from '../messages/messagesApi'
 
 const roleLabels = { user: 'کاربر', admin: 'مدیر', driver: 'راننده' }
 const navBaseClass = 'flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] px-3 py-2.5 text-[11px] transition duration-200 hover:bg-white/[0.07] hover:text-white lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]'
@@ -16,7 +17,7 @@ const accountDetailItems = [
   { label: 'نشانی', key: 'address' },
 ]
 
-function DashboardNavItem({ to, onClick, icon, label, active = false }) {
+function DashboardNavItem({ to, onClick, icon, label, active = false, unread = false }) {
   const Element = to ? Link : 'button'
   return (
     <Element
@@ -26,7 +27,10 @@ function DashboardNavItem({ to, onClick, icon, label, active = false }) {
         : 'font-semibold text-[#b8c9c0]'}`}
     >
       <span className={`${navIconClass} ${active ? 'text-[#d7f36a]' : ''}`} aria-hidden="true">{icon}</span>
-      {label}
+      <span className="flex items-center gap-2">
+        {label}
+        {unread && <span className="size-2 rounded-full bg-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.16)]" aria-label="پیام خوانده‌نشده" />}
+      </span>
     </Element>
   )
 }
@@ -55,12 +59,15 @@ function DashboardActionCard({ to, onClick, icon, label, variant = 'default' }) 
 function Dashboard() {
   const { user, logout } = useAuth()
   const isOnline = usePresenceStore((state) => Boolean(user?.id && state.onlineUsers[String(user.id)]))
+  const unreadDirectMessages = usePresenceStore((state) => state.unreadDirectMessages)
+  const setUnreadDirectMessages = usePresenceStore((state) => state.setUnreadDirectMessages)
   const dashboardRef = useRef(null)
   const navigate = useNavigate()
   const roleLabel = roleLabels[user?.role] || 'کاربر'
   const navItems = [
     { label: 'نمای کلی', icon: '⌂', active: true },
-    { label: 'صندوق ورودی', icon: '✉', to: '/inbox' },
+    { label: 'صندوق ورودی', icon: '✉', to: '/inbox', unread: unreadDirectMessages > 0 },
+    { label: 'پیام‌های خصوصی', icon: '●', to: '/messages', unread: unreadDirectMessages > 0 },
     { label: 'سفرهای من', icon: '↗' },
     { label: 'مرسوله‌ها', icon: '▣', onClick: () => navigate('/shipments') },
     ...(user?.role === 'driver' ? [{ label: 'پنل راننده', icon: '⇢', to: '/driver' }] : []),
@@ -126,6 +133,18 @@ function Dashboard() {
       handlers.forEach((cleanup) => cleanup())
     }
   }, [])
+
+  useEffect(() => {
+    let active = true
+    getUnreadDirectMessageCount()
+      .then((count) => {
+        if (active) setUnreadDirectMessages(count)
+      })
+      .catch((error) => {
+        console.error('Unread direct message count could not be loaded:', error.message)
+      })
+    return () => { active = false }
+  }, [setUnreadDirectMessages, user?.id])
   return (
     <main ref={dashboardRef} className="grid min-h-screen grid-cols-1 bg-[radial-gradient(ellipse_at_72%_-10%,rgba(215,243,106,0.16),transparent_38%),#f6f7f2] text-[#17352e] lg:grid-cols-[286px_minmax(0,1fr)]">
       <aside className="relative flex min-w-0 flex-col bg-[radial-gradient(circle_at_10%_82%,rgba(215,243,106,0.1),transparent_30%),linear-gradient(165deg,#123e32_0%,#0c3028_100%)] px-[18px] pt-[18px] pb-[13px] text-[#f3f7ef] sm:px-[22px] sm:pt-[25px] lg:sticky lg:top-0 lg:h-screen lg:px-[22px] lg:pt-[34px] lg:pb-[26px]">
@@ -157,7 +176,7 @@ function Dashboard() {
             <p className="mt-2 max-w-[270px] text-[11px] leading-[1.9] text-[#839088] sm:max-w-none sm:text-[13px]">خوشحالیم که دوباره همراه مایی. امروز کجا می‌رویم؟</p>
           </div>
           <button onClick={()=>navigate(`/profile/${user.id}`)} className="flex hover:-translate-y-1 duration-300 min-w-0 items-center gap-2 rounded-2xl border border-[#e6ebe4] bg-white/[0.78] p-[7px] shadow-[0_8px_24px_rgba(26,63,49,0.04)] sm:min-w-[190px] sm:gap-[11px] sm:px-[13px] sm:py-[10px]">
-            <div className="grid size-[34px] shrink-0 place-items-center rounded-[13px] bg-[#e6edda] text-[17px] font-extrabold text-[#315946] sm:size-10">{(user?.name || 'ر').slice(0, 1)}</div>
+            <img src={user?.image || '/imgs/default-avatar.svg'} alt="" className="size-[34px] shrink-0 rounded-[13px] bg-[#e6edda] object-cover sm:size-10" />
             <div className="hidden min-w-0 flex-1 gap-1 sm:grid"><strong className="max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-[#264538]">{user?.name || 'کاربر راه'}</strong><span className="text-[10px] text-[#8a9991]">{roleLabel}</span></div>
             <span className={`mr-auto size-2 rounded-full ${isOnline ? 'bg-[#7fba68] shadow-[0_0_0_4px_#edf6e9]' : 'bg-[#a9b2ac] shadow-[0_0_0_4px_#f0f2ef]'}`} aria-label={isOnline ? 'آنلاین' : 'آفلاین'} />
           </button>

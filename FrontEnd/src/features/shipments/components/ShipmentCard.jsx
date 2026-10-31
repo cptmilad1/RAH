@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { formatShipmentDate, statusLabels } from '../shipmentConstants'
 import Card from '../../../global/Card'
+import UserProfileLink from '../../../global/UserProfileLink'
 
 function ShipmentCard({ shipment, canCancel, onCancel }) {
   const statusClass = shipment.status === 'delivered'
@@ -16,7 +17,18 @@ function ShipmentCard({ shipment, canCancel, onCancel }) {
           <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#eff4e8] text-xl text-[#547460]">▣</span>
           <div className="min-w-0">
             <Link to={`/shipments/${encodeURIComponent(shipment.trackingCode)}`} className="block truncate font-mono text-sm font-black text-[#214536] no-underline hover:text-[#668744]" dir="ltr">{shipment.trackingCode}</Link>
-            <span className="mt-1 block text-[11px] text-[#8b9790]">{formatShipmentDate(shipment.createdAt)} <span className="px-1">·</span> گیرنده: {shipment.receiverName || '—'}</span>
+            <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[#8b9790]">
+              <span>{formatShipmentDate(shipment.createdAt)}</span>
+              <span aria-hidden="true">·</span>
+              <span>گیرنده:</span>
+              <UserProfileLink
+                userId={shipment.receiverId}
+                name={shipment.receiverName || '—'}
+                image={shipment.receiverImage}
+                imageClassName="size-6"
+                nameClassName="font-semibold text-[#547460]"
+              />
+            </span>
           </div>
         </div>
         <span className={`rounded-full px-3 py-1.5 text-[11px] font-bold ${statusClass}`}>{statusLabels[shipment.status] || shipment.status}</span>

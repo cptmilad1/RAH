@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
 import { useDriverParcelsStore } from './driverParcelsStore'
 import { useDriverParcels } from './hooks/useDriverParcels'
+import UserProfileLink from '../../global/UserProfileLink'
 
 function DriverPanelPage() {
   const user = useAuthStore((state) => state.user)
@@ -29,6 +30,7 @@ function DriverPanelPage() {
             <p className="mb-0 mt-2 text-sm text-[#7b8c82]">مرسوله‌های آزاد ولایت خود را بررسی و قبول کنید، {user?.name || 'راننده'}.</p>
           </div>
           <nav aria-label="ناوبری پنل راننده" className="flex gap-2">
+            <UserProfileLink userId={user?.id} name="پروفایل" image={user?.image} imageClassName="size-8" nameClassName="text-xs font-bold text-[#315946]" className="rounded-xl border border-[#dce6dc] bg-white px-3 py-2 no-underline" />
             <Link to="/shipments" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">مدیریت مرسوله‌ها</Link>
             <Link to="/dashboard" className="rounded-xl border border-[#dce6dc] bg-white px-4 py-3 text-xs font-bold text-[#315946] no-underline transition hover:bg-[#f8faf5]">داشبورد</Link>
           </nav>
@@ -62,7 +64,7 @@ function DriverPanelPage() {
                 <div className="min-w-0">
                   <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <strong dir="ltr" className="font-mono text-sm text-[#244b39]">{parcel.trackingCode}</strong>
-                    <span className="text-xs text-[#8c9991]">{parcel.senderName || 'فرستنده'}</span>
+                    <UserProfileLink userId={parcel.senderId} name={parcel.senderName || 'فرستنده'} image={parcel.senderImage} imageClassName="size-7" nameClassName="text-xs text-[#8c9991]" />
                     <span className="text-xs text-[#8c9991]">{parcel.weightKg ? `${parcel.weightKg} کیلوگرم` : 'وزن ثبت نشده'}</span>
                   </div>
                   <div className="grid gap-3 text-sm sm:grid-cols-2">

@@ -16,7 +16,8 @@ async function findAvailableParcels(userId) {
   const result = await db.query(
     `SELECT p.id, p.tracking_code AS "trackingCode", p.description,
             p.weight_kg AS "weightKg", p.created_at AS "createdAt",
-            sender.full_name AS "senderName",
+            sender.id AS "senderId", sender.full_name AS "senderName",
+            COALESCE(sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage",
             pickup.province AS "pickupProvince",
             delivery.province AS "deliveryProvince"
      FROM parcels p

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { usePresenceStore } from '../presence/presenceStore'
 import { getInboxMessages } from './dashboardInboxApi'
 import Card from '../../global/Card'
+import UserProfileLink from '../../global/UserProfileLink'
 
 function formatMessageDate(value) {
   return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
@@ -40,6 +41,7 @@ function InboxPage() {
     <main dir="rtl" className="min-h-screen bg-[#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
       <div className="mx-auto max-w-3xl">
         <Link to="/dashboard" className="text-sm font-bold text-[#547460] no-underline">← بازگشت به داشبورد</Link>
+        <Link to="/messages" className="mr-4 text-sm font-bold text-[#547460] no-underline">پیام‌های خصوصی →</Link>
         <header className="mt-7 rounded-[26px] bg-[linear-gradient(135deg,#1d5742,#10382e)] p-6 text-white shadow-[0_20px_50px_rgba(23,63,50,.17)] sm:p-9">
           <p className="m-0 text-xs text-[#b9d1c2]">پیام‌هایی که از دیگران دریافت کرده‌اید</p>
           <h1 className="mb-2 mt-2 text-3xl font-black">صندوق ورودی</h1>
@@ -59,18 +61,19 @@ function InboxPage() {
             <ul className="m-0 grid list-none gap-3 p-0">
               {result.messages.map((item) => (
                 <li key={`${item.id}-${item.trackingCode}`}>
-                  <Card
-                    as={Link}
-                    to={`/inbox/${encodeURIComponent(item.trackingCode)}`}
-                    variant="unstyled"
-                    className="grid gap-3 rounded-2xl border border-[#e9eee7] p-4 text-inherit no-underline transition hover:border-[#d3e2ca] hover:bg-[#fbfcf8] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
-                  >
+                  <Card as="article" variant="unstyled" className="grid gap-3 rounded-2xl border border-[#e9eee7] p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                     <span className="min-w-0">
-                      <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <strong className="text-sm font-extrabold text-[#244b39]">{item.senderName || 'کاربر'}</strong>
-                        <span className="text-xs text-[#74857b]">مرسوله: <bdi dir="ltr" className="font-mono font-bold">{item.trackingCode}</bdi></span>
+                      <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                        <UserProfileLink
+                          userId={item.senderId}
+                          name={item.senderName || 'کاربر'}
+                          image={item.senderImage}
+                          imageClassName="size-9"
+                          nameClassName="text-sm font-extrabold text-[#244b39]"
+                        />
+                        <Link to={`/inbox/${encodeURIComponent(item.trackingCode)}`} className="text-xs text-[#74857b] no-underline hover:text-[#244b39]">مرسوله: <bdi dir="ltr" className="font-mono font-bold">{item.trackingCode}</bdi></Link>
                       </span>
-                      <span className="mt-2 block truncate text-sm text-[#5f7268]">{item.message}</span>
+                      <Link to={`/inbox/${encodeURIComponent(item.trackingCode)}`} className="mt-2 block truncate text-sm text-[#5f7268] no-underline">{item.message}</Link>
                     </span>
                     <time className="text-[11px] text-[#8c9991]">{formatMessageDate(item.createdAt)}</time>
                   </Card>

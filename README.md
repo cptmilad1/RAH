@@ -9,6 +9,10 @@ For an existing database, apply `DataBase/migrations/20261028_add_parcel_recipie
 
 Shipment UI is organized into small components under `FrontEnd/src/features/shipments/components`, with page state in `hooks/useShipmentPage.js` and shared labels/form defaults in `shipmentConstants.js`. Backend request handlers live in `BackEnd/Post/controller`, input validation in `BackEnd/Post/services`, and database queries/transactions in `BackEnd/Post/repositories`.
 
+## Profiles and direct messages
+
+Users can update their profile photo from the profile editor. Multer accepts JPG, PNG, and WebP files up to 5 MB, verifies the image signature, and stores them under `BackEnd/uploads/avatars`. Apply `DataBase/migrations/20261031_add_user_profiles_and_direct_messages.sql` and `DataBase/migrations/20261031_add_direct_message_read_tracking.sql` to existing databases; new databases should use the updated schema. Direct conversations and user blocks are implemented in the small modules under `BackEnd/auth/repositories` and `BackEnd/auth/controller`, with the UI under `FrontEnd/src/features/messages`. Direct chat sends and receives over Socket.IO, and unread state is persisted with `direct_messages.read_at`.
+
 ## Driver applications and administration
 
 Regular users can submit driver applications from `/driver-application`, including license and vehicle details. Applications create persistent notifications for administrators and are reviewed in `/admin`, where admins can approve drivers and promote regular users to admins. Driver application and admin UI logic is separated into feature APIs, Zustand stores, schemas, pages, and reusable components.

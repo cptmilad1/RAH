@@ -25,6 +25,9 @@ function ProfileEditPage() {
   const updateUser = useProfile((state) => state.updateUser)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
+  const [profileImage, setProfileImage] = useState('')
+  const [avatarFile, setAvatarFile] = useState(null)
+  const [avatarPreview, setAvatarPreview] = useState('')
   const canEdit = currentUser?.role === 'admin' || String(currentUser?.id) === String(id)
   const {
     register,
@@ -48,6 +51,7 @@ function ProfileEditPage() {
       try {
         const profile = await setUsers(id)
         if (isCurrent) {
+          setProfileImage(profile.image || '/imgs/default-avatar.svg')
           reset({
             full_name: profile.name || '',
             username: profile.username || '',
@@ -70,6 +74,11 @@ function ProfileEditPage() {
   }, [canEdit, id, reset, setUsers])
 
   useEffect(() => {
+    if (!avatarPreview) return undefined
+    return () => URL.revokeObjectURL(avatarPreview)
+  }, [avatarPreview])
+
+  useEffect(() => {
     const panel = panelRef.current
     if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
@@ -84,13 +93,22 @@ function ProfileEditPage() {
 
   async function onSubmit(values) {
     try {
-      await updateUser(id, values)
+      const formData = new FormData()
+      Object.entries(values).forEach(([key, value]) => formData.append(key, value || ''))
+      if (avatarFile) formData.append('avatar', avatarFile)
+      await updateUser(id, formData)
       navigate(`/profile/${id}`, { replace: true, state: { notice: 'اطلاعات پروفایل ذخیره شد.' } })
     } catch (error) {
       setError('root.server', {
         message: error.message || 'ذخیرهٔ تغییرات انجام نشد. دوباره تلاش کنید.',
       })
     }
+  }
+
+  function onAvatarChange(event) {
+    const file = event.target.files?.[0] || null
+    setAvatarFile(file)
+    setAvatarPreview(file ? URL.createObjectURL(file) : '')
   }
 
   return (
@@ -121,6 +139,22 @@ function ProfileEditPage() {
               <div className="rounded-xl border border-[#f0d5ce] bg-[#fff4f0] px-4 py-3 text-sm text-[#9d4b40]" role="alert">{loadError}</div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
+                <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[#f7f9f4] p-4">
+                  <img
+                    src={avatarPreview || profileImage || '/imgs/default-avatar.svg'}
+                    alt="پیش‌نمایش تصویر پروفایل"
+                    className="size-20 rounded-2xl border border-[#e1e8e0] bg-white object-cover"
+                  />
+                  <label className="grid gap-2 text-[11px] font-bold text-[#385247]">
+                    <span>تصویر پروفایل (JPG، PNG یا WebP تا ۵ مگابایت)</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={onAvatarChange}
+                      className="max-w-full text-xs file:ml-3 file:rounded-lg file:border-0 file:bg-[#174c3c] file:px-3 file:py-2 file:font-bold file:text-white"
+                    />
+                  </label>
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {currentUser?.role === 'driver' && (
                     <label className="grid min-w-0 gap-2 text-[11px] font-bold text-[#385247]">

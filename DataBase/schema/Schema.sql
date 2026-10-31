@@ -41,7 +41,7 @@ CREATE TABLE users (
     phone VARCHAR(30) UNIQUE,
     password_hash TEXT NOT NULL,
     user_address Text,
-    avatar_url TEXT,
+    avatar_url TEXT DEFAULT '/imgs/default-avatar.svg',
     token_version smallint default 0,
     role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin', 'driver')),
     role_id BIGINT NOT NULL REFERENCES roles(id) ON DELETE RESTRICT,
@@ -232,6 +232,42 @@ CREATE TABLE parcel_messages (
 
 CREATE INDEX idx_parcel_messages_parcel_created
     ON parcel_messages (parcel_id, created_at, id);
+
+CREATE TABLE user_blocks (
+    blocker_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    blocked_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (blocker_id, blocked_id),
+    CHECK (blocker_id <> blocked_id)
+);
+
+CREATE TABLE direct_conversations (
+    id BIGSERIAL PRIMARY KEY,
+    user_one_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_two_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CHECK (user_one_id < user_two_id),
+    UNIQUE (user_one_id, user_two_id)
+);
+
+CREATE TABLE direct_messages (
+    id BIGSERIAL PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES direct_conversations(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    body TEXT NOT NULL CHECK (char_length(body) BETWEEN 1 AND 2000),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    read_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_direct_messages_conversation_created
+    ON direct_messages (conversation_id, created_at, id);
+
+CREATE INDEX idx_direct_messages_unread
+    ON direct_messages (conversation_id, sender_id)
+    WHERE read_at IS NULL;
+
+CREATE INDEX idx_user_blocks_blocked
+    ON user_blocks (blocked_id, blocker_id);
 
 CREATE TABLE parcel_items (
     id BIGSERIAL PRIMARY KEY,

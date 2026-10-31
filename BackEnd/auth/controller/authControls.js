@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { sendResetEmail, sendVerificationEmail } = require('./utils/emailVerifySenter')
 const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService');
 const userRoom = require('../../presence/userRoom')
+const { saveAvatar, removeAvatar } = require('../services/avatarStorage')
 const hashedPassword = require("./utils/bcryptPassword");
 const createVerificationCode = require("./utils/emailVerificationCode");
 const Compare = require("./utils/comparePassword");
@@ -29,7 +30,9 @@ async function getUser(req, res, next) {
     if (id == undefined || id == null) return HandleResult({ status: 404, message: "invalid id!", res });
     const result = await db.query(
       `select u.id, u.full_name, u.username, u.email, u.phone, u.user_address, u.role,
-          u.is_verify, u.is_active, u.created_at, u.avatar_url, dp.province AS driver_province
+          u.is_verify, u.is_active, u.created_at,
+          COALESCE(u.avatar_url, '/imgs/default-avatar.svg') AS avatar_url,
+          dp.province AS driver_province
        from users u
        left join driver_profiles dp on dp.user_id = u.id
        where u.id=$1`,
@@ -63,8 +66,16 @@ async function getUser(req, res, next) {
 }
 
 async function updateUser(req, res, next) {
+  let newAvatarUrl
   try {
     const { full_name, username, phone, user_address, driver_province: driverProvince } = req.body;
+    const previousAvatarResult = req.file
+      ? await db.query('SELECT avatar_url FROM users WHERE id = $1', [req.params.id])
+      : null
+    if (req.file && !previousAvatarResult.rowCount) {
+      return HandleResult({ status: 404, message: 'User not found.', res })
+    }
+    if (req.file) newAvatarUrl = await saveAvatar(req.file)
     const client = await db.connect()
     let transactionStarted = false
     let user
@@ -73,14 +84,16 @@ async function updateUser(req, res, next) {
       transactionStarted = true
       const result = await client.query(
         `update users
-         set full_name=$1, username=$2, phone=NULLIF($3, ''), user_address=NULLIF($4, '')
-         where id=$5
+         set full_name=$1, username=$2, phone=NULLIF($3, ''), user_address=NULLIF($4, ''),
+             avatar_url=COALESCE($5, avatar_url)
+         where id=$6
          returning id, full_name, username, email, phone, user_address, role, is_verify, is_active, created_at, avatar_url`,
-        [full_name, username, phone, user_address, req.params.id],
+        [full_name, username, phone, user_address, newAvatarUrl, req.params.id],
       )
       if (result.rowCount === 0) {
         await client.query('ROLLBACK')
         transactionStarted = false
+        if (newAvatarUrl) await removeAvatar(newAvatarUrl)
         return HandleResult({ status: 404, message: 'User not found.', res })
       }
       user = result.rows[0]
@@ -99,6 +112,11 @@ async function updateUser(req, res, next) {
       throw error
     } finally {
       client.release()
+    }
+    if (newAvatarUrl) {
+      await removeAvatar(previousAvatarResult.rows[0].avatar_url).catch((cleanupError) => {
+        console.error('Previous avatar cleanup failed:', cleanupError.message)
+      })
     }
     if (user.role === 'driver') {
       user.driver_province = driverProvince === undefined
@@ -125,6 +143,9 @@ async function updateUser(req, res, next) {
       res,
     });
   } catch (err) {
+    if (newAvatarUrl) await removeAvatar(newAvatarUrl).catch((cleanupError) => {
+      console.error('Avatar cleanup failed:', cleanupError.message)
+    })
     next(err);
   }
 }
@@ -138,7 +159,6 @@ async function registerUser(req, res, next) {
       password,
       phone,
       user_address,
-      avatar_url,
     } = req.body;
     const passwordHash = await hashedPassword(password)
     const client = await db.connect()
@@ -151,8 +171,8 @@ async function registerUser(req, res, next) {
       const result = await client.query(
         `
           INSERT INTO users
-          (full_name, username, email, password_hash, phone, user_address, avatar_url, role_id)
-          SELECT $1, $2, $3, $4, $5, $6, $7, roles.id
+          (full_name, username, email, password_hash, phone, user_address, role_id)
+          SELECT $1, $2, $3, $4, $5, $6, roles.id
           FROM roles WHERE roles.name = 'user'
           RETURNING id
         `,
@@ -163,7 +183,6 @@ async function registerUser(req, res, next) {
           passwordHash,
           phone || null,
           user_address,
-          avatar_url,
         ],
       )
       if (result.rowCount === 0) {

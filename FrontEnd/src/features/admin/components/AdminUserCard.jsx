@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import Card from '../../../global/Card'
+import UserProfileLink from '../../../global/UserProfileLink'
 
 const roleLabels = { user: 'کاربر', admin: 'مدیر', driver: 'راننده' }
 const applicationStatusLabels = { pending: 'در انتظار بررسی', approved: 'تأییدشده', rejected: 'ردشده', suspended: 'معلق' }
@@ -58,7 +58,7 @@ function AdminUserCard({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <Link to={`/profile/${user.id}`} className="text-sm font-extrabold text-[#264538] no-underline hover:text-[#668744]">{user.fullName || 'بدون نام'}</Link>
+            <UserProfileLink userId={user.id} name={user.fullName || 'بدون نام'} image={user.image} imageClassName="size-9" nameClassName="text-sm font-extrabold text-[#264538] hover:text-[#668744]" />
             <span className="rounded-full bg-[#f0f4eb] px-2.5 py-1 text-[10px] font-bold text-[#547460]">{roleLabels[user.role] || user.role}</span>
             {badges.map((badge) => <span key={badge.label} className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${badge.className}`}>{badge.label}</span>)}
           </div>

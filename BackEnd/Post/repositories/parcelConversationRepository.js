@@ -44,7 +44,9 @@ async function findChatAccess(userId, trackingCode, role) {
 async function listParcelMessages(parcelId) {
   const result = await db.query(
     `SELECT messages.id, messages.sender_id AS "senderId",
-            sender.full_name AS "senderName", messages.message,
+            sender.full_name AS "senderName",
+            COALESCE(sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage",
+            messages.message,
             messages.created_at AS "createdAt"
      FROM (
        SELECT id, sender_id, message, created_at
@@ -68,7 +70,9 @@ async function createParcelMessage(parcelId, senderId, message) {
        RETURNING id, sender_id, message, created_at
      )
      SELECT inserted.id, inserted.sender_id AS "senderId",
-            sender.full_name AS "senderName", inserted.message,
+            sender.full_name AS "senderName",
+            COALESCE(sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage",
+            inserted.message,
             inserted.created_at AS "createdAt"
      FROM inserted
      JOIN users sender ON sender.id = inserted.sender_id`,

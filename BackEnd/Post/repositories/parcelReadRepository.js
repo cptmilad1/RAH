@@ -6,13 +6,20 @@ async function findParcelsForUser(userId, role) {
             p.description, p.weight_kg AS "weightKg", p.created_at AS "createdAt",
             p.updated_at AS "updatedAt",
             COALESCE(p.receiver_name, receiver.full_name) AS "receiverName",
+            COALESCE(p.receiver_id, (SELECT account.id FROM users account WHERE account.phone = p.receiver_phone)) AS "receiverId",
             COALESCE(p.receiver_phone, receiver.phone) AS "receiverPhone",
+            COALESCE(receiver.avatar_url, '/imgs/default-avatar.svg') AS "receiverImage",
             sender.full_name AS "senderName",
+            COALESCE(sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage",
             pickup.province AS "pickupProvince", pickup.address_line AS "pickupAddress",
             delivery.province AS "deliveryProvince", delivery.address_line AS "deliveryAddress"
      FROM parcels p
      JOIN users sender ON sender.id = p.sender_id
-     LEFT JOIN users receiver ON receiver.id = p.receiver_id
+     LEFT JOIN users receiver
+       ON receiver.id = COALESCE(
+         p.receiver_id,
+         (SELECT account.id FROM users account WHERE account.phone = p.receiver_phone)
+       )
      JOIN addresses pickup ON pickup.id = p.pickup_address_id
      JOIN addresses delivery ON delivery.id = p.delivery_address_id
      WHERE $1 IN ('admin', 'driver')
@@ -32,8 +39,11 @@ async function findParcelForUser(userId, trackingCode) {
             p.description, p.weight_kg AS "weightKg", p.created_at AS "createdAt",
             p.updated_at AS "updatedAt",
             COALESCE(p.receiver_name, receiver.full_name) AS "receiverName",
+            COALESCE(p.receiver_id, (SELECT account.id FROM users account WHERE account.phone = p.receiver_phone)) AS "receiverId",
+            COALESCE(receiver.avatar_url, '/imgs/default-avatar.svg') AS "receiverImage",
             COALESCE(p.receiver_phone, receiver.phone) AS "receiverPhone",
             sender.full_name AS "senderName",
+            COALESCE(sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage",
             (p.sender_id = $1) AS "isSender",
             COALESCE(
               p.receiver_id = $1 OR p.receiver_phone = (SELECT phone FROM users WHERE id = $1),
@@ -57,6 +67,24 @@ async function findParcelForUser(userId, trackingCode) {
               ORDER BY pa.accepted_at DESC NULLS LAST
               LIMIT 1
             ), '') AS "driverName",
+            (
+              SELECT driver.id
+              FROM parcel_assignments pa
+              JOIN driver_profiles dp ON dp.id = pa.driver_id
+              JOIN users driver ON driver.id = dp.user_id
+              WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
+              ORDER BY pa.accepted_at DESC NULLS LAST
+              LIMIT 1
+            ) AS "driverId",
+            COALESCE((
+              SELECT driver.avatar_url
+              FROM parcel_assignments pa
+              JOIN driver_profiles dp ON dp.id = pa.driver_id
+              JOIN users driver ON driver.id = dp.user_id
+              WHERE pa.parcel_id = p.id AND pa.status IN ('accepted', 'completed')
+              ORDER BY pa.accepted_at DESC NULLS LAST
+              LIMIT 1
+            ), '/imgs/default-avatar.svg') AS "driverImage",
             pickup.province AS "pickupProvince", pickup.address_line AS "pickupAddress",
             delivery.province AS "deliveryProvince", delivery.address_line AS "deliveryAddress",
             COALESCE((
@@ -79,7 +107,11 @@ async function findParcelForUser(userId, trackingCode) {
             ), '[]'::json) AS items
      FROM parcels p
      JOIN users sender ON sender.id = p.sender_id
-     LEFT JOIN users receiver ON receiver.id = p.receiver_id
+     LEFT JOIN users receiver
+       ON receiver.id = COALESCE(
+         p.receiver_id,
+         (SELECT account.id FROM users account WHERE account.phone = p.receiver_phone)
+       )
      JOIN addresses pickup ON pickup.id = p.pickup_address_id
      JOIN addresses delivery ON delivery.id = p.delivery_address_id
      WHERE p.tracking_code = $2`,

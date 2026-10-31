@@ -10,6 +10,7 @@ function PresenceConnection() {
   useEffect(() => {
     if (!user?.id) {
       usePresenceStore.getState().setConnected(false)
+      usePresenceStore.getState().setUnreadDirectMessages(0)
       return undefined
     }
 
@@ -29,6 +30,9 @@ function PresenceConnection() {
     })
     socket.on('presence:update', ({ userId, isOnline }) => {
       usePresenceStore.getState().setPresence(userId, isOnline)
+    })
+    socket.on('direct:unread-count', ({ count }) => {
+      usePresenceStore.getState().setUnreadDirectMessages(Number(count) || 0)
     })
     socket.on('connect_error', (error) => {
       usePresenceStore.getState().setConnectionError(error.message || 'اتصال سوکت برقرار نشد.')
