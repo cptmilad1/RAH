@@ -39,7 +39,7 @@ async function getUser(req, res, next) {
       [id],
     );
     if (result.rowCount == 0)
-      return HandleResult({ status: 403, message: "user not found", res });
+      return HandleResult({ status: 404, message: "user not found", res });
     const user = result.rows[0];
     return HandleResult({
       status: 200,
