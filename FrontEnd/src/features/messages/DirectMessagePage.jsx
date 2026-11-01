@@ -5,7 +5,6 @@ import { usePresenceStore } from '../presence/presenceStore'
 import { getDirectConversation } from './messagesApi'
 import MsgStatus from './components/msgStatus'
 
-
 function DirectMessagePage() {
   const { userId } = useParams()
   const [state, setState] = useState({ loading: true, error: '', sending: false, savingBlock: false })
@@ -78,7 +77,17 @@ function DirectMessagePage() {
 
   return (
     <main dir="rtl" className="min-h-screen bg-[#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
-      <MsgStatus conversation={conversation} toggleBlock={toggleBlock} state={state} />
+      <MsgStatus
+        conversation={conversation}
+        state={state}
+        currentUserId={currentUserId}
+        connected={connected}
+        socket={socket}
+        userId={userId}
+        setState={setState}
+        setConversation={setConversation}
+        messageEndRef={messageEndRef}
+      />
     </main>
   )
 }

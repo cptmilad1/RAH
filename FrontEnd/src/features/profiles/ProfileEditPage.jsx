@@ -8,6 +8,7 @@ import useProfile from './hooks/UseProfile'
 import { driverProfileEditSchema, profileEditSchema } from './profileEditSchema'
 import { afghanistanProvinces } from '../shipments/shipmentConstants'
 import Card from '../../global/Card'
+import LinkBtn from '../global/linkBtn'
 
 const fields = [
   { name: 'full_name', label: 'نام کامل', autoComplete: 'name', maxLength: 100 },
@@ -115,10 +116,7 @@ function ProfileEditPage() {
     <main ref={panelRef} className="min-h-screen bg-[radial-gradient(ellipse_at_76%_-12%,rgba(215,243,106,0.18),transparent_34%),#f6f7f2] px-4 py-5 text-[#17352e] sm:px-8 sm:py-8">
       <div className="mx-auto w-full max-w-[760px]">
         <header className="mb-5 flex items-center justify-between sm:mb-7">
-          <Link to={`/profile/${id}`} className="group inline-flex items-center gap-2 text-xs font-bold text-[#587366] transition hover:text-[#17352e]">
-            <span className="grid size-9 place-items-center rounded-xl border border-[#e0e8dc] bg-white text-base transition group-hover:-translate-x-0.5" aria-hidden="true">→</span>
-            بازگشت به پروفایل
-          </Link>
+          <LinkBtn link={`profile/${id}`} title="بازگشت به پروفایل" />
           <span className="flex items-center gap-2 text-sm font-black text-[#234a39]">
             <span className="grid size-8 place-items-center rounded-[11px] bg-[#d7f36a] text-base text-[#17352e]">ر</span>
             راه

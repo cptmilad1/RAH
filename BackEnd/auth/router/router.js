@@ -42,7 +42,7 @@ router.get("/driver-applications/me", authentication, getDriverApplication);
 router.patch("/admin/driver-applications/:userId/approve", authentication, authorize("admin"), approveDriverApplication);
 router.patch("/admin/driver-applications/:userId/reject", authentication, authorize("admin"), rejectDriverApplication);
 router.patch("/admin/users/:id/status", authentication, authorize("admin"), validator(accountStatusSchema), updateAccountStatus);
-router.get("/profile/:id", authentication, ownerShip, getUser);
+router.get("/profile/:id", authentication, getUser);
 router.patch("/profile/:id", authentication, ownerShip, avatarUpload, validator(updateProfileSchema), updateUser);
 router.get('/users/:id/block', authentication, getUserBlockStatus);
 router.put('/users/:id/block', authentication, updateUserBlock);
