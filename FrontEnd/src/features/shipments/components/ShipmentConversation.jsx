@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../../auth/authStore'
 import { usePresenceStore } from '../../presence/presenceStore'
 import Card from '../../../global/Card'
+import UserProfileLink from '../../../global/UserProfileLink'
 
 function ShipmentConversation({ trackingCode }) {
   const userId = useAuthStore((state) => state.user?.id)
@@ -80,7 +81,13 @@ function ShipmentConversation({ trackingCode }) {
         {messages.map((item) => (
           <div key={item.id} className={`flex ${String(item.senderId) === String(userId) ? 'justify-start' : 'justify-end'}`}>
             <article className={`max-w-[90%] rounded-2xl px-4 py-3 shadow-sm ${String(item.senderId) === String(userId) ? 'bg-[#f5df62] text-[#3d3513]' : 'bg-white text-[#17352e]'}`}>
-              <p className="mb-1 text-[11px] font-bold opacity-70">{item.senderName || 'کاربر'}</p>
+              <UserProfileLink
+                userId={item.senderId}
+                name={item.senderName || 'کاربر'}
+                image={item.senderImage}
+                imageClassName="size-6"
+                nameClassName="text-[11px] font-bold opacity-70"
+              />
               <p className="m-0 whitespace-pre-wrap break-words text-sm leading-6">{item.message}</p>
               <time className="mt-2 block text-left text-[10px] opacity-60">
                 {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.createdAt))}

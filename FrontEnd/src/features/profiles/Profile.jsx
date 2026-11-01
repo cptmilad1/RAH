@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { Link, useParams } from 'react-router-dom'
-import milad from '/imgs/milad.png'
 import useProfile from './hooks/UseProfile'
 import roleChecker from './utils/roleChecker'
 import InfoCard from '../../global/InfoCard'
 import { useAuthStore } from '../auth/authStore'
+import { getUserBlockStatus, blockUser, unblockUser } from './profileApi'
 
 function formatDate(value) {
   if (!value) return ''
@@ -25,10 +25,28 @@ function Profile() {
   const currentUser = useAuthStore((state) => state.user)
   const profileRef = useRef(null)
   const canEdit = currentUser?.role === 'admin' || String(currentUser?.id) === String(id)
+  const isOwnProfile = String(currentUser?.id) === String(id)
+  const [blockState, setBlockState] = useState({ loading: true, blockedByMe: false, blockedMe: false, error: '', saving: false })
 
   useEffect(() => {
     setUsers(id).catch(() => undefined)
   }, [id, setUsers])
+
+  useEffect(() => {
+    let active = true
+    if (isOwnProfile) {
+      setBlockState((state) => ({ ...state, loading: false }))
+      return undefined
+    }
+    getUserBlockStatus(id)
+      .then((status) => {
+        if (active) setBlockState({ ...status, loading: false, error: '', saving: false })
+      })
+      .catch((error) => {
+        if (active) setBlockState((state) => ({ ...state, loading: false, error: error.message || 'وضعیت مسدودسازی دریافت نشد.' }))
+      })
+    return () => { active = false }
+  }, [id, isOwnProfile])
 
   useEffect(() => {
     const root = profileRef.current
@@ -44,6 +62,16 @@ function Profile() {
   }, [])
 
   const roleLabel = roleChecker(users?.role)
+
+  async function toggleBlock() {
+    setBlockState((state) => ({ ...state, saving: true, error: '' }))
+    try {
+      const result = blockState.blockedByMe ? await unblockUser(id) : await blockUser(id)
+      setBlockState((state) => ({ ...state, blockedByMe: result.blockedByMe, saving: false }))
+    } catch (error) {
+      setBlockState((state) => ({ ...state, saving: false, error: error.message || 'تغییر وضعیت مسدودسازی ناموفق بود.' }))
+    }
+  }
 
   return (
     <main ref={profileRef} className="min-h-screen bg-[radial-gradient(ellipse_at_76%_-12%,rgba(215,243,106,0.18),transparent_34%),#f6f7f2] px-4 py-5 text-[#17352e] sm:px-8 sm:py-8">
@@ -62,7 +90,7 @@ function Profile() {
         <section data-profile-hero className="relative isolate overflow-hidden rounded-[20px] bg-[radial-gradient(circle_at_12%_100%,rgba(215,243,106,0.13),transparent_31%),linear-gradient(125deg,#123e32,#1c5942)] px-5 py-7 text-white sm:px-9 sm:py-9">
           <div aria-hidden="true" className="pointer-events-none absolute -left-14 -top-20 -z-10 size-64 rounded-full border border-white/[0.08] shadow-[0_0_0_26px_rgba(255,255,255,0.025),0_0_0_52px_rgba(255,255,255,0.02)]" />
           <div className="relative flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-6">
-            <img src={users?.image || milad} alt={`تصویر ${users?.name || 'کاربر'}`} className="size-[82px] shrink-0 rounded-[22px] border border-white/20 bg-white/10 object-cover p-1 shadow-[0_12px_30px_rgba(5,33,24,0.22)] sm:size-[102px] sm:rounded-[26px]" />
+            <img src={users?.image || '/imgs/default-avatar.svg'} alt={`تصویر ${users?.name || 'کاربر'}`} className="size-[82px] shrink-0 rounded-[22px] border border-white/20 bg-white/10 object-cover p-1 shadow-[0_12px_30px_rgba(5,33,24,0.22)] sm:size-[102px] sm:rounded-[26px]" />
             <div className="min-w-0 flex-1">
               <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[10px] font-bold text-[#d8e8bc]">
                 <i className="size-1.5 rounded-full bg-[#d7f36a]" />
@@ -84,7 +112,26 @@ function Profile() {
                 ویرایش پروفایل
               </Link>
             )}
+            {!isOwnProfile && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  to={`/messages/${id}`}
+                  className="inline-flex min-h-10 items-center rounded-xl border border-white/20 bg-white/[0.08] px-4 text-xs font-extrabold text-white transition hover:bg-white/[0.15]"
+                >
+                  ارسال پیام
+                </Link>
+                <button
+                  type="button"
+                  onClick={toggleBlock}
+                  disabled={blockState.loading || blockState.saving}
+                  className="inline-flex min-h-10 items-center rounded-xl border border-white/20 px-4 text-xs font-bold text-white transition hover:bg-white/[0.12] disabled:opacity-50"
+                >
+                  {blockState.saving ? 'در حال ثبت…' : blockState.blockedByMe ? 'رفع مسدودسازی' : 'مسدودکردن'}
+                </button>
+              </div>
+            )}
           </div>
+          {blockState.error && <p role="alert" className="mt-4 rounded-xl bg-white/10 px-4 py-3 text-xs text-[#ffe0d6]">{blockState.error}</p>}
         </section>
 
         <section aria-labelledby="profile-details-title" className="mt-6 sm:mt-8">

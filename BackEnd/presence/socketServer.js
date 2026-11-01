@@ -9,6 +9,12 @@ const {
   listParcelMessages,
   createParcelMessage,
 } = require('../Post/repositories/parcelConversationRepository')
+const {
+  getDirectConversation,
+  getUnreadMessageCount,
+  markConversationRead,
+  sendDirectMessage,
+} = require('../auth/repositories/directMessageRepository')
 
 function readCookie(cookieHeader, name) {
   const cookie = cookieHeader?.split(';').map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))
@@ -62,6 +68,93 @@ function attachPresence(io) {
     try {
       await socket.join(userRoom(userId))
       if (socket.data.user.role === 'admin') await socket.join('role:admin')
+      socket.emit('direct:unread-count', { count: await getUnreadMessageCount(userId) })
+
+      socket.on('direct:join', async (payload = {}, acknowledge = () => {}) => {
+        const respond = typeof acknowledge === 'function' ? acknowledge : () => {}
+        const targetId = String(payload.userId || '')
+        try {
+          if (!/^[1-9]\d*$/.test(targetId) || targetId === userId) {
+            respond({ error: 'شناسهٔ کاربر معتبر نیست.' })
+            return
+          }
+          const conversation = await getDirectConversation(userId, targetId)
+          if (!conversation) {
+            respond({ error: 'کاربر پیدا نشد.' })
+            return
+          }
+          await markConversationRead(userId, targetId)
+          const messages = conversation.messages
+          socket.emit('direct:history', { userId: targetId, messages })
+          io.to(userRoom(userId)).emit('direct:unread-count', {
+            count: await getUnreadMessageCount(userId),
+          })
+          respond({ success: true })
+        } catch (error) {
+          console.error('Direct chat join failed:', error.message)
+          respond({ error: 'بازکردن گفت‌وگو ناموفق بود.' })
+        }
+      })
+
+      socket.on('direct:read', async (payload = {}, acknowledge = () => {}) => {
+        const respond = typeof acknowledge === 'function' ? acknowledge : () => {}
+        const targetId = String(payload.userId || '')
+        try {
+          if (!/^[1-9]\d*$/.test(targetId) || targetId === userId) {
+            respond({ error: 'شناسهٔ کاربر معتبر نیست.' })
+            return
+          }
+          await markConversationRead(userId, targetId)
+          io.to(userRoom(userId)).emit('direct:unread-count', {
+            count: await getUnreadMessageCount(userId),
+          })
+          respond({ success: true })
+        } catch (error) {
+          console.error('Direct message read update failed:', error.message)
+          respond({ error: 'به‌روزرسانی وضعیت خواندن پیام ناموفق بود.' })
+        }
+      })
+
+      socket.on('direct:send', async (payload = {}, acknowledge = () => {}) => {
+        const respond = typeof acknowledge === 'function' ? acknowledge : () => {}
+        const targetId = String(payload.userId || '')
+        const message = typeof payload.message === 'string' ? payload.message.trim() : ''
+        try {
+          if (!/^[1-9]\d*$/.test(targetId) || targetId === userId) {
+            respond({ error: 'شناسهٔ کاربر معتبر نیست.' })
+            return
+          }
+          if (!message || message.length > 2000) {
+            respond({ error: 'پیام باید بین ۱ تا ۲۰۰۰ نویسه باشد.' })
+            return
+          }
+          const result = await sendDirectMessage(userId, targetId, message)
+          if (result.notFound) {
+            respond({ error: 'کاربر پیدا نشد.' })
+            return
+          }
+          if (result.blocked) {
+            respond({ error: 'ارسال پیام ممکن نیست؛ یکی از کاربران دیگری را مسدود کرده است.' })
+            return
+          }
+          io.to(userRoom(userId)).emit('direct:message', {
+            userId: targetId,
+            message: result.message,
+          })
+          io.to(userRoom(targetId)).emit('direct:message', {
+            userId,
+            message: result.message,
+          })
+          io.to(userRoom(targetId)).emit('direct:unread-count', {
+            count: await getUnreadMessageCount(targetId),
+          })
+          respond({ success: true, message: result.message })
+        } catch (error) {
+          console.error('Direct message send failed:', error.message)
+          respond({ error: 'ارسال پیام ناموفق بود.' })
+        }
+      })
+
       socket.on('parcel:join', async (payload = {}) => {
         try {
           const access = await findChatAccess(userId, String(payload.trackingCode || ''), socket.data.user.role)

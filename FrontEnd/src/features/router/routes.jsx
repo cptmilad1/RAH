@@ -10,6 +10,8 @@ const ResetPasswordPage = lazy(() => import('../login/pages/ResetPasswordPage'))
 const Dashboard = lazy(() => import('../dashboard/dashboard'))
 const InboxPage = lazy(() => import('../dashboard/InboxPage'))
 const InboxChatPage = lazy(() => import('../dashboard/InboxChatPage'))
+const MessagesPage = lazy(() => import('../messages/MessagesPage'))
+const DirectMessagePage = lazy(() => import('../messages/DirectMessagePage'))
 const Post = lazy(()=> import('../post/Post'))
 const Profile = lazy(() => import('../profiles/Profile'))
 const ProfileEditPage = lazy(() => import('../profiles/ProfileEditPage'))
@@ -33,6 +35,8 @@ function Routers() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
         <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
         <Route path="/inbox/:trackingCode" element={<ProtectedRoute><InboxChatPage /></ProtectedRoute>} />
+        <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
+        <Route path="/messages/:userId" element={<ProtectedRoute><DirectMessagePage /></ProtectedRoute>} />
         <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>}/>
         <Route path="/shipments" element={<ProtectedRoute><ShipmentPage /></ProtectedRoute>} />
         <Route path="/shipments/:trackingCode" element={<ProtectedRoute><ShipmentDetailsPage /></ProtectedRoute>} />

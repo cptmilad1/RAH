@@ -11,6 +11,7 @@ export default defineConfig({
         target: 'http://localhost:3000',
         ws: true,
       },
+      '/uploads': 'http://localhost:3000',
     },
     host: true
   },

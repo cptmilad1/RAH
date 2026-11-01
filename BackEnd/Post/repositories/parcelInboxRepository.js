@@ -4,7 +4,8 @@ async function findConversationsForUser(userId, role) {
   const result = await db.query(
     `SELECT parcel.id, parcel.tracking_code AS "trackingCode",
             incoming.message, incoming.created_at AS "createdAt",
-            incoming.sender_id AS "senderId", message_sender.full_name AS "senderName"
+            incoming.sender_id AS "senderId", message_sender.full_name AS "senderName",
+            COALESCE(message_sender.avatar_url, '/imgs/default-avatar.svg') AS "senderImage"
      FROM parcels parcel
      JOIN LATERAL (
        SELECT message.id, message.sender_id, message.message, message.created_at
