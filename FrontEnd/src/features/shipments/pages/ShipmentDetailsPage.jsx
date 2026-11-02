@@ -11,7 +11,7 @@ import {
   confirmShipmentHandoff,
   getShipment,
   updateShipmentStatus,
-} from '../shipmentsApi'
+} from '../api/shipmentsApi'
 
 function ShipmentDetailsPage() {
   const { trackingCode } = useParams()

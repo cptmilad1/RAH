@@ -1,22 +1,105 @@
-# RAH-project
-nothing for this time
+# راه (RAH)
 
-## Parcel shipments
+راه یک وب‌اپلیکیشن برای ثبت و پیگیری مرسوله، ارتباط میان فرستنده و گیرنده، و همکاری رانندگان است. کاربران از داشبورد می‌توانند مرسوله بسازند، وضعیت آن را پیگیری کنند و گفت‌وگوها و اعلان‌های مرتبط را ببینند.
 
-The authenticated shipment dashboard is available at `/shipments`. The API is mounted at `/api/parcels` and supports listing a user's shipments, creating a shipment, viewing tracking details, and cancelling an eligible shipment.
+## امکانات
 
-For an existing database, apply `DataBase/migrations/20261028_add_parcel_recipient_details.sql`, `DataBase/migrations/20261029_add_driver_parcel_marketplace.sql`, and `DataBase/migrations/20261030_driver_applications.sql` before using shipments and driver applications. New databases should use the updated `DataBase/schema/Schema.sql`.
+- ثبت، مشاهده، پیگیری و لغو مرسوله‌های مجاز
+- نمایش مرسوله‌های آمادهٔ پذیرش برای رانندگان تأییدشده
+- درخواست همکاری رانندگان و بررسی درخواست‌ها توسط مدیر
+- پیام‌های مستقیم، گفت‌وگوی مرسوله و نمایش وضعیت خوانده‌شدن پیام
+- نمایهٔ کاربر، بارگذاری تصویر نمایه و مسدودسازی کاربران
+- پنل مدیریت برای بررسی کاربران، نقش‌ها و درخواست‌های رانندگی
+- اتصال زنده با Socket.IO برای حضور کاربران و به‌روزرسانی‌های مرتبط
+- بازیابی گذرواژه و تأیید نشانی ایمیل
 
-Shipment UI is organized into small components under `FrontEnd/src/features/shipments/components`, with page state in `hooks/useShipmentPage.js` and shared labels/form defaults in `shipmentConstants.js`. Backend request handlers live in `BackEnd/Post/controller`, input validation in `BackEnd/Post/services`, and database queries/transactions in `BackEnd/Post/repositories`.
+## فناوری‌ها
 
-## Profiles and direct messages
+| بخش | فناوری‌ها |
+|---|---|
+| رابط کاربری | React 19، JavaScript، Vite 8 و Tailwind CSS 4 |
+| مسیریابی و وضعیت | React Router 7 و Zustand 5 |
+| فرم و اعتبارسنجی کاربر | React Hook Form و Zod |
+| حرکت و تصویرسازی | GSAP و Three.js |
+| سرور | Node.js، Express 5 و Socket.IO |
+| پایگاه داده | PostgreSQL و کتابخانهٔ `pg` |
+| احراز هویت | گذرواژهٔ هش‌شده با bcrypt، توکن‌های JWT و کوکی‌های HttpOnly |
+| محافظت‌های وب | Helmet، CORS محدودشده، محدودسازی درخواست و اعتبارسنجی داده‌ها |
 
-Users can update their profile photo from the profile editor. Multer accepts JPG, PNG, and WebP files up to 5 MB, verifies the image signature, and stores them under `BackEnd/uploads/avatars`. Apply `DataBase/migrations/20261031_add_user_profiles_and_direct_messages.sql` and `DataBase/migrations/20261031_add_direct_message_read_tracking.sql` to existing databases; new databases should use the updated schema. Direct conversations and user blocks are implemented in the small modules under `BackEnd/auth/repositories` and `BackEnd/auth/controller`, with the UI under `FrontEnd/src/features/messages`. Direct chat sends and receives over Socket.IO, and unread state is persisted with `direct_messages.read_at`.
+## ساختار پروژه
 
-## Driver applications and administration
+- `FrontEnd/src/features`: قابلیت‌های رابط کاربری، به تفکیک دامنه‌هایی مانند ورود، داشبورد، مرسوله‌ها، پیام‌ها، رانندگان و مدیریت
+- `BackEnd/auth`: احراز هویت، کاربران، پیام‌های مستقیم، میان‌افزارها و اعتبارسنجی
+- `BackEnd/Post`: API مرسوله‌ها، کنترلرها، سرویس‌های اعتبارسنجی و مخازن پایگاه داده
+- `BackEnd/presence`: حضور زنده و اتصال Socket.IO
+- `DataBase/schema/Schema.sql`: ساختار کامل پایگاه داده برای نصب تازه
+- `DataBase/migrations`: تغییرات مرحله‌ای پایگاه داده برای نصب‌های موجود
 
-Regular users can submit driver applications from `/driver-application`, including license and vehicle details. Applications create persistent notifications for administrators and are reviewed in `/admin`, where admins can approve drivers and promote regular users to admins. Driver application and admin UI logic is separated into feature APIs, Zustand stores, schemas, pages, and reusable components.
+## پیش‌نیازها
 
-## Live presence
+- Node.js و npm
+- PostgreSQL
+- اطلاعات SMTP برای ارسال ایمیل تأیید و بازیابی گذرواژه
 
-The backend runs Socket.IO on the existing HTTP server. Authenticated sockets join a private `user:<id>` room; presence is announced to connected clients and is only set offline after the last socket leaves that room. Socket.IO heartbeat/disconnect detection handles lost devices, and `logout-all` disconnects every socket for that user. The Vite dev server proxies `/socket.io` to the backend. If the backend is later scaled across multiple processes or hosts, configure a shared Socket.IO adapter so room membership and presence checks span all instances.
+نسخهٔ دقیق Node.js در مخزن قفل نشده است؛ نسخهٔ پشتیبانی‌شدهٔ LTS را برای توسعه و استقرار انتخاب کنید.
+
+## راه‌اندازی محلی
+
+۱. وابستگی‌ها را از ریشهٔ مخزن نصب کنید:
+
+```powershell
+npm install
+```
+
+۲. فایل `.env.example` را به `.env` کپی کنید و مقادیر محلی را تنظیم کنید. `.env` واقعی را در Git ثبت نکنید. برای JWT دو راز تصادفی، طولانی و متفاوت بسازید؛ رمز پایگاه داده و SMTP را نیز با مقادیر واقعی محیط خود جایگزین کنید.
+
+۳. برای پایگاه دادهٔ تازه، `DataBase/schema/Schema.sql` را روی PostgreSQL اجرا کنید. برای پایگاه دادهٔ موجود، migrationهای لازم را به‌ترتیب تاریخ اجرا کنید:
+
+```text
+DataBase/migrations/20261028_add_parcel_recipient_details.sql
+DataBase/migrations/20261029_add_driver_parcel_marketplace.sql
+DataBase/migrations/20261030_add_driver_applications.sql
+DataBase/migrations/20261030_parcel_chat_and_confirmations.sql
+DataBase/migrations/20261031_add_user_profiles_and_direct_messages.sql
+DataBase/migrations/20261031_add_direct_message_read_tracking.sql
+DataBase/migrations/20261102_hash_password_reset_tokens.sql
+```
+
+Migration بازیابی گذرواژه، توکن‌های قدیمی را باطل می‌کند تا توکن‌های خام قبلی از پایگاه داده حذف شوند.
+
+۴. سرور و رابط کاربری را از ریشهٔ مخزن اجرا کنید:
+
+```powershell
+npm run dev
+```
+
+رابط کاربری Vite به‌صورت پیش‌فرض روی `http://localhost:5173` اجرا می‌شود و API و Socket.IO را به سرور روی پورت `3000` می‌فرستد. اگر پورت‌ها را تغییر می‌دهید، نشانی سرور را در `FrontEnd/vite.config.js` و مقدار `PORT` را هماهنگ کنید.
+
+## فرمان‌های بررسی
+
+تست‌های سرور:
+
+```powershell
+cd BackEnd
+npm test
+```
+
+Lint و build رابط کاربری:
+
+```powershell
+cd FrontEnd
+npm run lint
+npm run build
+```
+
+## سهولت استفاده و زمان‌بندی
+
+ساختار feature-based رابط کاربری و تفکیک کنترلر، اعتبارسنجی و repository در سرور، تغییر و توسعهٔ بخش‌ها را نسبتاً سرراست می‌کند. اجرای محلی به نصب وابستگی‌ها، آماده‌بودن PostgreSQL، تنظیم `.env` و اجرای schema یا migrationها نیاز دارد؛ بنابراین زمان آماده‌سازی به وضعیت این پیش‌نیازها بستگی دارد. زمان توسعه یا SLA عملیاتی اندازه‌گیری‌شده‌ای در مخزن ثبت نشده است و نباید از روی کد تخمین قطعی تلقی شود.
+
+## نکات امنیتی و استقرار
+
+- فایل‌های `.env` و اطلاعات واقعی اتصال به سرویس‌ها را منتشر یا commit نکنید؛ از secret manager محیط استقرار استفاده کنید.
+- در استقرار، `NODE_ENV=production`، `FRONTEND_URL` و `APP_URL` را دقیق تنظیم و رازهای JWT را تصادفی، طولانی و متفاوت نگه دارید.
+- پایگاه داده را فقط در شبکهٔ موردنیاز در دسترس بگذارید و برای کاربر برنامه حداقل دسترسی لازم را تعریف کنید.
+- انتقال توکن‌های بازیابی گذرواژه به ذخیره‌سازی hash‌شده مستلزم اجرای migration ذکرشده پیش از deploy است.
+- برای اجرای چند نمونهٔ backend، adapter مشترک Socket.IO لازم است تا وضعیت حضور بین نمونه‌ها هماهنگ بماند.

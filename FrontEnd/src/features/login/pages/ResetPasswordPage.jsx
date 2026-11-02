@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { resetPassword } from '../../auth/authApi'
 import AuthField from '../components/AuthField'
 import AuthShell from '../components/AuthShell'
@@ -11,15 +11,16 @@ import translateMessage from '../utils/translator'
 
 function ResetPasswordPage() {
   const [status, setStatus] = useState(null)
-  const [searchParams] = useSearchParams()
+  const { hash } = useLocation()
   const navigate = useNavigate()
+  const token = new URLSearchParams(hash.slice(1)).get('token') || ''
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { token: searchParams.get('token') || '', password: '' },
+    defaultValues: { token, password: '' },
   })
 
   async function onSubmit({ token, password }) {

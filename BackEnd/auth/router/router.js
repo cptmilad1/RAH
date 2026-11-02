@@ -8,6 +8,7 @@ const updateProfileSchema = require("../schema/updateProfileSchema");
 const driverApplicationSchema = require("../schema/driverApplicationSchema");
 const roleChangeSchema = require("../schema/roleChangeSchema");
 const accountStatusSchema = require("../schema/accountStatusSchema");
+const resetPasswordSchema = require("../schema/resetPasswordSchema");
 const {
   loginUser,
   registerUser,
@@ -60,7 +61,7 @@ authRouter.post("/forgot-password", authLimit, forgotPassword);
 authRouter.post("/logout-all", authentication, logoutAll);
 authRouter.post("/auth/verify-email", authLimit, validator(verifyEmailSchema), verifyEmail);
 authRouter.post("/users/:id/role", authentication, authorize("admin"), validator(roleChangeSchema), changeRole);
-authRouter.post("/auth/reset-password", resetPassword);
+authRouter.post("/auth/reset-password", authLimit, validator(resetPasswordSchema), resetPassword);
 authRouter.get('/sessions', authentication, getSessions)
 authRouter.get('/sessions/:id', authentication, getSessions)
 authRouter.delete('/sessions/:id', authentication, deleteSession)

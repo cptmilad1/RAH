@@ -82,8 +82,10 @@ function AboutPage() {
   const storyRef = useRef(null)
   const storyTrackRef = useRef(null)
   const storyCanvasRef = useRef(null)
+  const storyProgressTrackRef = useRef(null)
   const storyProgressRef = useRef(null)
   const storyCounterRef = useRef(null)
+  const storyHintRef = useRef(null)
 
   useEffect(() => {
     const root = rootRef.current
@@ -451,51 +453,43 @@ function AboutPage() {
         new THREE.PointsMaterial({ color: 0xd7f36a, size: 0.024, transparent: true, opacity: 0.62 }),
       )
       scene.add(dust)
-      const storyPanels = [...track.querySelectorAll('[data-story-panel]')]
-
       const setStoryProgress = (progress) => {
         const storyPosition = progress * (stories.length - 1)
         const activeIndex = Math.min(Math.round(storyPosition), stories.length - 1)
         const lowerIndex = Math.floor(storyPosition)
         const upperIndex = Math.min(lowerIndex + 1, stories.length - 1)
         const colorMix = storyPosition - lowerIndex
-        if (!reduceMotion) {
+        if (storyCounterRef.current) {
+          storyCounterRef.current.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(stories.length).padStart(2, '0')}`
+          storyCounterRef.current.style.color = stories[activeIndex].foreground
+        }
+        if (storyProgressRef.current) {
+          storyProgressRef.current.style.width = `${Math.max(0, Math.min(progress, 1)) * 100}%`
+          storyProgressRef.current.style.backgroundColor = stories[activeIndex].accent
+        }
+        if (storyProgressTrackRef.current) {
+          storyProgressTrackRef.current.style.backgroundColor = `${stories[activeIndex].foreground}33`
+        }
+        if (storyHintRef.current) {
+          storyHintRef.current.style.color = `${stories[activeIndex].foreground}99`
+        }
+        groups.forEach((group, index) => {
+          group.visible = index === activeIndex
+        })
+        if (reduceMotion) {
+          track.querySelectorAll('[data-story-panel]').forEach((panel, index) => {
+            panel.style.backgroundColor = stories[index].background
+          })
+        } else {
           stage.style.backgroundColor = gsap.utils.interpolate(
             stories[lowerIndex].background,
             stories[upperIndex].background,
             colorMix,
           )
-        }
-        if (storyCounterRef.current) {
-          storyCounterRef.current.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(stories.length).padStart(2, '0')}`
-        }
-        if (storyProgressRef.current) {
-          storyProgressRef.current.style.transform = `scaleX(${Math.max(0.04, progress)})`
-        }
-        groups.forEach((group, index) => {
-          const opacity = Math.max(0, 1 - Math.abs(index - storyPosition))
-          group.visible = opacity > 0.005
-          group.traverse((object) => {
-            if (!object.material) return
-            const materials = Array.isArray(object.material) ? object.material : [object.material]
-            materials.forEach((material) => {
-              if (material.userData.baseOpacity === undefined) material.userData.baseOpacity = material.opacity
-              material.opacity = material.userData.baseOpacity * opacity
-            })
+          track.querySelectorAll('[data-story-panel]').forEach((panel) => {
+            panel.style.backgroundColor = 'transparent'
           })
-        })
-        storyPanels.forEach((panel, index) => {
-          if (reduceMotion) {
-            panel.style.backgroundColor = stories[index].background
-            return
-          }
-          const opacity = Math.max(0, 1 - Math.abs(index - storyPosition))
-          const color = stories[index].background
-          const red = Number.parseInt(color.slice(1, 3), 16)
-          const green = Number.parseInt(color.slice(3, 5), 16)
-          const blue = Number.parseInt(color.slice(5, 7), 16)
-          panel.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${1 - opacity})`
-        })
+        }
       }
 
       setStoryProgress(0)
@@ -527,12 +521,12 @@ function AboutPage() {
       const context = gsap.context(() => {
         if (reduceMotion) return
         gsap.to(track, {
-          xPercent: -80,
+          x: () => window.innerWidth - track.scrollWidth,
           ease: 'none',
           scrollTrigger: {
             trigger: stage,
             start: 'top top',
-            end: () => `+=${window.innerWidth * (stories.length - 1)}`,
+            end: () => `+=${Math.max(track.scrollWidth - window.innerWidth, 1)}`,
             scrub: 0.85,
             pin: true,
             anticipatePin: 1,
@@ -540,6 +534,7 @@ function AboutPage() {
             onUpdate: (self) => setStoryProgress(self.progress),
           },
         })
+        ScrollTrigger.refresh()
       }, stage)
 
       return () => {
@@ -662,8 +657,8 @@ function AboutPage() {
           </span>
           <span ref={storyCounterRef} className="font-mono text-xs font-bold tracking-[0.18em] text-white/80">01 / 05</span>
         </div>
-        <div className="pointer-events-none absolute inset-x-5 top-[58px] z-30 h-[2px] overflow-hidden rounded-full bg-white/20 sm:inset-x-9 sm:top-[72px] lg:inset-x-14">
-          <span ref={storyProgressRef} className="block h-full origin-right scale-x-[0.04] rounded-full bg-[#d7f36a]" />
+        <div ref={storyProgressTrackRef} className="pointer-events-none absolute inset-x-5 top-[58px] z-30 h-[2px] overflow-hidden rounded-full bg-white/20 sm:inset-x-9 sm:top-[72px] lg:inset-x-14">
+          <span ref={storyProgressRef} className="ml-auto block h-full w-0 rounded-full bg-[#d7f36a]" />
         </div>
 
         <div className="pointer-events-none absolute inset-y-[10%] left-0 z-10 w-[65%] sm:w-[59%] motion-reduce:hidden">
@@ -676,12 +671,12 @@ function AboutPage() {
               data-story-panel
               dir="rtl"
               className="relative flex h-full w-screen shrink-0 items-center overflow-hidden px-6 pb-8 pt-20 sm:px-10 lg:px-16 motion-reduce:min-h-[82svh] motion-reduce:w-full motion-reduce:shrink"
-              style={{ backgroundColor: story.background, color: story.foreground }}
+              style={{ backgroundColor: 'transparent', color: story.foreground }}
             >
               <span className="pointer-events-none absolute bottom-[-0.2em] left-[-0.04em] select-none font-black leading-none tracking-[-0.09em] opacity-[0.045] text-[clamp(18rem,39vw,42rem)]" aria-hidden="true">
                 {story.number}
               </span>
-              <div className="relative z-20 ml-auto w-full max-w-[650px] lg:w-[48%] motion-reduce:pt-[46svh]">
+              <div className="relative z-20 ml-auto w-[72%] max-w-[650px] lg:w-[48%] motion-reduce:w-full motion-reduce:pt-[46svh]">
                 <p className="mb-4 flex items-center gap-3 text-[11px] font-extrabold tracking-wide sm:text-xs" style={{ color: story.kicker }}>
                   <span className="h-px w-8" style={{ backgroundColor: story.accent }} />
                   {story.eyebrow}
@@ -700,7 +695,7 @@ function AboutPage() {
             </article>
           ))}
         </div>
-        <p className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 text-[10px] font-semibold text-white/55 sm:flex motion-reduce:hidden">
+        <p ref={storyHintRef} className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 text-[10px] font-semibold text-white/55 sm:flex motion-reduce:hidden">
           برای ادامه، اسکرول کنید <span aria-hidden="true">↓</span>
         </p>
       </section>

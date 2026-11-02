@@ -351,6 +351,7 @@ async function changePassword(req,res, next) {
         const passwordHash = await hashedPassword(newPassword)
         await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
         await db.query(`delete from refresh_tokens where user_id=$1`, [userId])
+        await db.query(`delete from password_reset_token where user_id=$1`, [userId])
         disconnectUserSockets(req, userId)
         clearAuthCookies(res)
         return HandleResult({ status: 200, message: "password changed! please login again...", res })
@@ -369,8 +370,11 @@ async function forgotPassword(req,res, next) {
         const userId = result.rows[0].id
         const resetToken = crypto.randomBytes(32).toString('hex')
         await db.query(`insert into password_reset_token (user_id, token, expire_at)
-          values ($1, $2, NOW() + INTERVAL '15 minutes')`,[userId ,resetToken])
-        const emailSent = await sendResetEmail(email, resetToken)
+          values ($1, $2, NOW() + INTERVAL '15 minutes')
+          on conflict (user_id) do update
+          set token = EXCLUDED.token, expire_at = EXCLUDED.expire_at, used_at = NULL`,
+          [userId, hashToken(resetToken)])
+        await sendResetEmail(email, resetToken)
         return HandleResult({
           status: 200,
           message: "If the account exists, a reset link has been sent.",
@@ -455,15 +459,34 @@ async function changeRole(req,res, next) {
 async function resetPassword(req,res, next) {
     try{
         const {token, newPassword} = req.body
-        const result = await db.query(`select user_id from password_reset_token
-          where token=$1 and expire_at > now() and used_at is null`,[token])
-        if(result.rowCount == 0) return HandleResult({ status: 400, message: "Invalid or expired reset token.", res })
-        const userId = result.rows[0].user_id
-        const passwordHash = await hashedPassword(newPassword)
-        await db.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`,[passwordHash, userId])
-        await db.query(`delete from refresh_tokens where user_id=$1`,[userId])
+        const client = await db.connect()
+        let transactionStarted = false
+        let userId
+        try {
+          await client.query('BEGIN')
+          transactionStarted = true
+          const result = await client.query(`select user_id from password_reset_token
+            where token=$1 and expire_at > now() and used_at is null
+            FOR UPDATE`, [hashToken(token)])
+          if (result.rowCount === 0) {
+            await client.query('ROLLBACK')
+            transactionStarted = false
+            return HandleResult({ status: 400, message: "Invalid or expired reset token.", res })
+          }
+          userId = result.rows[0].user_id
+          const passwordHash = await hashedPassword(newPassword)
+          await client.query(`update users set password_hash=$1, token_version=token_version+1 where id=$2`, [passwordHash, userId])
+          await client.query(`delete from refresh_tokens where user_id=$1`, [userId])
+          await client.query(`delete from password_reset_token where user_id=$1`, [userId])
+          await client.query('COMMIT')
+          transactionStarted = false
+        } catch (error) {
+          if (transactionStarted) await client.query('ROLLBACK')
+          throw error
+        } finally {
+          client.release()
+        }
         disconnectUserSockets(req, userId)
-        await db.query(`delete from password_reset_token where token=$1`,[token])
         return HandleResult({ status: 200, message: "Password reset successfully.", res })
     }catch(err){
         next(err)
