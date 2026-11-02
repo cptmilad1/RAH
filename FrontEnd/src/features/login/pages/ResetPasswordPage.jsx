@@ -6,7 +6,7 @@ import { resetPassword } from '../../auth/authApi'
 import AuthField from '../components/AuthField'
 import AuthShell from '../components/AuthShell'
 import AuthSubmitButton from '../components/AuthSubmitButton'
-import { resetPasswordSchema } from '../authSchemas'
+import { resetPasswordSchema } from '../schema/authSchemas'
 import translateMessage from '../utils/translator'
 
 function ResetPasswordPage() {

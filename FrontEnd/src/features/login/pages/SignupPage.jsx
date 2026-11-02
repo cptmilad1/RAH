@@ -6,7 +6,7 @@ import { register as createAccount } from '../../auth/authApi'
 import AuthField from '../components/AuthField'
 import AuthShell from '../components/AuthShell'
 import AuthSubmitButton from '../components/AuthSubmitButton'
-import { signupSchema } from '../authSchemas'
+import { signupSchema } from '../schema/authSchemas'
 import translateMessage from '../utils/translator'
 
 function SignupPage() {

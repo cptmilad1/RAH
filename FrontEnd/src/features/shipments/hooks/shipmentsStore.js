@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { cancelShipment, createShipment, getShipments } from './shipmentsApi'
+import { cancelShipment, createShipment, getShipments } from '../api/shipmentsApi'
 
 export const useShipmentsStore = create((set, get) => ({
   shipments: [],

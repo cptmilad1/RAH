@@ -1,4 +1,4 @@
-import request from '../store/hooks/api'
+import request from '../../store/hooks/api'
 
 export async function getUserBlockStatus(userId) {
   const response = await request(`/users/${encodeURIComponent(userId)}/block`, { method: 'GET' })

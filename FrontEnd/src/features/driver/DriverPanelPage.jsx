@@ -1,7 +1,7 @@
 import { useForm, useWatch } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
-import { useDriverParcelsStore } from './driverParcelsStore'
+import { useDriverParcelsStore } from './hooks/driverParcelsStore'
 import { useDriverParcels } from './hooks/useDriverParcels'
 import UserProfileLink from '../../global/UserProfileLink'
 

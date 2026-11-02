@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { initialShipmentForm } from '../shipmentConstants'
-import { useShipmentsStore } from '../shipmentsStore'
+import { useShipmentsStore } from './shipmentsStore'
 
 export function useShipmentPage() {
   const shipments = useShipmentsStore((state) => state.shipments)

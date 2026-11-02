@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getDriverApplication, submitDriverApplication } from './driverApplicationApi'
+import { getDriverApplication, submitDriverApplication } from '../api/driverApplicationApi'
 
 export const useDriverApplicationStore = create((set) => ({
   application: null,

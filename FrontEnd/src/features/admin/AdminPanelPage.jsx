@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useAuthStore } from '../auth/authStore'
-import { useAdminStore } from './adminStore'
+import { useAdminStore } from './hooks/adminStore'
 import Card from '../../global/Card'
 import Tabs from './components/Tabs'
 import FindForm from './components/findForm'

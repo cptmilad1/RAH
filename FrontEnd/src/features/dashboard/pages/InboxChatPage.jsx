@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import ShipmentConversation from '../shipments/components/ShipmentConversation'
-import { getShipment } from '../shipments/shipmentsApi'
+import ShipmentConversation from '../../shipments/components/ShipmentConversation'
+import { getShipment } from '../../shipments/shipmentsApi'
 
 function InboxChatPage() {
   const { trackingCode } = useParams()

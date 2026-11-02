@@ -7,7 +7,7 @@ import { useAuthStore } from '../../auth/authStore'
 import AuthField from '../components/AuthField'
 import AuthShell from '../components/AuthShell'
 import AuthSubmitButton from '../components/AuthSubmitButton'
-import { loginSchema } from '../authSchemas'
+import { loginSchema } from '../schema/authSchemas'
 import translateMessage from '../utils/translator'
 
 function LoginPage() {

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { acceptDriverParcel, getAvailableDriverParcels } from './driverParcelsApi'
+import { acceptDriverParcel, getAvailableDriverParcels } from '../api/driverParcelsApi'
 
 export const useDriverParcelsStore = create((set, get) => ({
   parcels: [],

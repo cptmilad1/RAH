@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Card from '../../global/Card'
-import UserProfileLink from '../../global/UserProfileLink'
-import { usePresenceStore } from '../presence/presenceStore'
-import { getDirectConversations } from './messagesApi'
+import Card from '../../../global/Card'
+import UserProfileLink from '../../../global/UserProfileLink'
+import { usePresenceStore } from '../../presence/presenceStore'
+import { getDirectConversations } from '../api/messagesApi'
 
 function MessagesPage() {
   const [result, setResult] = useState({ conversations: [], loading: true, error: '' })

@@ -1,6 +1,6 @@
 import { MdOutlineTextsms } from "react-icons/md";
 import { data, Link } from 'react-router-dom'
-import { blockUser, unblockUser } from '../profileApi'
+import { blockUser, unblockUser } from '../api/profileApi'
 import { ImBlocked } from "react-icons/im";
 import { FaUserCheck } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";

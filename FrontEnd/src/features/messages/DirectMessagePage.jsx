@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuthStore } from '../auth/authStore'
 import { usePresenceStore } from '../presence/presenceStore'
-import { getDirectConversation } from './messagesApi'
+import { getDirectConversation } from './api/messagesApi'
 import MsgStatus from './components/msgStatus'
 
 function DirectMessagePage() {

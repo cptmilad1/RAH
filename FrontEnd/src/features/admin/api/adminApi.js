@@ -1,4 +1,4 @@
-import request from '../store/hooks/api'
+import request from '../../store/hooks/api'
 
 export async function getAdminUsers() {
   const result = await request('/admin/users', { method: 'GET' })

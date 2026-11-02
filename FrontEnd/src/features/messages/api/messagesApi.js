@@ -1,4 +1,4 @@
-import request from '../store/hooks/api'
+import request from '../../store/hooks/api'
 
 export async function getDirectConversations() {
   const response = await request('/direct-messages', { method: 'GET' })

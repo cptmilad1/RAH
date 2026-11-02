@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useAuthStore } from '../auth/authStore'
-import { usePresenceStore } from '../presence/presenceStore'
-import ShipmentConversation from './components/ShipmentConversation'
-import ShipmentDetailsHeader from './components/ShipmentDetailsHeader'
-import ShipmentInformation from './components/ShipmentInformation'
-import ShipmentStatusHistory from './components/ShipmentStatusHistory'
+import { useAuthStore } from '../../auth/authStore'
+import { usePresenceStore } from '../../presence/presenceStore'
+import ShipmentConversation from '../components/ShipmentConversation'
+import ShipmentDetailsHeader from '../components/ShipmentDetailsHeader'
+import ShipmentInformation from '../components/ShipmentInformation'
+import ShipmentStatusHistory from '../components/ShipmentStatusHistory'
 import {
   confirmShipmentDelivery,
   confirmShipmentHandoff,
   getShipment,
   updateShipmentStatus,
-} from './shipmentsApi'
+} from '../shipmentsApi'
 
 function ShipmentDetailsPage() {
   const { trackingCode } = useParams()

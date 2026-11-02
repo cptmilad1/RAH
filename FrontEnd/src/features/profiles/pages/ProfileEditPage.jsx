@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import gsap from 'gsap'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
-import { useAuthStore } from '../auth/authStore'
-import useProfile from './hooks/UseProfile'
-import { driverProfileEditSchema, profileEditSchema } from './profileEditSchema'
-import { afghanistanProvinces } from '../shipments/shipmentConstants'
-import Card from '../../global/Card'
-import LinkBtn from '../global/linkBtn'
+import { useAuthStore } from '../../auth/authStore'
+import useProfile from '../hooks/UseProfile'
+import { driverProfileEditSchema, profileEditSchema } from '../schema/profileEditSchema'
+import { afghanistanProvinces } from '../../shipments/shipmentConstants'
+import Card from '../../../global/Card'
+import LinkBtn from '../../global/linkBtn'
 
 const fields = [
   { name: 'full_name', label: 'نام کامل', autoComplete: 'name', maxLength: 100 },

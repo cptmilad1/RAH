@@ -6,7 +6,7 @@ import { verifyEmail } from '../../auth/authApi'
 import AuthField from '../components/AuthField'
 import AuthShell from '../components/AuthShell'
 import AuthSubmitButton from '../components/AuthSubmitButton'
-import { verificationSchema } from '../authSchemas'
+import { verificationSchema } from '../schema/authSchemas'
 import translateMessage from '../utils/translator'
 
 function VerifyEmailPage() {

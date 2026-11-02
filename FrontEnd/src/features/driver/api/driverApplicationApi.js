@@ -1,4 +1,4 @@
-import request from '../store/hooks/api'
+import request from '../../store/hooks/api'
 
 export async function getDriverApplication() {
   const result = await request('/driver-applications/me', { method: 'GET' })

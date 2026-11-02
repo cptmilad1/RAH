@@ -1,5 +1,5 @@
 import { useDeferredValue, useEffect, useMemo } from 'react'
-import { useDriverParcelsStore } from '../driverParcelsStore'
+import { useDriverParcelsStore } from './driverParcelsStore'
 import { usePresenceStore } from '../../presence/presenceStore'
 
 export function useDriverParcels(search) {

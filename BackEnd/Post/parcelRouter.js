@@ -8,7 +8,7 @@ const {
   cancelParcel,
 } = require('./controller/parcelController')
 
-const router = express.Router()
+const parcelRouter = express.Router()
 const listAvailableParcels = require('./controller/listAvailableParcels')
 const acceptAvailableParcel = require('./controller/acceptAvailableParcel')
 const listParcelConversations = require('./controller/listParcelConversations')
@@ -18,16 +18,16 @@ const {
   confirmDeliveryHandler,
 } = require('./controller/parcelTransitions')
 
-router.use(authentication)
-router.get('/driver/available', authorize('driver'), listAvailableParcels)
-router.post('/driver/available/:trackingCode/accept', authorize('driver'), acceptAvailableParcel)
-router.patch('/:trackingCode/confirm-handoff', confirmHandoffHandler)
-router.patch('/:trackingCode/driver-status', authorize('driver'), updateDriverStatusHandler)
-router.patch('/:trackingCode/confirm-delivery', confirmDeliveryHandler)
-router.get('/conversations', listParcelConversations)
-router.get('/', listParcels)
-router.post('/', createParcel)
-router.patch('/:trackingCode/cancel', cancelParcel)
-router.get('/:trackingCode', getParcel)
+parcelRouter.use(authentication)
+parcelRouter.get('/driver/available', authorize('driver'), listAvailableParcels)
+parcelRouter.post('/driver/available/:trackingCode/accept', authorize('driver'), acceptAvailableParcel)
+parcelRouter.patch('/:trackingCode/confirm-handoff', confirmHandoffHandler)
+parcelRouter.patch('/:trackingCode/driver-status', authorize('driver'), updateDriverStatusHandler)
+parcelRouter.patch('/:trackingCode/confirm-delivery', confirmDeliveryHandler)
+parcelRouter.get('/conversations', listParcelConversations)
+parcelRouter.get('/', listParcels)
+parcelRouter.post('/', createParcel)
+parcelRouter.patch('/:trackingCode/cancel', cancelParcel)
+parcelRouter.get('/:trackingCode', getParcel)
 
-module.exports = router
+module.exports = parcelRouter

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { approveDriver, getAdminUsers, rejectDriver, updateAccountStatus, updateUserRole } from './adminApi'
+import { approveDriver, getAdminUsers, rejectDriver, updateAccountStatus, updateUserRole } from '../api/adminApi'
 
 export const useAdminStore = create((set, get) => ({
   users: [],

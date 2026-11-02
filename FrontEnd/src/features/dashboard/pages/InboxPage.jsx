@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { usePresenceStore } from '../presence/presenceStore'
-import { getInboxMessages } from './dashboardInboxApi'
-import Card from '../../global/Card'
-import UserProfileLink from '../../global/UserProfileLink'
+import { usePresenceStore } from '../../presence/presenceStore'
+import { getInboxMessages } from '../api/dashboardInboxApi'
+import Card from '../../../global/Card'
+import UserProfileLink from '../../../global/UserProfileLink'
 
 function formatMessageDate(value) {
   return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))

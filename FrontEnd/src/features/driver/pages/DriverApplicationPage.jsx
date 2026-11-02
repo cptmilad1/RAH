@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { useAuthStore } from '../auth/authStore'
-import { afghanistanProvinces } from '../shipments/shipmentConstants'
-import { useDriverApplicationStore } from './driverApplicationStore'
-import { driverApplicationSchema } from './driverApplicationSchema'
-import DriverApplicationField from './components/DriverApplicationField'
-import Card from '../../global/Card'
+import { useAuthStore } from '../../auth/authStore'
+import { afghanistanProvinces } from '../../shipments/shipmentConstants'
+import { useDriverApplicationStore } from '../hooks/driverApplicationStore'
+import { driverApplicationSchema } from '../schema/driverApplicationSchema'
+import DriverApplicationField from '../components/DriverApplicationField'
+import Card from '../../../global/Card'
 
 const initialValues = {
   province: '',

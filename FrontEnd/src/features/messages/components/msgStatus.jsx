@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import UserInfoMsgBox from "../pages/userInfo"
 import MsgSection from "../pages/msgSection"
-import { blockUser, unblockUser } from '../../profiles/profileApi'
+import { blockUser, unblockUser } from '../../profiles/api/profileApi'
 
 function MsgStatus({
   conversation,
