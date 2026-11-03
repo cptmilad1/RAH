@@ -8,7 +8,7 @@ function DashboardNavItem({ to, onClick, icon, label, active = false, unread = f
     <Element
       {...(to ? { to } : { type: 'button', onClick })}
       className={`${navBaseClass} ${to ? 'no-underline' : ''} ${active
-        ? 'bg-[#d7f36a]/[0.13] font-extrabold text-[#e7f5b5]'
+        ? 'bg-[#d7f36a]/[0.13] font-extrabold text-black'
         : 'font-semibold text-[#b8c9c0]'}`}
     >
       <span className={`${navIconClass} ${active ? 'text-[#d7f36a]' : ''}`} aria-hidden="true">{icon}</span>

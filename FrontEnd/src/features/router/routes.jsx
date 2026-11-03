@@ -20,6 +20,7 @@ const ShipmentDetailsPage = lazy(() => import('../shipments/pages/ShipmentDetail
 const DriverPanelPage = lazy(() => import('../driver/DriverPanelPage'))
 const DriverApplicationPage = lazy(() => import('../driver/pages/DriverApplicationPage'))
 const AdminPanelPage = lazy(() => import('../admin/AdminPanelPage'))
+const SettingsPage = lazy(() => import('../settings/SettingsPage'))
 
 function Routers() {
   return (
@@ -33,6 +34,7 @@ function Routers() {
         <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
         <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
         <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
         <Route path="/inbox/:trackingCode" element={<ProtectedRoute><InboxChatPage /></ProtectedRoute>} />

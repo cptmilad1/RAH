@@ -35,7 +35,11 @@ const authLimit = require('../middleware/rateLimite')
 const avatarUpload = require('../middleware/avatarUpload')
 const { getUserBlockStatus, updateUserBlock } = require('../controller/userBlockController')
 const directMessages = require('../controller/directMessageController')
+const { getSettings, updateSetting } = require('../controller/settingsController')
+const updateSettingsSchema = require('../schema/updateSettingsSchema')
 
+authRouter.get('/settings/me', authentication, getSettings);
+authRouter.patch('/settings/me', authentication, validator(updateSettingsSchema), updateSetting);
 authRouter.get("/users",authentication,ownerShip,authorize("admin"),getAllUsers);
 authRouter.get("/admin/users", authentication, authorize("admin"), listAdminUsers);
 authRouter.post("/driver-applications", authentication, validator(driverApplicationSchema), submitDriverApplication);
