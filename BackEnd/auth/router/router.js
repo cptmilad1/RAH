@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const authRouter = express.Router();
 const validator = require("../middleware/validator");
 const registerShema = require("../schema/registerSchema");
 const loginSchema = require("../schema/loginSchema");
@@ -8,6 +8,7 @@ const updateProfileSchema = require("../schema/updateProfileSchema");
 const driverApplicationSchema = require("../schema/driverApplicationSchema");
 const roleChangeSchema = require("../schema/roleChangeSchema");
 const accountStatusSchema = require("../schema/accountStatusSchema");
+const resetPasswordSchema = require("../schema/resetPasswordSchema");
 const {
   loginUser,
   registerUser,
@@ -34,36 +35,40 @@ const authLimit = require('../middleware/rateLimite')
 const avatarUpload = require('../middleware/avatarUpload')
 const { getUserBlockStatus, updateUserBlock } = require('../controller/userBlockController')
 const directMessages = require('../controller/directMessageController')
+const { getSettings, updateSetting } = require('../controller/settingsController')
+const updateSettingsSchema = require('../schema/updateSettingsSchema')
 
-router.get("/users",authentication,ownerShip,authorize("admin"),getAllUsers);
-router.get("/admin/users", authentication, authorize("admin"), listAdminUsers);
-router.post("/driver-applications", authentication, validator(driverApplicationSchema), submitDriverApplication);
-router.get("/driver-applications/me", authentication, getDriverApplication);
-router.patch("/admin/driver-applications/:userId/approve", authentication, authorize("admin"), approveDriverApplication);
-router.patch("/admin/driver-applications/:userId/reject", authentication, authorize("admin"), rejectDriverApplication);
-router.patch("/admin/users/:id/status", authentication, authorize("admin"), validator(accountStatusSchema), updateAccountStatus);
-router.get("/profile/:id", authentication, getUser);
-router.patch("/profile/:id", authentication, ownerShip, avatarUpload, validator(updateProfileSchema), updateUser);
-router.get('/users/:id/block', authentication, getUserBlockStatus);
-router.put('/users/:id/block', authentication, updateUserBlock);
-router.delete('/users/:id/block', authentication, updateUserBlock);
-router.get('/direct-messages', authentication, directMessages.listConversations);
-router.get('/direct-messages/unread-count', authentication, directMessages.getUnreadCount);
-router.get('/direct-messages/:userId', authentication, directMessages.getConversation);
-router.post('/direct-messages/:userId', authentication, directMessages.createMessage);
-router.post("/auth/register", authLimit, validator(registerShema), registerUser);
-router.post("/auth/login", authLimit, validator(loginSchema), loginUser);
-router.post("/logout", authentication, logoutUser);
-router.post("/auth/refresh", refreshToken);
-router.post("/change-password", authentication, changePassword);
-router.post("/forgot-password", authLimit, forgotPassword);
-router.post("/logout-all", authentication, logoutAll);
-router.post("/auth/verify-email", authLimit, validator(verifyEmailSchema), verifyEmail);
-router.post("/users/:id/role", authentication, authorize("admin"), validator(roleChangeSchema), changeRole);
-router.post("/auth/reset-password", resetPassword);
-router.get('/sessions', authentication, getSessions)
-router.get('/sessions/:id', authentication, getSessions)
-router.delete('/sessions/:id', authentication, deleteSession)
-router.get('/auth/delete-session/:id', authentication, deleteSession)
+authRouter.get('/settings/me', authentication, getSettings);
+authRouter.patch('/settings/me', authentication, validator(updateSettingsSchema), updateSetting);
+authRouter.get("/users",authentication,ownerShip,authorize("admin"),getAllUsers);
+authRouter.get("/admin/users", authentication, authorize("admin"), listAdminUsers);
+authRouter.post("/driver-applications", authentication, validator(driverApplicationSchema), submitDriverApplication);
+authRouter.get("/driver-applications/me", authentication, getDriverApplication);
+authRouter.patch("/admin/driver-applications/:userId/approve", authentication, authorize("admin"), approveDriverApplication);
+authRouter.patch("/admin/driver-applications/:userId/reject", authentication, authorize("admin"), rejectDriverApplication);
+authRouter.patch("/admin/users/:id/status", authentication, authorize("admin"), validator(accountStatusSchema), updateAccountStatus);
+authRouter.get("/profile/:id", authentication, getUser);
+authRouter.patch("/profile/:id", authentication, ownerShip, avatarUpload, validator(updateProfileSchema), updateUser);
+authRouter.get('/users/:id/block', authentication, getUserBlockStatus);
+authRouter.put('/users/:id/block', authentication, updateUserBlock);
+authRouter.delete('/users/:id/block', authentication, updateUserBlock);
+authRouter.get('/direct-messages', authentication, directMessages.listConversations);
+authRouter.get('/direct-messages/unread-count', authentication, directMessages.getUnreadCount);
+authRouter.get('/direct-messages/:userId', authentication, directMessages.getConversation);
+authRouter.post('/direct-messages/:userId', authentication, directMessages.createMessage);
+authRouter.post("/auth/register", authLimit, validator(registerShema), registerUser);
+authRouter.post("/auth/login", authLimit, validator(loginSchema), loginUser);
+authRouter.post("/logout", authentication, logoutUser);
+authRouter.post("/auth/refresh", refreshToken);
+authRouter.post("/change-password", authentication, changePassword);
+authRouter.post("/forgot-password", authLimit, forgotPassword);
+authRouter.post("/logout-all", authentication, logoutAll);
+authRouter.post("/auth/verify-email", authLimit, validator(verifyEmailSchema), verifyEmail);
+authRouter.post("/users/:id/role", authentication, authorize("admin"), validator(roleChangeSchema), changeRole);
+authRouter.post("/auth/reset-password", authLimit, validator(resetPasswordSchema), resetPassword);
+authRouter.get('/sessions', authentication, getSessions)
+authRouter.get('/sessions/:id', authentication, getSessions)
+authRouter.delete('/sessions/:id', authentication, deleteSession)
+authRouter.get('/auth/delete-session/:id', authentication, deleteSession)
 
-module.exports = router;
+module.exports = authRouter;

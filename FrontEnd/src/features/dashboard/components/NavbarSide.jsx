@@ -1,8 +1,13 @@
 import { useEffect } from "react"
 import DashboardNavItem from "./utils/dashboearNavItems"
 import gsap from 'gsap'
+import { IoSettingsSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 
 function NavbarSide({navItems, logout}) {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
   useEffect(() => {
       const context = gsap.context(() => {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -15,10 +20,15 @@ function NavbarSide({navItems, logout}) {
         })
   }, [])
     return (
-    <aside className="relative flex min-w-0 flex-col bg-[radial-gradient(circle_at_10%_82%,rgba(215,243,106,0.1),transparent_30%),linear-gradient(165deg,#123e32_0%,#0c3028_100%)] px-[18px] pt-[18px] pb-[13px] text-[#f3f7ef] sm:px-[22px] sm:pt-[25px] lg:sticky lg:top-0 lg:h-screen lg:px-[22px] lg:pt-[34px] lg:pb-[26px]">
-        <div data-dashboard-brand className="flex items-center gap-[13px] px-0 lg:px-[9px]">
-          <span className="grid size-[39px] shrink-0 place-items-center rounded-[13px] bg-[#d7f36a] text-[23px] font-black text-[#17352e] shadow-[0_8px_24px_rgba(215,243,106,0.16)] lg:size-[46px] lg:rounded-2xl lg:text-[25px]">ر</span>
-          <span className="grid gap-0.5 text-lg font-black lg:text-[21px]">راه<small className="text-[9px] font-medium text-[#a8c0b2] lg:text-[10px]">همراه شما در شهر</small></span>
+    <aside style={{ background: 'radial-gradient(circle at 10% 82%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 30%), linear-gradient(165deg, var(--green) 0%, var(--deep-green) 100%)' }} className="relative flex min-w-0 flex-col px-[18px] pt-[18px] pb-[13px] text-[#f3f7ef] sm:px-[22px] sm:pt-[25px] lg:sticky lg:top-0 lg:h-screen lg:px-[22px] lg:pt-[34px] lg:pb-[26px]">
+        <div data-dashboard-brand className="flex justify-between items-center gap-[13px] px-0 lg:px-[9px]">
+          <div className="flex w-full h-full gap-3">
+            <span style={{ backgroundColor: 'var(--accent)', color: 'var(--deep-green)' }} className="grid size-[39px] shrink-0 place-items-center rounded-[13px] text-[23px] font-black shadow-[0_8px_24px_rgba(215,243,106,0.16)] lg:size-[46px] lg:rounded-2xl lg:text-[25px]">ر</span>
+            <span className="grid gap-0.5 text-lg font-black lg:text-[21px]">راه<small className="text-[9px] font-medium text-[#a8c0b2] lg:text-[10px]">همراه شما در شهر</small></span>
+          </div>
+          <button type="button" aria-label={t('settings.title')} title={t('settings.title')} onClick={() => navigate('/settings')} style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 14%, transparent)', color: 'var(--accent)' }} className="grid size-[39px] shrink-0 place-items-center rounded-[13px] border-0 shadow-[0_8px_24px_rgba(215,243,106,0.16)] transition hover:bg-[#d7f36a]/[0.2] lg:size-[46px] lg:rounded-2xl">
+            <IoSettingsSharp className="text-xl text-black/50" />
+          </button>
         </div>
 
         <nav data-dashboard-nav className="overflow-hidden mt-[19px] flex gap-[7px] overflow-x-auto pb-[3px] lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible">

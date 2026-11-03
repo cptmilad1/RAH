@@ -1,12 +1,15 @@
 const { findParcelForUser } = require('../repositories/parcelReadRepository')
 const { createHttpError } = require('../services/parcelValidation')
 
+function canViewPrivateParcelFields(role, parcel) {
+  return role === 'admin' || parcel.isSender || parcel.isReceiver || parcel.isAssignedDriver
+}
+
 async function getParcel(req, res, next) {
   try {
     const parcel = await findParcelForUser(req.user.userId, req.params.trackingCode)
     if (!parcel) throw createHttpError(404, 'مرسوله پیدا نشد.')
-    const isPrivateViewer = req.user.role === 'admin' || req.user.role === 'driver' ||
-      parcel.isSender || parcel.isReceiver
+    const isPrivateViewer = canViewPrivateParcelFields(req.user.role, parcel)
     if (!isPrivateViewer) {
       const trackingDetails = {
         trackingCode: parcel.trackingCode,
@@ -36,3 +39,4 @@ async function getParcel(req, res, next) {
 }
 
 module.exports = getParcel
+module.exports.canViewPrivateParcelFields = canViewPrivateParcelFields

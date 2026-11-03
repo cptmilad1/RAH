@@ -1,11 +1,29 @@
 require('./config/loadEnv')
+if (process.env.NODE_ENV === 'production') {
+  const requiredProductionSettings = [
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET',
+    'FRONTEND_URL',
+    'APP_URL',
+  ]
+  const missingSettings = requiredProductionSettings.filter((name) => !process.env[name])
+  if (missingSettings.length) {
+    throw new Error(`Missing production settings: ${missingSettings.join(', ')}`)
+  }
+  if (process.env.JWT_SECRET.length < 32 || process.env.JWT_REFRESH_SECRET.length < 32) {
+    throw new Error('Production JWT secrets must each be at least 32 characters long.')
+  }
+  if (process.env.JWT_SECRET === process.env.JWT_REFRESH_SECRET) {
+    throw new Error('Production JWT secrets must be different.')
+  }
+}
 const http = require('node:http')
 const path = require('node:path')
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const cors = require('cors')
-const router = require('./taxi/app')
+const authRouter = require('./auth/router/router')
 const parcelRouter = require('./Post/parcelRouter')
 const errorHandler = require('./auth/middleware/errorHandler')
 const { Server } = require('socket.io')
@@ -29,7 +47,7 @@ app.use(express.json({ limit: '20kb' }))
 app.use(express.urlencoded({ extended: true, limit: '20kb' }))
 app.use(cookieParser())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
-app.use('/api', router)
+app.use('/api', authRouter)
 app.use('/api/parcels', parcelRouter)
 app.use(errorHandler)
 

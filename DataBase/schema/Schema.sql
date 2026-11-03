@@ -50,6 +50,19 @@ CREATE TABLE users (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE user_settings (
+    user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    theme VARCHAR(20) NOT NULL DEFAULT 'light'
+        CHECK (theme IN ('light', 'dark', 'system', 'sepia', 'contrast')),
+    font VARCHAR(20) NOT NULL DEFAULT 'vazirmatn'
+        CHECK (font IN ('vazirmatn', 'tahoma', 'arial', 'system', 'serif')),
+    language VARCHAR(5) NOT NULL DEFAULT 'fa'
+        CHECK (language IN ('fa', 'en')),
+    color VARCHAR(20) NOT NULL DEFAULT 'forest'
+        CHECK (color IN ('forest', 'ocean', 'violet', 'sunset', 'monochrome')),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE role_permissions (
     role_id BIGINT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
     permission_id BIGINT NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,
@@ -70,8 +83,8 @@ CREATE TABLE refresh_tokens (
 
 CREATE TABLE password_reset_token (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token TEXT NOT NULL UNIQUE,
+    user_id BIGINT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE, -- SHA-256 hash of the reset token; never store the raw token.
     expire_at TIMESTAMPTZ NOT NULL,
     used_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

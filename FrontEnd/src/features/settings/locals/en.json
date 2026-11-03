@@ -1,0 +1,45 @@
+{
+  "settings": {
+    "title": "App settings",
+    "subtitle": "Adjust the app's appearance and language to your preference.",
+    "back": "Back to dashboard",
+    "appearance": "Themes",
+    "appearanceDescription": "Choose how the app looks.",
+    "fonts": "Fonts",
+    "fontsDescription": "Choose the font used to display text.",
+    "privacy": "Privacy",
+    "privacyEmpty": "Privacy settings are not available yet.",
+    "language": "Language",
+    "languageDescription": "Choose the app display language.",
+    "colors": "Colors",
+    "colorsDescription": "Change the app's primary color palette.",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "sepia": "Sepia",
+      "contrast": "High contrast"
+    },
+    "fontsList": {
+      "vazirmatn": "Vazirmatn",
+      "tahoma": "Tahoma",
+      "arial": "Arial",
+      "system": "System font",
+      "serif": "Serif"
+    },
+    "languages": {
+      "fa": "فارسی",
+      "en": "English"
+    },
+    "colorsList": {
+      "forest": "Forest",
+      "ocean": "Ocean",
+      "violet": "Violet",
+      "sunset": "Sunset",
+      "monochrome": "Monochrome"
+    },
+    "saved": "Your settings are saved in the database.",
+    "saving": "Syncing settings with the database...",
+    "saveError": "Settings could not be saved to the database. Please try again."
+  }
+}

@@ -1,13 +1,42 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { getProfile, login as loginRequest, logout as logoutRequest } from './authApi'
+import { useSettingsStore } from '../settings/settingsStore'
 
-const normalizeUser = (nextUser = null) => {
-  if (!nextUser) return null
+const AUTH_STORAGE_KEY = 'rah-auth-storage'
+
+const sanitizeUser = (nextUser = null) => {
+  if (!nextUser || typeof nextUser !== 'object') return null
+
+  const safeUser = { ...nextUser }
+  const sensitiveFields = [
+    'password',
+    'passwordHash',
+    'token',
+    'accessToken',
+    'refreshToken',
+    'session',
+    'sessionToken',
+    'authToken',
+  ]
+
+  sensitiveFields.forEach((field) => {
+    delete safeUser[field]
+  })
 
   return {
-    ...nextUser,
-    role: nextUser.role || 'user',
+    ...safeUser,
+    role: safeUser.role || 'user',
+  }
+}
+
+const clearAuthStorage = () => {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.removeItem(AUTH_STORAGE_KEY)
+  } catch (error) {
+    console.warn('Failed to clear auth storage', error)
   }
 }
 
@@ -17,7 +46,7 @@ export const useAuthStore = create(
       user: null,
       loading: false,
       setUser: (nextUser) => {
-        const normalized = normalizeUser(nextUser)
+        const normalized = sanitizeUser(nextUser)
         set({ user: normalized })
         return normalized
       },
@@ -26,7 +55,8 @@ export const useAuthStore = create(
         try {
           const result = await loginRequest(payload)
           const profileResult = await getProfile(result.data.id)
-          const nextUser = normalizeUser({ ...result.data, ...profileResult.data })
+          await useSettingsStore.getState().loadForUser(result.data.id)
+          const nextUser = sanitizeUser({ ...result.data, ...profileResult.data })
           set({ user: nextUser })
           return nextUser
         } finally {
@@ -36,16 +66,18 @@ export const useAuthStore = create(
       refreshSession: async () => {
         const current = get().user
         if (!current?.id) {
+          clearAuthStorage()
           set({ user: null })
           return null
         }
 
         try {
           const profile = await getProfile(current.id)
-          const nextUser = normalizeUser({ ...current, ...profile.data })
+          const nextUser = sanitizeUser({ ...current, ...profile.data })
           set({ user: nextUser })
           return nextUser
         } catch {
+          clearAuthStorage()
           set({ user: null })
           return null
         }
@@ -55,19 +87,35 @@ export const useAuthStore = create(
         try {
           await logoutRequest().catch(() => undefined)
         } finally {
+          clearAuthStorage()
+          useSettingsStore.getState().resetForLogout()
           set({ user: null, loading: false })
         }
       },
     }),
     {
-      name: 'rah-auth-storage',
-      partialize: (state) => ({ user: state.user }),
+      name: AUTH_STORAGE_KEY,
+      storage: createJSONStorage(() => window.localStorage),
+      partialize: (state) => ({ user: sanitizeUser(state.user) }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          clearAuthStorage()
+          return
+        }
+
+        const hydratedUser = sanitizeUser(state?.user)
+        if (!hydratedUser) {
+          clearAuthStorage()
+        }
+      },
     },
   ),
 )
 
 if (typeof window !== 'undefined') {
   window.addEventListener('auth:session-expired', () => {
+    clearAuthStorage()
+    useSettingsStore.getState().resetForLogout()
     useAuthStore.getState().setUser(null)
   })
 }

@@ -3,7 +3,7 @@ import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
 import { usePresenceStore } from '../presence/presenceStore'
 import { useNavigate } from 'react-router-dom'
-import { getUnreadDirectMessageCount } from '../messages/messagesApi'
+import { getUnreadDirectMessageCount } from '../messages/api/messagesApi'
 import navBarItems from './utils/navItems'
 import NavbarSide from './components/NavbarSide'
 import HeaderAndProfile from './components/headerAndPRofile'
@@ -19,10 +19,11 @@ function Dashboard() {
   const { user, logout } = useAuth()
   const isOnline = usePresenceStore((state) => Boolean(user?.id && state.onlineUsers[String(user.id)]))
   const setUnreadDirectMessages = usePresenceStore((state) => state.setUnreadDirectMessages)
+  const unreadDirectMessages = usePresenceStore((state) => state.unreadDirectMessages)
   const dashboardRef = useRef(null)
   const navigate = useNavigate()
   const roleLabel = roleLabels[user?.role] || 'کاربر'
-  const navItems = navBarItems(user, navigate)
+  const navItems = navBarItems(user, unreadDirectMessages)
  
   
   

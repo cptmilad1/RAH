@@ -4,13 +4,11 @@ import gsap from 'gsap'
 import { useAuth } from '../auth/authStore'
 import CancelShipmentDialog from './components/CancelShipmentDialog'
 import CreateShipmentDialog from './components/CreateShipmentDialog'
-import ShipmentFilters from './components/ShipmentFilters'
-import ShipmentList from './components/ShipmentList'
 import ShipmentPageHeader from './components/ShipmentPageHeader'
 import ShipmentSidebar from './components/ShipmentSidebar'
 import ShipmentStats from './components/ShipmentStats'
 import { useShipmentPage } from './hooks/useShipmentPage'
-import Card from '../../global/Card'
+import ShipmentCards from './components/shipmentsCard'
 
 function ShipmentPage() {
   const { user, logout } = useAuth()
@@ -46,11 +44,7 @@ function ShipmentPage() {
     page.clearError()
   }
 
-  function openCancelDialog(shipment) {
-    page.setCancelTarget(shipment)
-    page.setCancelError('')
-    page.setCancelReason('')
-  }
+  
 
   return (
     <main ref={rootRef} dir="rtl" className="min-h-screen bg-[radial-gradient(ellipse_at_85%_0%,rgba(215,243,106,0.2),transparent_32%),#f5f7f1] text-[#17352e]">
@@ -59,24 +53,7 @@ function ShipmentPage() {
         <section className="min-w-0 px-4 py-7 sm:px-8 sm:py-10 lg:px-[clamp(28px,5vw,76px)] lg:py-12">
           <ShipmentPageHeader onCreate={openCreateDialog} onTrack={(code) => navigate(`/shipments/${encodeURIComponent(code)}`)} />
           <ShipmentStats stats={page.stats} loading={page.loading} />
-          <Card as="section" aria-label="فهرست مرسوله‌ها" variant="unstyled" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
-            <ShipmentFilters
-              activeFilter={page.activeFilter}
-              onFilterChange={page.setActiveFilter}
-              search={page.search}
-              onSearchChange={page.setSearch}
-            />
-            <ShipmentList
-              shipments={page.filteredShipments}
-              allShipments={page.shipments}
-              loading={page.loading}
-              error={page.error}
-              onRetry={page.fetchShipments}
-              onCreate={openCreateDialog}
-              user={user}
-              onCancel={openCancelDialog}
-            />
-          </Card>
+          <ShipmentCards user={user} openCreateDialog={openCreateDialog} />
           <p className="mt-5 text-center text-[11px] text-[#9aa49e]">اطلاعات مرسوله‌ها فقط برای فرستنده، گیرنده و افراد مجاز نمایش داده می‌شود.</p>
         </section>
       </div>

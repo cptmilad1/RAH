@@ -20,7 +20,7 @@ function HeaderAndProfile({navigate, user, isOnline, roleLabel}) {
     return (
         <header ref={headerRef} className="mb-[25px] flex items-start justify-between gap-[10px] sm:mb-[38px] sm:items-center sm:gap-6">
           <div ref={dashboardRef} className="overflow-hidden">
-            <p className="overflow-hidden mb-[11px] flex items-center gap-2 text-[11px] font-bold text-[#71867c] before:h-0.5 before:w-[18px] before:rounded before:bg-[#9eb65e] before:content-['']">داشبورد شما</p>
+            <p className="overflow-hidden mb-[11px] flex items-center gap-2 text-[11px] font-bold text-[#71867c] before:h-0.5 before:w-[18px] before:rounded before:bg-[#9eb65e] before:content-[''] p-2 rounded-2xl">داشبورد شما</p>
             <h1 className="overflow-hidden m-0 text-[22px] font-extrabold tracking-tight text-[#163a30] sm:text-[clamp(26px,3vw,37px)]">سلام، {user?.name || 'دوست عزیز'} <span className="text-[.72em]">👋</span></h1>
             <p className="overflow-hidden mt-2 max-w-[270px] text-[11px] leading-[1.9] text-[#839088] sm:max-w-none sm:text-[13px]">خوشحالیم که دوباره همراه مایی. امروز کجا می‌رویم؟</p>
           </div>

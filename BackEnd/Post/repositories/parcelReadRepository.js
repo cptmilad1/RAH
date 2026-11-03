@@ -22,10 +22,18 @@ async function findParcelsForUser(userId, role) {
        )
      JOIN addresses pickup ON pickup.id = p.pickup_address_id
      JOIN addresses delivery ON delivery.id = p.delivery_address_id
-     WHERE $1 IN ('admin', 'driver')
+     WHERE $1 = 'admin'
         OR p.sender_id = $2
         OR p.receiver_id = $2
         OR p.receiver_phone = (SELECT phone FROM users WHERE id = $2)
+        OR EXISTS (
+          SELECT 1
+          FROM parcel_assignments pa
+          JOIN driver_profiles dp ON dp.id = pa.driver_id
+          WHERE pa.parcel_id = p.id
+            AND dp.user_id = $2
+            AND pa.status IN ('accepted', 'completed')
+        )
      ORDER BY p.created_at DESC
      `,
     [role, userId],

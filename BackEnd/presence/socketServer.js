@@ -1,4 +1,7 @@
 require('../config/loadEnv')
+const readCookie = require('./utils/readCookies')
+
+
 
 const jwt = require('jsonwebtoken')
 const db = require('../../DataBase/base/dbBase')
@@ -16,16 +19,7 @@ const {
   sendDirectMessage,
 } = require('../auth/repositories/directMessageRepository')
 
-function readCookie(cookieHeader, name) {
-  const cookie = cookieHeader?.split(';').map((part) => part.trim()).find((part) => part.startsWith(`${name}=`))
-  if (!cookie) return null
 
-  try {
-    return decodeURIComponent(cookie.slice(name.length + 1))
-  } catch {
-    return null
-  }
-}
 
 function attachPresence(io) {
   const presenceManager = new PresenceManager(io)
