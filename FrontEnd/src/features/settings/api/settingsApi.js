@@ -1,4 +1,4 @@
-import request from '../store/hooks/api'
+import request from '../../store/hooks/api'
 
 export function getUserSettings() {
   return request('/settings/me', { method: 'GET' })

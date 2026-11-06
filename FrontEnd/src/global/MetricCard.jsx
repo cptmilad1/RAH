@@ -1,3 +1,4 @@
+import { localizeText } from '../features/settings/locals/localizedText.js'
 import Card from './Card'
 
 const layouts = {
@@ -82,17 +83,17 @@ function MetricCard({
     >
       {isHeader ? (
         <div className="flex items-center justify-between gap-2">
-          <Label className={layoutStyles.label}>{label}</Label>
-          {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{icon}</span>}
+          <Label className={layoutStyles.label}>{localizeText(label)}</Label>
+          {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{localizeText(icon)}</span>}
         </div>
       ) : (
         <>
-          {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{icon}</span>}
-          <Label className={`${layoutStyles.label} ${tone.label}`}>{label}</Label>
+          {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{localizeText(icon)}</span>}
+          <Label className={`${layoutStyles.label} ${tone.label}`}>{localizeText(label)}</Label>
         </>
       )}
-      <strong className={`${layoutStyles.value} ${tone.text} ${valueClassName}`}>{value}</strong>
-      {caption && <Caption className={`${layoutStyles.caption} ${tone.caption}`}>{caption}</Caption>}
+      <strong className={`${layoutStyles.value} ${tone.text} ${valueClassName}`}>{localizeText(value)}</strong>
+      {caption && <Caption className={`${layoutStyles.caption} ${tone.caption}`}>{localizeText(caption)}</Caption>}
     </Card>
   )
 }

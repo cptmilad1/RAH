@@ -1,3 +1,4 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import getUserActions from "./utils/getUserAction"
 
 function DeactiveUser({ user, updating, isCurrentUser, onSetRole, onApprove, onReject, onSetActive }) {
@@ -5,7 +6,7 @@ function DeactiveUser({ user, updating, isCurrentUser, onSetRole, onApprove, onR
         const actions = getUserActions({ user, updating, isCurrentUser, onSetRole, onApprove, onReject, onSetActive })
     return (
         <div className="flex flex-wrap gap-2 text-2xl">
-          {actions.map((action) => <button key={action.label} type="button" disabled={action.disabled} onClick={action.onClick} className={`${actionClass} ${action.className}`}>{action.label}</button>)}
+          {actions.map((action) => <button key={action.label} type="button" disabled={action.disabled} onClick={action.onClick} className={`${actionClass} ${action.className}`}>{localizeText(action.label)}</button>)}
         </div>
     )
 }

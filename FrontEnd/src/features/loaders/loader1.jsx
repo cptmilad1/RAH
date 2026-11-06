@@ -1,3 +1,4 @@
+import { localizeText } from '../settings/locals/localizedText.js'
 import { ClipLoader } from "react-spinners"
 
 function Loader() {
@@ -6,7 +7,7 @@ function Loader() {
         <div>{<ClipLoader size={35}/>}</div>
         <div className='flex gap-1'>
             <span>...</span>
-            <span>در حال بارگذاری اطلاعات</span>
+            <span>{localizeText("در حال بارگذاری اطلاعات")}</span>
         </div>
     </div>
   )

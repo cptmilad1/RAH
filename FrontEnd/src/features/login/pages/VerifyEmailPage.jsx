@@ -1,3 +1,4 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -44,32 +45,31 @@ function VerifyEmailPage() {
   return (
     <AuthShell
       mode="verify"
-      status={status}
-      heading={{
+      status={localizeText(status)}
+      heading={localizeText({
         eyebrow: 'فقط یک قدم مانده',
         title: 'تأیید ایمیل',
         description: email
           ? `کد ارسال‌شده به ${email} را وارد کنید تا حساب شما فعال شود.`
           : 'کد ارسال‌شده به ایمیلتان را وارد کنید تا حساب شما فعال شود.',
-      }}
+      })}
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthField
-          label="کد تأیید"
+          label={localizeText("کد تأیید")}
           dir="ltr"
           type="text"
           inputMode="numeric"
           maxLength={6}
           pattern="[0-9]{6}"
-          placeholder="کد ۶ رقمی"
+          placeholder={localizeText("کد ۶ رقمی")}
           autoComplete="one-time-code"
           registration={register('code')}
-          error={errors.code?.message}
+          error={localizeText(errors.code?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>تأیید و فعال‌سازی حساب</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{localizeText("تأیید و فعال‌سازی حساب")}</AuthSubmitButton>
       </form>
-      <p data-form-item className="mt-[17px] text-center text-[10px] text-[#829087]">
-        هنوز حساب نساخته‌اید؟ <Link to="/signup" className="font-bold text-[#326249] hover:underline">ثبت‌نام</Link>
+      <p data-form-item className="mt-[17px] text-center text-[10px] text-[#829087]">{localizeText("هنوز حساب نساخته‌اید؟")}{' '}<Link to="/signup" className="font-bold text-[#326249] hover:underline">{localizeText("ثبت‌نام")}</Link>
       </p>
     </AuthShell>
   )

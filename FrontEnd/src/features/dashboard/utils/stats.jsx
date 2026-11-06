@@ -8,7 +8,7 @@ function Statistics(user, roleLabel) {
       caption: user?.verify ? 'حساب شما آمادهٔ استفاده است' : 'برای فعال‌سازی، ایمیل خود را بررسی کنید',
     },
     { label: 'نوع حساب', icon: '✦', variant: 'white', value: roleLabel, caption: 'عضو خانوادهٔ راه' },
-    { label: 'ایمیل شما', icon: '✉', variant: 'white', value: user?.email || '—', valueClassName: 'font-[Arial,sans-serif] text-[14px]', caption: 'راه ارتباطی حساب کاربری' },
+    { label: 'ایمیل شما', icon: '✉', variant: 'white', value: user?.email || '—', valueClassName: 'text-[14px]', caption: 'راه ارتباطی حساب کاربری' },
   ]
     return stats
 }

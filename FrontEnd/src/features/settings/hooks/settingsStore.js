@@ -7,9 +7,9 @@ import {
   languageOptions,
   SETTINGS_STORAGE_KEY,
   themeOptions,
-} from './settingsOptions'
-import { getUserSettings, updateUserSetting } from './settingsApi'
-import i18n from './i18n'
+} from '../utils/settingsOptions'
+import { getUserSettings, updateUserSetting } from '../api/settingsApi'
+import i18n from '../locals/i18n'
 
 let settingsLoadPromise = null
 let settingsLoadGeneration = 0

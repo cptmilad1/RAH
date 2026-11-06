@@ -20,7 +20,7 @@ const ShipmentDetailsPage = lazy(() => import('../shipments/pages/ShipmentDetail
 const DriverPanelPage = lazy(() => import('../driver/DriverPanelPage'))
 const DriverApplicationPage = lazy(() => import('../driver/pages/DriverApplicationPage'))
 const AdminPanelPage = lazy(() => import('../admin/AdminPanelPage'))
-const SettingsPage = lazy(() => import('../settings/SettingsPage'))
+const SettingsPage = lazy(() => import('../settings/pages/SettingsPage'))
 
 function Routers() {
   return (

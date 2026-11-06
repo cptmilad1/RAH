@@ -1,3 +1,4 @@
+import { localizeText } from '../features/settings/locals/localizedText.js'
 const variants = {
   unstyled: '',
   surface: 'rounded-2xl border border-[#e6ebe4] bg-white shadow-[0_8px_24px_rgba(22,57,43,.035)]',
@@ -13,7 +14,7 @@ const variants = {
 function Card({ as: Element = 'div', variant = 'surface', className = '', children, ...props }) {
   return (
     <Element className={`${variants[variant] || variants.surface} ${className}`.trim()} {...props}>
-      {children}
+      {localizeText(children)}
     </Element>
   )
 }

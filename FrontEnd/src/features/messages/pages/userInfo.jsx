@@ -1,3 +1,4 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import Card from "../../../global/Card"
 
 function UserInfoMsgBox({ conversation, toggleBlock, state }) {
@@ -9,11 +10,11 @@ function UserInfoMsgBox({ conversation, toggleBlock, state }) {
                   alt=""
                   className="size-14 shrink-0 rounded-full bg-[#e7efd9] object-cover"
                 />
-                <span className="text-lg font-extrabold text-white">{conversation.otherUser.name}</span>
+                <span className="text-lg font-extrabold text-white">{localizeText(conversation.otherUser.name)}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={toggleBlock} disabled={state.savingBlock || (conversation.blockedMe && !conversation.blockedByMe)} className="rounded-xl border border-white/20 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">
-                  {state.savingBlock ? 'در حال ثبت…' : conversation.blockedByMe ? 'رفع مسدودسازی' : 'مسدودکردن'}
+                  {localizeText(state.savingBlock ? 'در حال ثبت…' : conversation.blockedByMe ? 'رفع مسدودسازی' : 'مسدودکردن')}
                 </button>
               </div>
             </Card>

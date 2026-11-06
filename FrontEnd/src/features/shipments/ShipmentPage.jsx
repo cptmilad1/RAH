@@ -1,3 +1,4 @@
+import { localizeText } from '../settings/locals/localizedText.js'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
@@ -54,7 +55,7 @@ function ShipmentPage() {
           <ShipmentPageHeader onCreate={openCreateDialog} onTrack={(code) => navigate(`/shipments/${encodeURIComponent(code)}`)} />
           <ShipmentStats stats={page.stats} loading={page.loading} />
           <ShipmentCards user={user} openCreateDialog={openCreateDialog} />
-          <p className="mt-5 text-center text-[11px] text-[#9aa49e]">اطلاعات مرسوله‌ها فقط برای فرستنده، گیرنده و افراد مجاز نمایش داده می‌شود.</p>
+          <p className="mt-5 text-center text-[11px] text-[#9aa49e]">{localizeText("اطلاعات مرسوله‌ها فقط برای فرستنده، گیرنده و افراد مجاز نمایش داده می‌شود.")}</p>
         </section>
       </div>
       <CreateShipmentDialog
@@ -64,12 +65,12 @@ function ShipmentPage() {
         onChange={page.updateFormField}
         onSubmit={page.submitShipment}
         saving={page.saving}
-        error={page.formError || (page.formOpen ? page.error : '')}
+        error={localizeText(page.formError || (page.formOpen ? page.error : ''))}
       />
       <CancelShipmentDialog
         shipment={page.cancelTarget}
         reason={page.cancelReason}
-        error={page.cancelError}
+        error={localizeText(page.cancelError)}
         onReasonChange={page.setCancelReason}
         onSubmit={page.submitCancellation}
         onClose={() => page.setCancelTarget(null)}

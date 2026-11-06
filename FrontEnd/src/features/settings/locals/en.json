@@ -9,6 +9,49 @@
     "fontsDescription": "Choose the font used to display text.",
     "privacy": "Privacy",
     "privacyEmpty": "Privacy settings are not available yet.",
+    "privacySection": {
+      "description": "Manage your password, review active devices, and sign out of active sessions.",
+      "tabs": {
+        "activity": "Activity",
+        "password": "Change password"
+      },
+      "password": {
+        "title": "Change password"
+      },
+      "form": {
+        "oldPassword": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password",
+        "submit": "Save changes",
+        "saving": "Saving...",
+        "success": "Password changed successfully. Please sign in again.",
+        "failure": "Password could not be changed. Please try again.",
+        "validation": {
+          "required": "Please fill in all fields.",
+          "length": "New password must be at least 8 characters long.",
+          "match": "New password and confirmation must match."
+        }
+      },
+      "sessions": {
+        "title": "Active devices",
+        "description": "Manage your active sessions across devices.",
+        "logoutAll": "Log out of all sessions",
+        "loggingOutAll": "Signing out...",
+        "logout": "Log out",
+        "loggingOut": "Signing out...",
+        "loadError": "Failed to load active sessions.",
+        "logoutAllError": "Could not sign out of all sessions.",
+        "logoutError": "Failed to sign out from this session.",
+        "empty": "No active sessions were found for this account.",
+        "loading": "Loading active devices...",
+        "retry": "Retry",
+        "unknownDevice": "Unknown device",
+        "ip": "IP",
+        "createdAt": "Created",
+        "expiresAt": "Expires",
+        "device": "Device"
+      }
+    },
     "language": "Language",
     "languageDescription": "Choose the app display language.",
     "colors": "Colors",

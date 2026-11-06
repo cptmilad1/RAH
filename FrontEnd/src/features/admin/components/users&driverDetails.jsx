@@ -1,9 +1,10 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import AdminUserCard from "./AdminUserCard"
 
 function UsersAndDriversDetails({loading, currentUser, updatingId, filteredUsers, setUserRole, approveDriver, rejectDriver, setAccountActive }) {
     return (
-        <section aria-label="فهرست کاربران" className="grid gap-3 p-4 sm:p-6">
-            {loading ? <p role="status" className="py-12 text-center text-sm text-[#829188]">در حال دریافت کاربران…</p>
+        <section aria-label={localizeText("فهرست کاربران")} className="grid gap-3 p-4 sm:p-6">
+            {loading ? <p role="status" className="py-12 text-center text-sm text-[#829188]">{localizeText("در حال دریافت کاربران…")}</p>
               : filteredUsers.length ? filteredUsers.map((user) => <div data-admin-user key={user.id}>
                 <AdminUserCard
                   user={user}
@@ -16,8 +17,8 @@ function UsersAndDriversDetails({loading, currentUser, updatingId, filteredUsers
                 />
               </div>)
                 : <div className="py-12 text-center">
-                  <p className="mb-1 text-sm font-bold text-[#4c6858]">نتیجه‌ای پیدا نشد</p>
-                  <p className="m-0 text-xs text-[#89958e]">عبارت جست‌وجو یا فیلترها را تغییر دهید.</p>
+                  <p className="mb-1 text-sm font-bold text-[#4c6858]">{localizeText("نتیجه‌ای پیدا نشد")}</p>
+                  <p className="m-0 text-xs text-[#89958e]">{localizeText("عبارت جست‌وجو یا فیلترها را تغییر دهید.")}</p>
                 </div>}
           </section>
     )

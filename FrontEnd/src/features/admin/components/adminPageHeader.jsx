@@ -1,3 +1,4 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import SplitType from "split-type";
@@ -22,13 +23,13 @@ function Header({ fetchUsers, loading, filteredUsers }) {
     <HeaderBackward />
     <header data-admin-header className="mb-7 flex flex-wrap items-center justify-between gap-4">
       <div data-content className="overflow-hidden mb-10 flex flex-col gap-4">
-        <p className="mb-2 mt-5 text-xs font-bold text-[#789083]">مدیریت سامانه</p>
-        <h1 ref={panelRef} className="m-0 text-2xl font-black text-[#163a30] sm:text-3xl">پنل ادمین</h1>
-        <p ref={descriptionRef} className="mb-0 mt-2 text-sm text-[#7b8c82] flex">مدیریت کاربران، درخواست‌های رانندگی و وضعیت حساب‌ها</p>
+        <p className="mb-2 mt-5 text-xs font-bold text-[#789083]">{localizeText("مدیریت سامانه")}</p>
+        <h1 ref={panelRef} className="m-0 text-2xl font-black text-[#163a30] sm:text-3xl">{localizeText("پنل ادمین")}</h1>
+        <p ref={descriptionRef} className="mb-0 mt-2 text-sm text-[#7b8c82] flex">{localizeText("مدیریت کاربران، درخواست‌های رانندگی و وضعیت حساب‌ها")}</p>
       </div>
       <div ref={buttonRef} className="flex flex-wrap gap-2">
-        <button type="button" onClick={fetchUsers} disabled={loading} className="min-h-11 rounded-xl border border-[#dce6dc] bg-white px-4 text-xs font-bold text-[#315946] disabled:opacity-60">↻ تازه‌سازی فهرست</button>
-        <button type="button" onClick={() => exportUsers(filteredUsers)} disabled={!filteredUsers.length} className="min-h-11 rounded-xl bg-[#174c3c] px-4 text-xs font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-50">↓ خروجی CSV</button>
+        <button type="button" onClick={fetchUsers} disabled={loading} className="min-h-11 rounded-xl border border-[#dce6dc] bg-white px-4 text-xs font-bold text-[#315946] disabled:opacity-60">{localizeText("↻ تازه‌سازی فهرست")}</button>
+        <button type="button" onClick={() => exportUsers(filteredUsers)} disabled={!filteredUsers.length} className="min-h-11 rounded-xl bg-[#174c3c] px-4 text-xs font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-50">{localizeText("↓ خروجی CSV")}</button>
       </div>
     </header>
   </>

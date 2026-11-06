@@ -1,3 +1,4 @@
+import { localizeText } from '../../settings/locals/localizedText.js'
 import MetricCard from '../../../global/MetricCard'
 
 function ShipmentStats({ stats, loading }) {
@@ -5,9 +6,9 @@ function ShipmentStats({ stats, loading }) {
 
   return (
     <div className="mb-7 grid gap-3 sm:grid-cols-3">
-      <MetricCard label="کل مرسوله‌ها" value={number(stats.total)} caption="آخرین ۱۰۰ مرسولهٔ ثبت‌شده" />
-      <MetricCard label="در جریان" value={number(stats.active)} caption="از ثبت تا تحویل نهایی" variant="highlight" />
-      <MetricCard label="تحویل موفق" value={number(stats.delivered)} caption="رسیده به مقصد" />
+      <MetricCard label={localizeText("کل مرسوله‌ها")} value={localizeText(number(stats.total))} caption={localizeText("آخرین ۱۰۰ مرسولهٔ ثبت‌شده")} />
+      <MetricCard label={localizeText("در جریان")} value={localizeText(number(stats.active))} caption={localizeText("از ثبت تا تحویل نهایی")} variant="highlight" />
+      <MetricCard label={localizeText("تحویل موفق")} value={localizeText(number(stats.delivered))} caption={localizeText("رسیده به مقصد")} />
     </div>
   )
 }

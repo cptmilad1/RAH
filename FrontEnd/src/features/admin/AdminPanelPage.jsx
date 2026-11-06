@@ -1,3 +1,4 @@
+import { localizeText } from '../settings/locals/localizedText.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useAuthStore } from '../auth/authStore'
@@ -97,8 +98,8 @@ function AdminPanelPage() {
       <div className="mx-auto max-w-[1320px]">
         <Header fetchUsers={fetchUsers} loading={loading} filteredUsers={filteredUsers} />
         <DetailsCard users={users} />
-        {error && <p role="alert" className="mb-4 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{error}</p>}
-        {notice && <p role="status" className="mb-4 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{notice}</p>}
+        {error && <p role="alert" className="mb-4 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{localizeText(error)}</p>}
+        {notice && <p role="status" className="mb-4 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{localizeText(notice)}</p>}
         <Card as="section" variant="unstyled" className="overflow-hidden rounded-[22px] border border-[#e5ebe3] bg-white shadow-[0_18px_52px_rgba(22,57,43,.045)]">
           <FindForm
             searchInput={searchInput}
@@ -113,8 +114,8 @@ function AdminPanelPage() {
           />
           <Tabs activeTab={activeTab} setActiveTab={setActiveTab} users={users} />
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 sm:px-6">
-            <p className="m-0 text-xs text-[#829188]">نمایش {filteredUsers.length} از {users.length} حساب</p>
-            <button type="button" onClick={clearFilters} className="text-xs font-bold text-[#547460] hover:text-[#1c5942]">پاک‌کردن جست‌وجو و فیلترها</button>
+            <p className="m-0 text-xs text-[#829188]">{localizeText("نمایش")}{' '}{localizeText(filteredUsers.length)}{' '}{localizeText("از")}{' '}{localizeText(users.length)}{' '}{localizeText("حساب")}</p>
+            <button type="button" onClick={clearFilters} className="text-xs font-bold text-[#547460] hover:text-[#1c5942]">{localizeText("پاک‌کردن جست‌وجو و فیلترها")}</button>
           </div>
           <UsersAndDriversDetails
             loading={loading}

@@ -1,3 +1,5 @@
+import i18n from '../../settings/locals/i18n'
+
 const translatedMessages = {
   'Your account has been created.': 'حساب کاربری شما با موفقیت ساخته شد.',
   'Password updated. Sign in with your new password.': 'گذرواژه با موفقیت تغییر کرد؛ حالا با گذرواژهٔ جدید وارد شوید.',
@@ -60,6 +62,13 @@ const translatedMessages = {
   'If the account exists, a reset link has been sent.': 'اگر این حساب وجود داشته باشد، پیوند بازیابی برای آن ارسال شده است.',
 }
 function translateMessage(message, fallback) {
+  if (i18n.language?.startsWith('en')) {
+    if (message?.startsWith('Email service is not configured.')) {
+      return 'Email delivery is not configured. Please contact the application administrator.'
+    }
+    return message || fallback
+  }
+
   if (message?.startsWith('Email service is not configured.')) {
     return 'ارسال ایمیل هنوز تنظیم نشده است. مدیر برنامه باید تنظیمات SMTP را در فایل محیطی بک‌اند کامل کند.'
   }
