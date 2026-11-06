@@ -6,7 +6,7 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next'
 
-function NavbarSide({navItems, logout}) {
+function NavbarSide({navItems}) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   useEffect(() => {
@@ -32,7 +32,7 @@ function NavbarSide({navItems, logout}) {
           </button>
         </div>
 
-        <nav data-dashboard-nav className="overflow-hidden mt-[19px] flex gap-[7px] overflow-x-auto pb-[3px] lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible">
+        <nav data-dashboard-nav aria-label={t('ناوبری اصلی')} className="dashboard-nav-scroll mt-[19px] flex gap-[7px] overflow-x-auto overflow-y-hidden pb-2 lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible lg:pb-0">
           {navItems.map((item) => <DashboardNavItem key={item.label} {...item} />)}
         </nav>
 
@@ -41,8 +41,6 @@ function NavbarSide({navItems, logout}) {
             <span className="grid size-8 place-items-center rounded-[11px] bg-[#d7f36a]/[0.14] font-extrabold text-[#d7f36a]">{i18n.t("؟")}</span>
             <span className="grid gap-1"><strong className="text-[10px]">{i18n.t("نیاز به راهنمایی دارید؟")}</strong><small className="text-[9px] text-[#a7bcb0]">{i18n.t("ما کنار شما هستیم.")}</small></span>
           </div>
-          <button className="flex w-full items-center justify-center gap-[13px] rounded-[14px] border border-white/[0.12] bg-transparent px-4 py-3.5 text-[13px] font-semibold text-[#d2ded6] transition hover:border-white/30 hover:bg-white/[0.07] hover:text-white" type="button" onClick={logout}>
-            <span aria-hidden="true" className="text-lg">↪</span>{' '}{i18n.t("خروج از حساب")}</button>
         </div>
       </aside>
     )

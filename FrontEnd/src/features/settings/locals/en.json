@@ -1,5 +1,7 @@
 {
   "settings.title": "App settings",
+  "خروج": "Log out",
+  "داشبورد": "Dashboard",
   "settings.subtitle": "Adjust the app's appearance and language to your preference.",
   "settings.back": "Back to dashboard",
   "settings.appearance": "Themes",

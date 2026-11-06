@@ -6,7 +6,7 @@ import { usePresenceStore } from "../presence/presenceStore"
 function Layout({children}){
     const {unreadDirectMessages} = usePresenceStore()
     const {user,logout} = useAuth()
-    const navItems = navBarItems(user,unreadDirectMessages)
+    const navItems = navBarItems(user, unreadDirectMessages, logout)
     return(
         <div className="flex min-h-screen w-full flex-col lg:flex-row">
             <NavbarSide logout={logout} navItems={navItems}/>
