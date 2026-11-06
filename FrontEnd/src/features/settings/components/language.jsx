@@ -1,4 +1,3 @@
-import { localizeText } from '../locals/localizedText.js'
 import { useTranslation } from "react-i18next";
 import OptionButton from "./optionsBtn";
 import SettingsSection from "./settingSection";
@@ -12,7 +11,7 @@ function SelectLang({setPreference}){
     await setPreference('language', nextLanguage)
   }
     return (
-        <SettingsSection title={localizeText(t('settings.language'))} description={localizeText(t('settings.languageDescription'))}>
+        <SettingsSection title={t('settings.language')} description={t('settings.languageDescription')}>
             <div className="grid grid-cols-2 gap-3">
               {languageOptions.map((option) => (
                 <OptionButton
@@ -20,7 +19,7 @@ function SelectLang({setPreference}){
                   active={language === option}
                   onClick={() => changeLanguage(option)}
                 >
-                  {localizeText(t(`settings.languages.${option}`))}
+                  {t(`settings.languages.${option}`)}
                 </OptionButton>
               ))}
             </div>

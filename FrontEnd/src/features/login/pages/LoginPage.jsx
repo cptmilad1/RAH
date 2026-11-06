@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -71,48 +71,48 @@ function LoginPage() {
   return (
     <AuthShell
       mode="login"
-      status={localizeText(status)}
-      heading={localizeText({
+      status={status}
+      heading={{
         eyebrow: 'خوش برگشتید',
         title: 'ورود به حساب',
         description: 'برای ادامهٔ مسیر، وارد حساب خود شوید.',
-      })}
+      }}
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthField
-          label={localizeText("نشانی ایمیل")}
+          label={i18n.t("نشانی ایمیل")}
           type="email"
           dir="ltr"
           placeholder="name@example.com"
           autoComplete="email"
           registration={register('email')}
-          error={localizeText(errors.email?.message)}
+          error={i18n.t(errors.email?.message)}
         />
         <AuthField
-          label={localizeText("گذرواژه")}
+          label={i18n.t("گذرواژه")}
           type="password"
           dir="ltr"
-          placeholder={localizeText("گذرواژهٔ خود را وارد کنید")}
+          placeholder={i18n.t("گذرواژهٔ خود را وارد کنید")}
           autoComplete="current-password"
           registration={register('password')}
-          error={localizeText(errors.password?.message)}
+          error={i18n.t(errors.password?.message)}
         />
 
         <div data-form-item className="flex items-center justify-between gap-3">
           <span className="inline-flex items-center gap-[7px] text-[9px] text-[#94a098]">
-            <i className="size-1.5 rounded-full bg-[#84ac75]" />{' '}{localizeText("ارتباط شما امن است")}</span>
+            <i className="size-1.5 rounded-full bg-[#84ac75]" />{' '}{i18n.t("ارتباط شما امن است")}</span>
           <button
             type="button"
             disabled={isSubmitting || isForgotBusy}
             onClick={onForgotPassword}
             className="py-[3px] text-[10px] font-extrabold text-[#326249] transition hover:text-[#163d2e] hover:underline disabled:opacity-50"
-          >{localizeText("گذرواژه را فراموش کرده‌اید؟")}</button>
+          >{i18n.t("گذرواژه را فراموش کرده‌اید؟")}</button>
         </div>
 
-        <AuthSubmitButton busy={isSubmitting}>{localizeText("ورود به حساب")}</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("ورود به حساب")}</AuthSubmitButton>
       </form>
 
-      <p data-form-item className="mt-4 text-center text-[11px] text-[#829087]">{localizeText("حساب را تأیید نکرده‌اید؟")}{' '}<Link to="/verify-email" className="font-bold text-[#326249] hover:underline">{localizeText("تأیید ایمیل")}</Link>
+      <p data-form-item className="mt-4 text-center text-[11px] text-[#829087]">{i18n.t("حساب را تأیید نکرده‌اید؟")}{' '}<Link to="/verify-email" className="font-bold text-[#326249] hover:underline">{i18n.t("تأیید ایمیل")}</Link>
       </p>
     </AuthShell>
   )

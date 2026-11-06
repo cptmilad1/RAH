@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -44,59 +44,59 @@ function SignupPage() {
   return (
     <AuthShell
       mode="signup"
-      status={localizeText(status)}
-      heading={localizeText({
+      status={status}
+      heading={{
         eyebrow: 'شروع یک تجربهٔ تازه',
         title: 'حساب بسازید',
         description: 'چند قدم کوتاه تا شروع مسیر شما.',
-      })}
+      }}
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <div data-form-item className="grid gap-4 sm:grid-cols-2 sm:gap-[13px]">
           <AuthField
-            label={localizeText("نام و نام خانوادگی")}
-            placeholder={localizeText("مثلاً سارا محمدی")}
+            label={i18n.t("نام و نام خانوادگی")}
+            placeholder={i18n.t("مثلاً سارا محمدی")}
             autoComplete="name"
             registration={register('full_name')}
-            error={localizeText(errors.full_name?.message)}
+            error={i18n.t(errors.full_name?.message)}
           />
           <AuthField
-            label={localizeText("نام کاربری")}
+            label={i18n.t("نام کاربری")}
             dir="ltr"
-            placeholder={localizeText("نام کاربری")}
+            placeholder={i18n.t("نام کاربری")}
             autoComplete="username"
             registration={register('username')}
-            error={localizeText(errors.username?.message)}
+            error={i18n.t(errors.username?.message)}
           />
         </div>
         <AuthField
-          label={localizeText("نشانی ایمیل")}
+          label={i18n.t("نشانی ایمیل")}
           type="email"
           dir="ltr"
           placeholder="name@example.com"
           autoComplete="email"
           registration={register('email')}
-          error={localizeText(errors.email?.message)}
+          error={i18n.t(errors.email?.message)}
         />
         <AuthField
-          label={<span>{localizeText("شمارهٔ تماس")}{' '}<small className="mr-1 text-[9px] font-medium text-[#9ba79f]">{localizeText("اختیاری")}</small></span>}
+          label={<span>{i18n.t("شمارهٔ تماس")}{' '}<small className="mr-1 text-[9px] font-medium text-[#9ba79f]">{i18n.t("اختیاری")}</small></span>}
           type="tel"
           dir="ltr"
           placeholder="+93 700 000 000"
           autoComplete="tel"
           registration={register('phone')}
-          error={localizeText(errors.phone?.message)}
+          error={i18n.t(errors.phone?.message)}
         />
         <AuthField
-          label={localizeText("گذرواژه")}
+          label={i18n.t("گذرواژه")}
           type="password"
           dir="ltr"
-          placeholder={localizeText("حداقل ۸ نویسه")}
+          placeholder={i18n.t("حداقل ۸ نویسه")}
           autoComplete="new-password"
           registration={register('password')}
-          error={localizeText(errors.password?.message)}
+          error={i18n.t(errors.password?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>{localizeText("ساخت حساب کاربری")}</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("ساخت حساب کاربری")}</AuthSubmitButton>
       </form>
     </AuthShell>
   )

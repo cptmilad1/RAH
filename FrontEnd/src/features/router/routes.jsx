@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './protectedRoute'
 import Loader from '../loaders/loader1'
+import Layout from '../layout/layout'
 
 const LoginPage = lazy(() => import('../login/pages/LoginPage'))
 const SignupPage = lazy(() => import('../login/pages/SignupPage'))
@@ -22,31 +23,37 @@ const DriverApplicationPage = lazy(() => import('../driver/pages/DriverApplicati
 const AdminPanelPage = lazy(() => import('../admin/AdminPanelPage'))
 const SettingsPage = lazy(() => import('../settings/pages/SettingsPage'))
 
+const rahRoutes = [
+  {path : "/login", element:<LoginPage/>, layout : false},
+  {path: '/signup', element:<SignupPage/>, layout : false},
+  {path: '/verify-email', element:<VerifyEmailPage/>, layout : false},
+  {path: '/reset-password', element:<ResetPasswordPage/>, layout : false},
+  {path: '/profile/:id/edit', element:<ProtectedRoute><ProfileEditPage/></ProtectedRoute>, layout : true},
+  {path: '/profile/:id', element:<ProtectedRoute><Profile/></ProtectedRoute>, layout : true},
+  {path: '/dashboard', element:<ProtectedRoute><Dashboard/></ProtectedRoute>, layout : true},
+  {path: '/settings', element:<ProtectedRoute><SettingsPage/></ProtectedRoute>, layout : true},
+  {path: '/about', element:<ProtectedRoute><AboutPage/></ProtectedRoute>, layout : false},
+  {path: '/inbox', element:<ProtectedRoute><InboxPage/></ProtectedRoute>, layout : true},
+  {path: '/inbox/:trackingCode', element:<ProtectedRoute><InboxChatPage/></ProtectedRoute>, layout : true},
+  {path: '/messages', element:<ProtectedRoute><MessagesPage/></ProtectedRoute>, layout : true},
+  {path: '/messages/:userId', element:<ProtectedRoute><DirectMessagePage/></ProtectedRoute>, layout : true},
+  {path: '/shipments', element:<ProtectedRoute><ShipmentPage/></ProtectedRoute>, layout : true},
+  {path: '/shipments/:trackingCode', element:<ProtectedRoute><ShipmentDetailsPage/></ProtectedRoute>, layout : true},
+  {path: '/driver', element: <ProtectedRoute allowedRoles={['driver']}><DriverPanelPage/></ProtectedRoute>, layout : true},
+  {path: '/driver-application', element: <ProtectedRoute allowedRoles={['user']}><DriverApplicationPage/></ProtectedRoute>, layout : true},
+  {path: '/admin', element: <ProtectedRoute allowedRoles={['admin']}><AdminPanelPage/></ProtectedRoute>, layout : true},
+  {path: '*', element: <Navigate to="/dashboard" replace />, layout : true},
+  {path: '/', element: <Navigate to="/login" replace />, layout : false}
+]
+
+
 function Routers() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
-        <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
-        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-        <Route path="/about" element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
-        <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
-        <Route path="/inbox/:trackingCode" element={<ProtectedRoute><InboxChatPage /></ProtectedRoute>} />
-        <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
-        <Route path="/messages/:userId" element={<ProtectedRoute><DirectMessagePage /></ProtectedRoute>} />
-        <Route path="/shipments" element={<ProtectedRoute><ShipmentPage /></ProtectedRoute>} />
-        <Route path="/shipments/:trackingCode" element={<ProtectedRoute><ShipmentDetailsPage /></ProtectedRoute>} />
-        <Route path="/driver" element={<ProtectedRoute allowedRoles={['driver']}><DriverPanelPage /></ProtectedRoute>} />
-        <Route path="/driver-application" element={<ProtectedRoute allowedRoles={['user']}><DriverApplicationPage /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminPanelPage /></ProtectedRoute>} />
-        
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        {rahRoutes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.layout ? <Layout>{route.element}</Layout> : route.element}/>
+        ))}
       </Routes>
     </Suspense>
   )

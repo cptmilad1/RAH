@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 
 function ShipmentPageHeader({ onCreate, onTrack }) {
@@ -13,23 +13,23 @@ function ShipmentPageHeader({ onCreate, onTrack }) {
   return (
     <header data-shipment-intro className="mb-8 flex flex-wrap items-end justify-between gap-5">
       <div>
-        <p className="mb-2 text-xs font-bold text-[#71867c]">{localizeText("فضای اختصاصی شما")}</p>
-        <h1 className="m-0 text-3xl font-black tracking-tight sm:text-4xl">{localizeText("مرسوله‌های من")}</h1>
-        <p className="mt-3 max-w-xl text-sm leading-7 text-[#7b8982]">{localizeText("ارسال‌ها را مدیریت کن و با کد رهگیری از وضعیت و مسیر هر مرسوله باخبر شو.")}</p>
+        <p className="mb-2 text-xs font-bold text-[#71867c]">{i18n.t("فضای اختصاصی شما")}</p>
+        <h1 className="m-0 text-3xl font-black tracking-tight sm:text-4xl">{i18n.t("مرسوله‌های من")}</h1>
+        <p className="mt-3 max-w-xl text-sm leading-7 text-[#7b8982]">{i18n.t("ارسال‌ها را مدیریت کن و با کد رهگیری از وضعیت و مسیر هر مرسوله باخبر شو.")}</p>
         <form onSubmit={submitTracking} className="mt-4 flex max-w-xl gap-2">
-          <label htmlFor="shipment-tracking-code" className="sr-only">{localizeText("کد رهگیری مرسوله")}</label>
+          <label htmlFor="shipment-tracking-code" className="sr-only">{i18n.t("کد رهگیری مرسوله")}</label>
           <input
             id="shipment-tracking-code"
-            value={localizeText(trackingCode)}
+            value={trackingCode}
             onChange={(event) => setTrackingCode(event.target.value)}
-            placeholder={localizeText("کد رهگیری را وارد کن")}
+            placeholder={i18n.t("کد رهگیری را وارد کن")}
             className="min-w-0 flex-1 rounded-xl border border-[#dfe8df] bg-white px-4 py-3 text-sm outline-none focus:border-[#77955f]"
           />
-          <button type="submit" className="rounded-xl border border-[#dfe8df] bg-white px-4 py-3 text-sm font-bold text-[#315d49]">{localizeText("رهگیری")}</button>
+          <button type="submit" className="rounded-xl border border-[#dfe8df] bg-white px-4 py-3 text-sm font-bold text-[#315d49]">{i18n.t("رهگیری")}</button>
         </form>
       </div>
       <button type="button" onClick={onCreate} className="inline-flex items-center gap-2 rounded-2xl bg-[#173f32] px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(23,63,50,.18)] transition hover:-translate-y-0.5 hover:bg-[#205742]">
-        <span className="text-lg text-[#d7f36a]">＋</span>{' '}{localizeText("ثبت مرسولهٔ تازه")}</button>
+        <span className="text-lg text-[#d7f36a]">＋</span>{' '}{i18n.t("ثبت مرسولهٔ تازه")}</button>
     </header>
   )
 }

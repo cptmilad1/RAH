@@ -1,4 +1,3 @@
-import { localizeText } from '../locals/localizedText.js'
 import OptionButton from "./optionsBtn"
 import SettingsSection from "./settingSection"
 import {fontOptions} from '../utils/settingsOptions'
@@ -10,7 +9,7 @@ function Fonts ({setPreference}){
     const {t} = useTranslation()
     const {font} = useSettingsStore()
     return (
-        <SettingsSection title={localizeText(t('settings.fonts'))} description={localizeText(t('settings.fontsDescription'))}>
+        <SettingsSection title={t('settings.fonts')} description={t('settings.fontsDescription')}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {fontOptions.map((option) => (
                 <OptionButton
@@ -19,7 +18,7 @@ function Fonts ({setPreference}){
                   onClick={() => setPreference('font', option)}
                   style={{ fontFamily: fontFamilies[option] }}
                 >
-                  {localizeText(t(`settings.fontsList.${option}`))}
+                  {t(`settings.fontsList.${option}`)}
                 </OptionButton>
               ))}
             </div>

@@ -1,4 +1,3 @@
-import { localizeText } from '../locals/localizedText.js'
 import { useTranslation } from "react-i18next"
 import SettingsSection from "./settingSection"
 import OptionButton from "./optionsBtn"
@@ -9,7 +8,7 @@ function Themes ({setPreference}){
     const {t} = useTranslation()
     const {theme} = useSettingsStore()
     return (
-        <SettingsSection title={localizeText(t('settings.appearance'))} description={localizeText(t('settings.appearanceDescription'))}>
+        <SettingsSection title={t('settings.appearance')} description={t('settings.appearanceDescription')}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {themeOptions.map((option) => (
                 <OptionButton
@@ -17,7 +16,7 @@ function Themes ({setPreference}){
                   active={theme === option}
                   onClick={() => setPreference('theme', option)}
                 >
-                  {localizeText(t(`settings.themes.${option}`))}
+                  {t(`settings.themes.${option}`)}
                 </OptionButton>
               ))}
             </div>

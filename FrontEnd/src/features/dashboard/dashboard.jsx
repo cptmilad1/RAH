@@ -4,8 +4,6 @@ import { useAuth } from '../auth/authStore'
 import { usePresenceStore } from '../presence/presenceStore'
 import { useNavigate } from 'react-router-dom'
 import { getUnreadDirectMessageCount } from '../messages/api/messagesApi'
-import navBarItems from './utils/navItems'
-import NavbarSide from './components/NavbarSide'
 import HeaderAndProfile from './components/headerAndPRofile'
 import PostCards from './components/taxi&postCarts'
 import DetailsCard from './components/detailsCard'
@@ -16,18 +14,12 @@ const roleLabels = { user: 'کاربر', admin: 'مدیر', driver: 'رانند�
 
 
 function Dashboard() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const isOnline = usePresenceStore((state) => Boolean(user?.id && state.onlineUsers[String(user.id)]))
   const setUnreadDirectMessages = usePresenceStore((state) => state.setUnreadDirectMessages)
-  const unreadDirectMessages = usePresenceStore((state) => state.unreadDirectMessages)
   const dashboardRef = useRef(null)
   const navigate = useNavigate()
   const roleLabel = roleLabels[user?.role] || 'کاربر'
-  const navItems = navBarItems(user, unreadDirectMessages)
- 
-  
-  
-
   //gsap animations and event listeners
   useEffect(() => {
     let handlers = []
@@ -74,14 +66,11 @@ function Dashboard() {
     return () => { active = false }
   }, [setUnreadDirectMessages, user?.id])
   return (
-    <main ref={dashboardRef} className="grid min-h-screen grid-cols-1 bg-[radial-gradient(ellipse_at_72%_-10%,rgba(215,243,106,0.16),transparent_38%),#f6f7f2] text-[#17352e] lg:grid-cols-[286px_minmax(0,1fr)]">
-      <NavbarSide navItems={navItems} logout={logout}/>
-
+    <main ref={dashboardRef} className="min-h-screen min-w-0 bg-[radial-gradient(ellipse_at_72%_-10%,rgba(215,243,106,0.16),transparent_38%),#f6f7f2] text-[#17352e]">
       <section className="mx-auto w-full min-w-0 max-w-[1320px] px-[18px] pt-[29px] pb-[38px] sm:px-[30px] sm:py-10 lg:px-[clamp(28px,5vw,76px)] lg:pt-[54px] lg:pb-[60px]">
         <HeaderAndProfile navigate={navigate} user={user} isOnline={isOnline} roleLabel={roleLabel}/>
         <PostCards user={user} navigate={navigate}/>
         <DetailsCard user={user} roleLabel={roleLabel}/>
-
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(250px,0.85fr)]">
           <UserInfo user={user}/>
           <InfoCard/>

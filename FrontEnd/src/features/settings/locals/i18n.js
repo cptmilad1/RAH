@@ -11,6 +11,7 @@ i18n.use(initReactI18next).init({
   },
   lng: getSavedLanguage(),
   fallbackLng: 'fa',
+  keySeparator: false,
   interpolation: {
     escapeValue: false,
   },

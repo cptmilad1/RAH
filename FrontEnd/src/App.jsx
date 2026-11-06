@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import './features/settings/locals/i18n'
 import { useSettingsStore } from './features/settings/hooks/settingsStore'
 import fontFamilies from './features/settings/utils/fontFamilies'
@@ -7,6 +8,7 @@ import Routers from "./features/router/routes";
 import PresenceConnection from "./features/presence/PresenceConnection";
 
 const App = () => {
+  useTranslation()
   const { theme, font, color } = useSettingsStore()
   const userId = useAuthStore((state) => state.user?.id)
   const loadForUser = useSettingsStore((state) => state.loadForUser)

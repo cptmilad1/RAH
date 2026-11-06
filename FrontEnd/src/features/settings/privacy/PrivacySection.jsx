@@ -1,4 +1,4 @@
-import { localizeText } from '../locals/localizedText.js'
+import i18n from '../locals/i18n.js'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ChangePasswordForm from './ChangePasswordForm'
@@ -86,11 +86,11 @@ function PrivacySection() {
   return (
     <section className="rounded-2xl border border-[var(--settings-line)] bg-[var(--settings-surface)] p-5 shadow-sm sm:p-6">
       <div className="mb-5">
-        <h2 className="m-0 text-lg font-extrabold text-[var(--settings-ink)]">{localizeText(t('settings.privacy'))}</h2>
-        <p className="mb-0 mt-1 text-sm leading-6 text-[var(--settings-muted)]">{localizeText(t('settings.privacySection.description'))}</p>
+        <h2 className="m-0 text-lg font-extrabold text-[var(--settings-ink)]">{t('settings.privacy')}</h2>
+        <p className="mb-0 mt-1 text-sm leading-6 text-[var(--settings-muted)]">{t('settings.privacySection.description')}</p>
       </div>
 
-      <div role="tablist" aria-label={localizeText(t('settings.privacy'))} className="mb-5 flex gap-2 border-b border-[var(--settings-line)]">
+      <div role="tablist" aria-label={t('settings.privacy')} className="mb-5 flex gap-2 border-b border-[var(--settings-line)]">
         {['activity', 'password'].map((tab) => (
           <button
             key={tab}
@@ -106,7 +106,7 @@ function PrivacySection() {
                 : 'border-transparent text-[var(--settings-muted)] hover:text-[var(--settings-ink)]'
             }`}
           >
-            {localizeText(t(`settings.privacySection.tabs.${tab}`))}
+            {t(`settings.privacySection.tabs.${tab}`)}
           </button>
         ))}
       </div>
@@ -121,8 +121,8 @@ function PrivacySection() {
         <div className="space-y-4 rounded-2xl border border-[var(--settings-line)] bg-[var(--settings-background)] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="m-0 text-base font-bold text-[var(--settings-ink)]">{localizeText(t('settings.privacySection.sessions.title'))}</h3>
-              <p className="mb-0 mt-1 text-sm text-[var(--settings-muted)]">{localizeText(t('settings.privacySection.sessions.description'))}</p>
+              <h3 className="m-0 text-base font-bold text-[var(--settings-ink)]">{t('settings.privacySection.sessions.title')}</h3>
+              <p className="mb-0 mt-1 text-sm text-[var(--settings-muted)]">{t('settings.privacySection.sessions.description')}</p>
             </div>
 
             <button
@@ -131,7 +131,7 @@ function PrivacySection() {
               disabled={isLoggingOutAll}
               className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {localizeText(isLoggingOutAll ? t('settings.privacySection.sessions.loggingOutAll') : t('settings.privacySection.sessions.logoutAll'))}
+              {i18n.t(isLoggingOutAll ? t('settings.privacySection.sessions.loggingOutAll') : t('settings.privacySection.sessions.logoutAll'))}
             </button>
           </div>
 
@@ -139,7 +139,7 @@ function PrivacySection() {
             sessions={sessions}
             onLogout={handleLogoutSession}
             loading={loading}
-            error={localizeText(error)}
+            error={i18n.t(error)}
             onRefresh={refreshSessions}
             isRemovingSession={isRemovingSession}
           />
@@ -153,7 +153,7 @@ function PrivacySection() {
         hidden={activeTab !== 'password'}
         className="space-y-4"
       >
-        <h3 className="m-0 text-base font-bold text-[var(--settings-ink)]">{localizeText(t('settings.privacySection.password.title'))}</h3>
+        <h3 className="m-0 text-base font-bold text-[var(--settings-ink)]">{t('settings.privacySection.password.title')}</h3>
         <ChangePasswordForm />
       </div>
     </section>

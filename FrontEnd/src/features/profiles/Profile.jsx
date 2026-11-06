@@ -5,7 +5,6 @@ import useProfile from './hooks/UseProfile'
 import roleChecker from './utils/roleChecker'
 import { useAuthStore } from '../auth/authStore'
 import { getUserBlockStatus } from './api/profileApi'
-import HeaderBackward from '../global/backwardBtn'
 import ProfileInfoCards from './components/profileInfoCards'
 import ProfileDetails from './components/ProfileDetails'
 
@@ -18,7 +17,19 @@ function Profile() {
   const currentUser = useAuthStore((state) => state.user)
   const profileRef = useRef(null)
   const isOwnProfile = String(currentUser?.id) === String(id)
-  const [blockState, setBlockState] = useState({ loading: true, blockedByMe: false, blockedMe: false, error: '', saving: false })
+  const [blockState, setBlockState] = useState({
+    profileId: null,
+    loading: true,
+    blockedByMe: false,
+    blockedMe: false,
+    error: '',
+    saving: false,
+  })
+  const activeBlockState = isOwnProfile
+    ? { ...blockState, loading: false }
+    : String(blockState.profileId) === String(id)
+      ? blockState
+      : { ...blockState, loading: true, blockedByMe: false, blockedMe: false, error: '', saving: false }
 
   useEffect(() => {
     setUsers(id).catch(() => undefined)
@@ -26,16 +37,26 @@ function Profile() {
 
   useEffect(() => {
     let active = true
-    if (isOwnProfile) {
-      setBlockState((state) => ({ ...state, loading: false }))
-      return undefined
-    }
+    if (isOwnProfile) return undefined
     getUserBlockStatus(id)
       .then((status) => {
-        if (active) setBlockState({ ...status, loading: false, error: '', saving: false })
+        if (active) setBlockState({
+          ...status,
+          profileId: String(id),
+          loading: false,
+          error: '',
+          saving: false,
+        })
       })
       .catch((error) => {
-        if (active) setBlockState((state) => ({ ...state, loading: false, error: error.message || 'وضعیت مسدودسازی دریافت نشد.' }))
+        if (active) setBlockState({
+          profileId: String(id),
+          loading: false,
+          blockedByMe: false,
+          blockedMe: false,
+          error: error.message || 'وضعیت مسدودسازی دریافت نشد.',
+          saving: false,
+        })
       })
     return () => { active = false }
   }, [id, isOwnProfile])
@@ -60,12 +81,11 @@ function Profile() {
   return (
     <main ref={profileRef} className="min-h-screen bg-[radial-gradient(ellipse_at_76%_-12%,rgba(215,243,106,0.18),transparent_34%),#f6f7f2] px-4 py-5 text-[#17352e] sm:px-8 sm:py-8">
       <div className="mx-auto w-full max-w-[1080px]">
-        <HeaderBackward />
         <ProfileDetails
           users={users}
           roleLabel={roleLabel}
           isOwnProfile={isOwnProfile}
-          blockState={blockState}
+          blockState={activeBlockState}
           setBlockState={setBlockState}
           id={id}
           currentUser={currentUser}

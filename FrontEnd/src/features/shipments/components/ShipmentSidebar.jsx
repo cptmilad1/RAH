@@ -1,19 +1,19 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { Link } from 'react-router-dom'
 
 function ShipmentSidebar({ user, logout }) {
   return (
     <aside className="flex flex-col bg-[linear-gradient(165deg,#123e32,#0c3028)] px-5 py-5 text-white sm:px-7 lg:sticky lg:top-0 lg:h-screen lg:px-6 lg:py-8">
       <Link to="/dashboard" className="flex items-center gap-3 text-white no-underline">
-        <span className="grid size-11 place-items-center rounded-2xl bg-[#d7f36a] text-xl font-black text-[#17352e]">{localizeText("ر")}</span>
-        <span className="grid text-lg font-black">{localizeText("راه")}<small className="text-[10px] font-medium text-[#a8c0b2]">{localizeText("همراه شما در شهر")}</small></span>
+        <span className="grid size-11 place-items-center rounded-2xl bg-[#d7f36a] text-xl font-black text-[#17352e]">{i18n.t("ر")}</span>
+        <span className="grid text-lg font-black">{i18n.t("راه")}<small className="text-[10px] font-medium text-[#a8c0b2]">{i18n.t("همراه شما در شهر")}</small></span>
       </Link>
-      <nav aria-label={localizeText("ناوبری اصلی")} className="mt-7 flex gap-2 overflow-x-auto lg:mt-14 lg:grid">
-        <Link to="/dashboard" className="shrink-0 rounded-xl px-4 py-3 text-sm font-semibold text-[#b8c9c0] no-underline transition hover:bg-white/10 hover:text-white">{localizeText("⌂ نمای کلی")}</Link>
-        <Link to="/shipments" aria-current="page" className="shrink-0 rounded-xl bg-[#d7f36a]/15 px-4 py-3 text-sm font-extrabold text-[#e7f5b5] no-underline">{localizeText("▣ مرسوله‌ها")}</Link>
-        <Link to={`/profile/${user?.id}`} className="shrink-0 rounded-xl px-4 py-3 text-sm font-semibold text-[#b8c9c0] no-underline transition hover:bg-white/10 hover:text-white">{localizeText("◉ حساب کاربری")}</Link>
+      <nav aria-label={i18n.t("ناوبری اصلی")} className="mt-7 flex gap-2 overflow-x-auto lg:mt-14 lg:grid">
+        <Link to="/dashboard" className="shrink-0 rounded-xl px-4 py-3 text-sm font-semibold text-[#b8c9c0] no-underline transition hover:bg-white/10 hover:text-white">{i18n.t("⌂ نمای کلی")}</Link>
+        <Link to="/shipments" aria-current="page" className="shrink-0 rounded-xl bg-[#d7f36a]/15 px-4 py-3 text-sm font-extrabold text-[#e7f5b5] no-underline">{i18n.t("▣ مرسوله‌ها")}</Link>
+        <Link to={`/profile/${user?.id}`} className="shrink-0 rounded-xl px-4 py-3 text-sm font-semibold text-[#b8c9c0] no-underline transition hover:bg-white/10 hover:text-white">{i18n.t("◉ حساب کاربری")}</Link>
       </nav>
-      <button type="button" onClick={logout} className="mt-auto hidden rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-[#d2ded6] transition hover:bg-white/10 lg:block">{localizeText("خروج از حساب ↪")}</button>
+      <button type="button" onClick={logout} className="mt-auto hidden rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-[#d2ded6] transition hover:bg-white/10 lg:block">{i18n.t("خروج از حساب ↪")}</button>
     </aside>
   )
 }

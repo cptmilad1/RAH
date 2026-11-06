@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -43,31 +43,31 @@ function ResetPasswordPage() {
   return (
     <AuthShell
       mode="reset"
-      status={localizeText(status)}
-      heading={localizeText({
+      status={status}
+      heading={{
         eyebrow: 'امنیت حساب کاربری',
         title: 'گذرواژهٔ تازه',
         description: 'کد بازیابی و گذرواژهٔ جدید را وارد کنید.',
-      })}
+      }}
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthField
-          label={localizeText("کد بازیابی")}
+          label={i18n.t("کد بازیابی")}
           dir="ltr"
-          placeholder={localizeText("کد بازیابی را وارد کنید")}
+          placeholder={i18n.t("کد بازیابی را وارد کنید")}
           registration={register('token')}
-          error={localizeText(errors.token?.message)}
+          error={i18n.t(errors.token?.message)}
         />
         <AuthField
-          label={localizeText("گذرواژهٔ جدید")}
+          label={i18n.t("گذرواژهٔ جدید")}
           type="password"
           dir="ltr"
-          placeholder={localizeText("حداقل ۸ نویسه")}
+          placeholder={i18n.t("حداقل ۸ نویسه")}
           autoComplete="new-password"
           registration={register('password')}
-          error={localizeText(errors.password?.message)}
+          error={i18n.t(errors.password?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>{localizeText("ذخیرهٔ گذرواژهٔ جدید")}</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("ذخیرهٔ گذرواژهٔ جدید")}</AuthSubmitButton>
       </form>
     </AuthShell>
   )

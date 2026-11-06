@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Card from '../../../global/Card'
@@ -34,17 +34,16 @@ function MessagesPage() {
   return (
     <main dir="rtl" className="min-h-screen bg-[#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
       <div className="mx-auto max-w-3xl">
-        <Link to="/dashboard" className="text-sm font-bold text-[#547460] no-underline">{localizeText("← بازگشت به داشبورد")}</Link>
         <header className="mt-7 rounded-[26px] bg-[linear-gradient(135deg,#1d5742,#10382e)] p-6 text-white shadow-[0_20px_50px_rgba(23,63,50,.17)] sm:p-9">
-          <p className="m-0 text-xs text-[#b9d1c2]">{localizeText("گفت‌وگوهای خصوصی شما")}</p>
-          <h1 className="mb-0 mt-2 text-3xl font-black">{localizeText("پیام‌ها")}</h1>
+          <p className="m-0 text-xs text-[#b9d1c2]">{i18n.t("گفت‌وگوهای خصوصی شما")}</p>
+          <h1 className="mb-0 mt-2 text-3xl font-black">{i18n.t("پیام‌ها")}</h1>
         </header>
 
-        <Card as="section" aria-label={localizeText("فهرست گفت‌وگوها")} variant="unstyled" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-4 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-6">
+        <Card as="section" aria-label={i18n.t("فهرست گفت‌وگوها")} variant="unstyled" className="mt-5 rounded-[24px] border border-[#e5ebe3] bg-white p-4 shadow-[0_18px_52px_rgba(22,57,43,.055)] sm:p-6">
           {result.loading ? (
-            <p role="status" className="py-12 text-center text-sm text-[#829188]">{localizeText("در حال دریافت گفت‌وگوها…")}</p>
+            <p role="status" className="py-12 text-center text-sm text-[#829188]">{i18n.t("در حال دریافت گفت‌وگوها…")}</p>
           ) : result.error ? (
-            <p role="alert" className="rounded-xl bg-[#fff5f2] px-4 py-3 text-sm text-[#a94f3d]">{localizeText(result.error)}</p>
+            <p role="alert" className="rounded-xl bg-[#fff5f2] px-4 py-3 text-sm text-[#a94f3d]">{i18n.t(result.error)}</p>
           ) : result.conversations.length ? (
             <ul className="m-0 grid list-none gap-3 p-0">
               {result.conversations.map((conversation) => (
@@ -56,13 +55,13 @@ function MessagesPage() {
                     imageClassName="size-12"
                     nameClassName="truncate text-sm font-extrabold text-[#244b39]"
                   />
-                  <span className="min-w-[180px] flex-1 text-xs text-[#718078]">{localizeText(conversation.message)}</span>
-                  <Link to={`/messages/${conversation.userId}`} className="rounded-xl bg-[#174c3c] px-4 py-2.5 text-xs font-bold text-white no-underline">{localizeText("بازکردن گفت‌وگو")}</Link>
+                  <span className="min-w-[180px] flex-1 text-xs text-[#718078]">{conversation.message}</span>
+                  <Link to={`/messages/${conversation.userId}`} className="rounded-xl bg-[#174c3c] px-4 py-2.5 text-xs font-bold text-white no-underline">{i18n.t("بازکردن گفت‌وگو")}</Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="m-0 rounded-xl bg-[#f7f9f4] px-4 py-10 text-center text-sm text-[#829188]">{localizeText("هنوز گفت‌وگویی ندارید. از پروفایل کاربرها پیام تازه بفرستید.")}</p>
+            <p className="m-0 rounded-xl bg-[#f7f9f4] px-4 py-10 text-center text-sm text-[#829188]">{i18n.t("هنوز گفت‌وگویی ندارید. از پروفایل کاربرها پیام تازه بفرستید.")}</p>
           )}
         </Card>
       </div>

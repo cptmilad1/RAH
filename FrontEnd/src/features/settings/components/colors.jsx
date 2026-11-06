@@ -1,4 +1,3 @@
-import { localizeText } from '../locals/localizedText.js'
 import { useTranslation } from "react-i18next"
 import OptionButton from "./optionsBtn"
 import SettingsSection from "./settingSection"
@@ -10,7 +9,7 @@ function Colors ({setPreference}){
     const {t} = useTranslation()
     const {color} = useSettingsStore()
     return (
-        <SettingsSection title={localizeText(t('settings.colors'))} description={localizeText(t('settings.colorsDescription'))}>
+        <SettingsSection title={t('settings.colors')} description={t('settings.colorsDescription')}>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {colorOptions.map((option) => (
                 <OptionButton
@@ -20,7 +19,7 @@ function Colors ({setPreference}){
                   onClick={() => setPreference('color', option)}
                 >
                   <span className="flex items-center justify-between gap-3">
-                    {localizeText(t(`settings.colorsList.${option}`))}
+                    {t(`settings.colorsList.${option}`)}
                     <span className="flex shrink-0 -space-x-1.5" aria-hidden="true">
                       {colorSwatches[option].map((swatch) => (
                         <span

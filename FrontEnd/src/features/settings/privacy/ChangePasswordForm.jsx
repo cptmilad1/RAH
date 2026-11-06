@@ -1,4 +1,4 @@
-import { localizeText } from '../locals/localizedText.js'
+import i18n from '../locals/i18n.js'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { changePassword } from './privacyApi'
@@ -59,11 +59,11 @@ function ChangePasswordForm() {
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-[var(--settings-line)] bg-[var(--settings-background)] p-4">
       <div>
         <label className="mb-2 block text-sm font-semibold text-[var(--settings-ink)]">
-          {localizeText(t('settings.privacySection.form.oldPassword'))}
+          {t('settings.privacySection.form.oldPassword')}
         </label>
         <input
           type="password"
-          value={localizeText(form.oldPassword)}
+          value={form.oldPassword}
           onChange={updateField('oldPassword')}
           autoComplete="current-password"
           className="w-full rounded-xl border border-[var(--settings-line)] bg-[var(--settings-surface)] px-3 py-2.5 text-sm text-[var(--settings-ink)] outline-none transition focus:border-[var(--settings-accent)]"
@@ -73,11 +73,11 @@ function ChangePasswordForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-semibold text-[var(--settings-ink)]">
-            {localizeText(t('settings.privacySection.form.newPassword'))}
+            {t('settings.privacySection.form.newPassword')}
           </label>
           <input
             type="password"
-            value={localizeText(form.newPassword)}
+            value={form.newPassword}
             onChange={updateField('newPassword')}
             autoComplete="new-password"
             className="w-full rounded-xl border border-[var(--settings-line)] bg-[var(--settings-surface)] px-3 py-2.5 text-sm text-[var(--settings-ink)] outline-none transition focus:border-[var(--settings-accent)]"
@@ -86,11 +86,11 @@ function ChangePasswordForm() {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-[var(--settings-ink)]">
-            {localizeText(t('settings.privacySection.form.confirmPassword'))}
+            {t('settings.privacySection.form.confirmPassword')}
           </label>
           <input
             type="password"
-            value={localizeText(form.confirmPassword)}
+            value={form.confirmPassword}
             onChange={updateField('confirmPassword')}
             autoComplete="new-password"
             className="w-full rounded-xl border border-[var(--settings-line)] bg-[var(--settings-surface)] px-3 py-2.5 text-sm text-[var(--settings-ink)] outline-none transition focus:border-[var(--settings-accent)]"
@@ -104,12 +104,12 @@ function ChangePasswordForm() {
           disabled={busy}
           className="rounded-xl bg-[var(--settings-accent)] px-4 py-2.5 text-sm font-bold text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {localizeText(busy ? t('settings.privacySection.form.saving') : t('settings.privacySection.form.submit'))}
+          {i18n.t(busy ? t('settings.privacySection.form.saving') : t('settings.privacySection.form.submit'))}
         </button>
 
         {notice.message && (
           <p className={`m-0 text-xs ${notice.type === 'error' ? 'text-red-600' : 'text-emerald-600'}`}>
-            {localizeText(notice.message)}
+            {i18n.t(notice.message)}
           </p>
         )}
       </div>

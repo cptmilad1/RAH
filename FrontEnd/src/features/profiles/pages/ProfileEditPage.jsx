@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { useEffect, useRef, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import gsap from 'gsap'
@@ -117,33 +117,33 @@ function ProfileEditPage() {
     <main ref={panelRef} className="min-h-screen bg-[radial-gradient(ellipse_at_76%_-12%,rgba(215,243,106,0.18),transparent_34%),#f6f7f2] px-4 py-5 text-[#17352e] sm:px-8 sm:py-8">
       <div className="mx-auto w-full max-w-[760px]">
         <header className="mb-5 flex items-center justify-between sm:mb-7">
-          <LinkBtn link={`profile/${id}`} title={localizeText("بازگشت به پروفایل")} />
+          <LinkBtn link={`profile/${id}`} title={i18n.t("بازگشت به پروفایل")} />
           <span className="flex items-center gap-2 text-sm font-black text-[#234a39]">
-            <span className="grid size-8 place-items-center rounded-[11px] bg-[#d7f36a] text-base text-[#17352e]">{localizeText("ر")}</span>{localizeText("راه")}</span>
+            <span className="grid size-8 place-items-center rounded-[11px] bg-[#d7f36a] text-base text-[#17352e]">{i18n.t("ر")}</span>{i18n.t("راه")}</span>
         </header>
 
         <Card as="section" data-edit-panel variant="unstyled" className="overflow-hidden rounded-[20px] border border-[#e5ebe2] bg-white/[0.92] shadow-[0_18px_50px_rgba(22,57,43,0.07)]">
           <div className="bg-[linear-gradient(115deg,#123e32,#1c5942)] px-5 py-6 text-white sm:px-8 sm:py-7">
-            <p className="mb-2 text-[10px] font-bold text-[#d8e8bc]">{localizeText("حساب کاربری")}</p>
-            <h1 className="m-0 text-2xl font-extrabold text-[#f4f7ef]">{localizeText("ویرایش پروفایل")}</h1>
-            <p className="mt-2 text-xs leading-6 text-[#c0d4c7]">{localizeText("اطلاعات تماس و مشخصات نمایه را به‌روز کنید.")}</p>
+            <p className="mb-2 text-[10px] font-bold text-[#d8e8bc]">{i18n.t("حساب کاربری")}</p>
+            <h1 className="m-0 text-2xl font-extrabold text-[#f4f7ef]">{i18n.t("ویرایش پروفایل")}</h1>
+            <p className="mt-2 text-xs leading-6 text-[#c0d4c7]">{i18n.t("اطلاعات تماس و مشخصات نمایه را به‌روز کنید.")}</p>
           </div>
 
           <div className="p-5 sm:p-8">
             {loading ? (
-              <p className="m-0 py-8 text-center text-sm text-[#829087]" role="status">{localizeText("در حال دریافت اطلاعات...")}</p>
+              <p className="m-0 py-8 text-center text-sm text-[#829087]" role="status">{i18n.t("در حال دریافت اطلاعات...")}</p>
             ) : loadError ? (
-              <div className="rounded-xl border border-[#f0d5ce] bg-[#fff4f0] px-4 py-3 text-sm text-[#9d4b40]" role="alert">{localizeText(loadError)}</div>
+              <div className="rounded-xl border border-[#f0d5ce] bg-[#fff4f0] px-4 py-3 text-sm text-[#9d4b40]" role="alert">{i18n.t(loadError)}</div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
                 <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[#f7f9f4] p-4">
                   <img
                     src={avatarPreview || profileImage || '/imgs/default-avatar.svg'}
-                    alt={localizeText("پیش‌نمایش تصویر پروفایل")}
+                    alt={i18n.t("پیش‌نمایش تصویر پروفایل")}
                     className="size-20 rounded-2xl border border-[#e1e8e0] bg-white object-cover"
                   />
                   <label className="grid gap-2 text-[11px] font-bold text-[#385247]">
-                    <span>{localizeText("تصویر پروفایل (JPG، PNG یا WebP تا ۵ مگابایت)")}</span>
+                    <span>{i18n.t("تصویر پروفایل (JPG، PNG یا WebP تا ۵ مگابایت)")}</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
@@ -155,19 +155,19 @@ function ProfileEditPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   {currentUser?.role === 'driver' && (
                     <label className="grid min-w-0 gap-2 text-[11px] font-bold text-[#385247]">
-                      <span>{localizeText("ولایت کاری راننده")}</span>
+                      <span>{i18n.t("ولایت کاری راننده")}</span>
                       <select {...register('driver_province')} required className="min-h-12 w-full rounded-xl border border-[#e1e8e0] bg-[#fbfcf9] px-3.5 text-xs text-[#244738] focus:border-[#8eae91] focus:outline-none focus:ring-4 focus:ring-[#82aa85]/[0.12]">
-                        <option value="">{localizeText("انتخاب ولایت")}</option>
-                        {afghanistanProvinces.map((province) => <option key={province} value={localizeText(province)}>{localizeText(province)}</option>)}
+                        <option value="">{i18n.t("انتخاب ولایت")}</option>
+                        {afghanistanProvinces.map((province) => <option key={province} value={province}>{i18n.t(province)}</option>)}
                       </select>
-                      {errors.driver_province && <small className="text-[10px] font-medium text-[#9d4b40]">{localizeText(errors.driver_province.message)}</small>}
+                      {errors.driver_province && <small className="text-[10px] font-medium text-[#9d4b40]">{i18n.t(errors.driver_province.message)}</small>}
                     </label>
                   )}
                   {fields.map((field) => {
                     const error = errors[field.name]
                     return (
                       <label key={field.name} className={`grid min-w-0 gap-2 text-[11px] font-bold text-[#385247] ${field.name === 'user_address' ? 'sm:col-span-2' : ''}`}>
-                        <span>{localizeText(field.label)}</span>
+                        <span>{i18n.t(field.label)}</span>
                         {field.name === 'user_address' ? (
                           <textarea
                             {...register(field.name)}
@@ -190,7 +190,7 @@ function ProfileEditPage() {
                             className="min-h-12 w-full rounded-xl border border-[#e1e8e0] bg-[#fbfcf9] px-3.5 text-xs text-[#244738] transition placeholder:text-[#a8b2ac] focus:border-[#8eae91] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#82aa85]/[0.12]"
                           />
                         )}
-                        {error && <small id={`${field.name}-error`} className="text-[10px] font-medium text-[#9d4b40]">{localizeText(error.message)}</small>}
+                        {error && <small id={`${field.name}-error`} className="text-[10px] font-medium text-[#9d4b40]">{i18n.t(error.message)}</small>}
                       </label>
                     )
                   })}
@@ -198,14 +198,14 @@ function ProfileEditPage() {
 
                 {errors.root?.server && (
                   <p className="m-0 rounded-xl border border-[#f0d5ce] bg-[#fff4f0] px-4 py-3 text-[11px] leading-6 text-[#9d4b40]" role="alert">
-                    {localizeText(errors.root.server.message)}
+                    {i18n.t(errors.root.server.message)}
                   </p>
                 )}
 
                 <div className="flex flex-col-reverse gap-3 border-t border-[#edf0eb] pt-5 sm:flex-row sm:justify-end">
-                  <Link to={`/profile/${id}`} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#e1e8e0] px-5 text-xs font-bold text-[#587366] transition hover:bg-[#f6f8f3]">{localizeText("انصراف")}</Link>
+                  <Link to={`/profile/${id}`} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#e1e8e0] px-5 text-xs font-bold text-[#587366] transition hover:bg-[#f6f8f3]">{i18n.t("انصراف")}</Link>
                   <button type="submit" disabled={isSubmitting} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#174c3c] px-5 text-xs font-extrabold text-white transition hover:bg-[#103b30] disabled:cursor-wait disabled:opacity-60">
-                    {localizeText(isSubmitting ? 'در حال ذخیره...' : 'ذخیره تغییرات')}
+                    {i18n.t(isSubmitting ? 'در حال ذخیره...' : 'ذخیره تغییرات')}
                   </button>
                 </div>
               </form>

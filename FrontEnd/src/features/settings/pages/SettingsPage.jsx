@@ -1,4 +1,4 @@
-import { localizeText } from '../locals/localizedText.js'
+import i18n from '../locals/i18n.js'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import PrivacySection from '../privacy/PrivacySection'
@@ -18,14 +18,14 @@ function SettingsPage() {
       <div className="mx-auto max-w-4xl">
         <header className="mb-7 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="m-0 text-2xl font-black sm:text-3xl">{localizeText(t('settings.title'))}</h1>
-            <p className="mb-0 mt-2 text-sm leading-6 text-[var(--settings-muted)]">{localizeText(t('settings.subtitle'))}</p>
+            <h1 className="m-0 text-2xl font-black sm:text-3xl">{t('settings.title')}</h1>
+            <p className="mb-0 mt-2 text-sm leading-6 text-[var(--settings-muted)]">{t('settings.subtitle')}</p>
           </div>
           <Link
             to="/dashboard"
             className="rounded-xl border border-[var(--settings-line)] bg-[var(--settings-surface)] px-4 py-2.5 text-sm font-bold text-[var(--settings-ink)] no-underline transition hover:border-[var(--settings-accent)]"
           >
-            {localizeText(t('settings.back'))}
+            {t('settings.back')}
           </Link>
         </header>
 
@@ -37,7 +37,7 @@ function SettingsPage() {
           <Colors setPreference={setPreference}/>
         </div>
         <p role="status" aria-live="polite" className={`mb-0 mt-5 text-center text-xs ${syncStatus === 'error' ? 'text-red-600' : 'text-[var(--settings-muted)]'}`}>
-          {localizeText(syncStatus === 'error' ? t('settings.saveError') : syncStatus === 'saved' ? t('settings.saved') : t('settings.saving'))}
+          {i18n.t(syncStatus === 'error' ? t('settings.saveError') : syncStatus === 'saved' ? t('settings.saved') : t('settings.saving'))}
         </p>
       </div>
     </main>

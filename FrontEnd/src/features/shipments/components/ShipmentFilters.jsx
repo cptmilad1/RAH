@@ -1,4 +1,4 @@
-import { localizeText } from '../../settings/locals/localizedText.js'
+import i18n from '../../settings/locals/i18n.js'
 import { shipmentFilters } from '../shipmentConstants'
 
 function ShipmentFilters({ activeFilter, onFilterChange, search, onSearchChange }) {
@@ -6,17 +6,17 @@ function ShipmentFilters({ activeFilter, onFilterChange, search, onSearchChange 
     <div className="border-b border-[#edf0eb] p-4 sm:p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="m-0 text-lg font-extrabold">{localizeText("تاریخچهٔ ارسال")}</h2>
-          <p className="mb-0 mt-1 text-xs text-[#84918a]">{localizeText("وضعیت و جزئیات هر مرسوله را دنبال کن.")}</p>
+          <h2 className="m-0 text-lg font-extrabold">{i18n.t("تاریخچهٔ ارسال")}</h2>
+          <p className="mb-0 mt-1 text-xs text-[#84918a]">{i18n.t("وضعیت و جزئیات هر مرسوله را دنبال کن.")}</p>
         </div>
         <label className="flex min-w-[220px] flex-1 items-center gap-2 rounded-xl border border-[#e7ece5] bg-[#f9faf7] px-3 py-2.5 sm:max-w-[300px]">
           <span aria-hidden="true" className="text-[#829188]">⌕</span>
-          <input aria-label={localizeText("جست‌وجو در مرسوله‌ها")} value={localizeText(search)} onChange={(event) => onSearchChange(event.target.value)} placeholder={localizeText("کد رهگیری، شهر یا گیرنده...")} className="w-full border-0 bg-transparent text-xs outline-none placeholder:text-[#9aa59f]" />
+          <input aria-label={i18n.t("جست‌وجو در مرسوله‌ها")} value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder={i18n.t("کد رهگیری، شهر یا گیرنده...")} className="w-full border-0 bg-transparent text-xs outline-none placeholder:text-[#9aa59f]" />
         </label>
       </div>
-      <div role="tablist" aria-label={localizeText("فیلتر وضعیت")} className="flex gap-2 overflow-x-auto pb-1">
+      <div role="tablist" aria-label={i18n.t("فیلتر وضعیت")} className="flex gap-2 overflow-x-auto pb-1">
         {shipmentFilters.map((filter) => (
-          <button key={filter.id} type="button" role="tab" aria-selected={activeFilter === filter.id} onClick={() => onFilterChange(filter.id)} className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition ${activeFilter === filter.id ? 'bg-[#173f32] text-white' : 'bg-[#f3f5f0] text-[#728078] hover:bg-[#ebf0e5]'}`}>{localizeText(filter.label)}</button>
+          <button key={filter.id} type="button" role="tab" aria-selected={activeFilter === filter.id} onClick={() => onFilterChange(filter.id)} className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition ${activeFilter === filter.id ? 'bg-[#173f32] text-white' : 'bg-[#f3f5f0] text-[#728078] hover:bg-[#ebf0e5]'}`}>{i18n.t(filter.label)}</button>
         ))}
       </div>
     </div>
