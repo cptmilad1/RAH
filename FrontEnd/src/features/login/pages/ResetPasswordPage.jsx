@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -51,22 +52,22 @@ function ResetPasswordPage() {
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthField
-          label="کد بازیابی"
+          label={i18n.t("کد بازیابی")}
           dir="ltr"
-          placeholder="کد بازیابی را وارد کنید"
+          placeholder={i18n.t("کد بازیابی را وارد کنید")}
           registration={register('token')}
-          error={errors.token?.message}
+          error={i18n.t(errors.token?.message)}
         />
         <AuthField
-          label="گذرواژهٔ جدید"
+          label={i18n.t("گذرواژهٔ جدید")}
           type="password"
           dir="ltr"
-          placeholder="حداقل ۸ نویسه"
+          placeholder={i18n.t("حداقل ۸ نویسه")}
           autoComplete="new-password"
           registration={register('password')}
-          error={errors.password?.message}
+          error={i18n.t(errors.password?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>ذخیرهٔ گذرواژهٔ جدید</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("ذخیرهٔ گذرواژهٔ جدید")}</AuthSubmitButton>
       </form>
     </AuthShell>
   )

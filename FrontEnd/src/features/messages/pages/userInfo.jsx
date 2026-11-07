@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import Card from "../../../global/Card"
 
 function UserInfoMsgBox({ conversation, toggleBlock, state }) {
@@ -13,7 +14,7 @@ function UserInfoMsgBox({ conversation, toggleBlock, state }) {
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={toggleBlock} disabled={state.savingBlock || (conversation.blockedMe && !conversation.blockedByMe)} className="rounded-xl border border-white/20 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">
-                  {state.savingBlock ? 'در حال ثبت…' : conversation.blockedByMe ? 'رفع مسدودسازی' : 'مسدودکردن'}
+                  {i18n.t(state.savingBlock ? 'در حال ثبت…' : conversation.blockedByMe ? 'رفع مسدودسازی' : 'مسدودکردن')}
                 </button>
               </div>
             </Card>

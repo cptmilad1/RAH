@@ -1,19 +1,14 @@
 import { useEffect } from 'react'
-import './features/settings/i18n'
-import { useSettingsStore } from './features/settings/settingsStore'
+import { useTranslation } from 'react-i18next'
+import './features/settings/locals/i18n'
+import { useSettingsStore } from './features/settings/hooks/settingsStore'
+import fontFamilies from './features/settings/utils/fontFamilies'
 import { useAuthStore } from './features/auth/authStore'
 import Routers from "./features/router/routes";
 import PresenceConnection from "./features/presence/PresenceConnection";
 
-const fontFamilies = {
-  vazirmatn: '"Vazirmatn", Tahoma, Arial, sans-serif',
-  tahoma: 'Tahoma, Arial, sans-serif',
-  arial: 'Arial, Helvetica, sans-serif',
-  system: 'system-ui, sans-serif',
-  serif: 'Georgia, "Times New Roman", serif',
-}
-
 const App = () => {
+  useTranslation()
   const { theme, font, color } = useSettingsStore()
   const userId = useAuthStore((state) => state.user?.id)
   const loadForUser = useSettingsStore((state) => state.loadForUser)

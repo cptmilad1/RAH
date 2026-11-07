@@ -7,27 +7,37 @@ import MsgStatus from './components/msgStatus'
 
 function DirectMessagePage() {
   const { userId } = useParams()
-  const [state, setState] = useState({ loading: true, error: '', sending: false, savingBlock: false })
+  const [state, setState] = useState({ userId: null, loading: true, error: '', sending: false, savingBlock: false })
   const currentUserId = useAuthStore((state) => state.user?.id)
   const socket = usePresenceStore((state) => state.socket)
   const connected = usePresenceStore((state) => state.connected)
   const [conversation, setConversation] = useState(null)
+  const activeConversation = String(conversation?.otherUser?.id) === String(userId)
+    ? conversation
+    : null
+  const activeState = String(state.userId) === String(userId)
+    ? state
+    : { ...state, loading: true, error: '' }
 
   const messageEndRef = useRef(null)
 
   useEffect(() => {
     let active = true
-    setConversation(null)
-    setState({ loading: true, error: '', sending: false, savingBlock: false })
     getDirectConversation(userId)
       .then((result) => {
         if (active) {
           setConversation(result)
-          setState({ loading: false, error: '', sending: false, savingBlock: false })
+          setState({ userId: String(userId), loading: false, error: '', sending: false, savingBlock: false })
         }
       })
       .catch((error) => {
-        if (active) setState({ loading: false, error: error.message || 'بازکردن گفت‌وگو ناموفق بود.', sending: false, savingBlock: false })
+        if (active) setState({
+          userId: String(userId),
+          loading: false,
+          error: error.message || 'بازکردن گفت‌وگو ناموفق بود.',
+          sending: false,
+          savingBlock: false,
+        })
       })
     return () => { active = false }
   }, [userId])
@@ -37,7 +47,7 @@ function DirectMessagePage() {
   }, [conversation?.messages])
 
   useEffect(() => {
-    if (!socket || !connected || !conversation?.otherUser?.id) return undefined
+    if (!socket || !connected || !activeConversation?.otherUser?.id) return undefined
 
     function handleHistory(payload) {
       if (String(payload.userId) !== String(userId)) return
@@ -72,14 +82,14 @@ function DirectMessagePage() {
       socket.off('direct:history', handleHistory)
       socket.off('direct:message', handleMessage)
     }
-  }, [socket, connected, conversation?.otherUser?.id, userId, currentUserId])
+  }, [socket, connected, activeConversation?.otherUser?.id, userId, currentUserId])
 
 
   return (
     <main dir="rtl" className="min-h-screen bg-[#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
       <MsgStatus
-        conversation={conversation}
-        state={state}
+        conversation={activeConversation}
+        state={activeState}
         currentUserId={currentUserId}
         connected={connected}
         socket={socket}

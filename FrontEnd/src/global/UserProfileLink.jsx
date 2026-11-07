@@ -1,3 +1,4 @@
+import i18n from '../features/settings/locals/i18n.js'
 import { Link } from 'react-router-dom'
 
 const defaultAvatar = '/imgs/default-avatar.svg'
@@ -34,7 +35,7 @@ function UserProfileLink({
     <Link
       to={`/profile/${userId}`}
       className={`inline-flex min-w-0 items-center gap-2 no-underline ${className}`}
-      aria-label={`نمایش پروفایل ${name || 'کاربر'}`}
+      aria-label={i18n.t('ViewProfileLabel {{name}}', { name: name || 'کاربر' })}
     >
       {content}
     </Link>

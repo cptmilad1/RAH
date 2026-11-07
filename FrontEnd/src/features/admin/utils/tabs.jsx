@@ -1,4 +1,4 @@
-function TabsUtil(users){
+function TabsUtil(){
     const tabs = [
         { id: 'all', label: 'همه', count: (users) => users.length },
         { id: 'pending', label: 'درخواست‌های رانندگی', count: (users) => users.filter((user) => user.driverStatus === 'pending').length },

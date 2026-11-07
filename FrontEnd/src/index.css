@@ -2,12 +2,9 @@
 
 :root {
   font-family: var(--app-font-family, "Vazirmatn", "IRANSans", Tahoma, Arial, sans-serif);
-  color: var(--app-ink);
-  background: var(--app-page-bg);
+  @apply bg-[var(--app-page-bg)] font-normal text-[var(--app-ink)] antialiased;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  font-weight: 400;
   --app-page-bg: #f6f7f2;
   --app-surface: #fff;
   --app-surface-muted: #f7f9f4;
@@ -35,21 +32,93 @@
   --settings-accent-soft: var(--app-accent-soft);
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  color: var(--app-ink);
-  background: var(--app-page-bg);
+@layer base {
+  *, *::before, *::after {
+    @apply box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply m-0 min-h-screen min-w-[320px] bg-[var(--app-page-bg)] text-[var(--app-ink)];
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
+  button, input {
+    font: inherit;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  button:focus-visible, input:focus-visible, a:focus-visible {
+    @apply outline-[3px] outline-offset-[3px];
+    outline-color: color-mix(in srgb, var(--app-brand) 42%, transparent);
+  }
+
+  ::placeholder {
+    color: var(--app-muted);
+    opacity: 1;
+  }
 }
-#root { min-height: 100vh; }
-button, input { font: inherit; }
-button { cursor: pointer; }
-button:focus-visible, input:focus-visible, a:focus-visible {
-  outline: 3px solid rgba(88, 143, 111, .42);
-  outline-offset: 3px;
+
+html[dir="ltr"] main [class~="text-right"]:not([dir="ltr"]):not([dir="rtl"]) {
+  text-align: left !important;
+}
+
+.dashboard-nav-scroll {
+  scrollbar-color: var(--app-accent) rgb(255 255 255 / 12%);
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.dashboard-nav-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dashboard-nav-scroll::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+}
+
+.dashboard-nav-scroll::-webkit-scrollbar-thumb {
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--app-accent), #9ec64f);
+}
+
+.dashboard-nav-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--app-accent);
+}
+
+.dashboard-nav-item {
+  border-color: transparent;
+  color: rgb(243 247 239 / 82%);
+}
+
+.dashboard-nav-item:not(.is-active):hover {
+  background-color: color-mix(in srgb, var(--app-accent) 14%, transparent);
+  color: #fff;
+}
+
+.dashboard-nav-item.is-active {
+  border-color: color-mix(in srgb, var(--app-accent) 72%, white);
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--app-accent) 88%, white),
+    var(--app-accent)
+  );
+  color: var(--app-brand-deep);
+}
+
+.dashboard-nav-item.is-active .dashboard-nav-icon {
+  color: inherit;
 }
 
 :root[data-app-theme="dark"] {
@@ -129,8 +198,6 @@ main[class*="bg-[linear-gradient"] {
   background-color: var(--app-surface) !important;
   border-color: var(--app-line) !important;
 }
-
-::placeholder { color: var(--app-muted); opacity: 1; }
 
 /* Keep legacy page utilities connected to the active global theme tokens. */
 [class~="bg-white"] {

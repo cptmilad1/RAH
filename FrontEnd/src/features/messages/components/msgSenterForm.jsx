@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 
 function MessageDataForm({
@@ -49,14 +50,14 @@ function MessageDataForm({
 
   return (
     <form onSubmit={submitMessage} className="mt-4 flex gap-2">
-      <label htmlFor="direct-message-input" className="sr-only">نوشتن پیام</label>
+      <label htmlFor="direct-message-input" className="sr-only">{i18n.t("نوشتن پیام")}</label>
       <input
         id="direct-message-input"
         value={message}
         maxLength={2000}
         onChange={(event) => setMessage(event.target.value)}
         disabled={blocked || state.sending || !connected}
-        placeholder={blocked ? 'ارسال پیام غیرفعال است' : 'پیامت را بنویس…'}
+        placeholder={i18n.t(blocked ? 'ارسال پیام غیرفعال است' : 'پیامت را بنویس…')}
         className="min-w-0 flex-1 rounded-xl border border-[#dfe8df] px-4 py-3 text-sm outline-none focus:border-[#77955f] disabled:bg-[#f4f6f2]"
       />
       <button
@@ -64,7 +65,7 @@ function MessageDataForm({
         disabled={blocked || state.sending || !connected || !message.trim()}
         className="rounded-xl bg-[#173f32] px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {state.sending ? '…' : 'ارسال'}
+        {i18n.t(state.sending ? '…' : 'ارسال')}
       </button>
     </form>
   )

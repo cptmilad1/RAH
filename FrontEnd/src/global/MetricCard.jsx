@@ -1,3 +1,4 @@
+import i18n from '../features/settings/locals/i18n.js'
 import Card from './Card'
 
 const layouts = {
@@ -82,17 +83,17 @@ function MetricCard({
     >
       {isHeader ? (
         <div className="flex items-center justify-between gap-2">
-          <Label className={layoutStyles.label}>{label}</Label>
+          <Label className={layoutStyles.label}>{i18n.t(label)}</Label>
           {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{icon}</span>}
         </div>
       ) : (
         <>
           {icon != null && <span className={`${layoutStyles.icon} ${tone.icon} ${iconClassName}`}>{icon}</span>}
-          <Label className={`${layoutStyles.label} ${tone.label}`}>{label}</Label>
+          <Label className={`${layoutStyles.label} ${tone.label}`}>{i18n.t(label)}</Label>
         </>
       )}
       <strong className={`${layoutStyles.value} ${tone.text} ${valueClassName}`}>{value}</strong>
-      {caption && <Caption className={`${layoutStyles.caption} ${tone.caption}`}>{caption}</Caption>}
+      {caption && <Caption className={`${layoutStyles.caption} ${tone.caption}`}>{i18n.t(caption)}</Caption>}
     </Card>
   )
 }

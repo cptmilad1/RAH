@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { Link } from "react-router-dom"
 import UserInfoMsgBox from "../pages/userInfo"
 import MsgSection from "../pages/msgSection"
@@ -35,11 +36,11 @@ function MsgStatus({
       }
     return (
         <div className="mx-auto max-w-3xl">
-            <Link to="/messages" className="text-sm font-bold text-[#547460] no-underline">← بازگشت به پیام‌ها</Link>
+            <Link to="/messages" className="text-sm font-bold text-[#547460] no-underline">{i18n.t("← بازگشت به پیام‌ها")}</Link>
             {state.loading ? (
-                <p role="status" className="mt-10 text-sm text-[#829188]">در حال بازکردن گفت‌وگو…</p>
+                <p role="status" className="mt-10 text-sm text-[#829188]">{i18n.t("در حال بازکردن گفت‌وگو…")}</p>
             ) : state.error && !conversation ? (
-                <p role="alert" className="mt-8 rounded-2xl bg-white p-6 text-sm text-[#a94f3d]">{state.error}</p>
+                <p role="alert" className="mt-8 rounded-2xl bg-white p-6 text-sm text-[#a94f3d]">{i18n.t(state.error)}</p>
             ) : conversation && (
                 <>
                     <UserInfoMsgBox conversation={conversation} toggleBlock={toggleBlock} state={state} />

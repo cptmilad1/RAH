@@ -1,3 +1,4 @@
+import i18n from '../features/settings/locals/i18n.js'
 import Card from './Card'
 
 const tones = {
@@ -16,9 +17,9 @@ function InfoCard({ title, value, icon, dir, tone = 'default', className = '', .
     >
       <span className="grid size-10 shrink-0 place-items-center rounded-[13px] bg-[#eff4e9] text-lg font-bold text-[#547460] transition group-hover:bg-[#e8f2d0]" aria-hidden="true">{icon}</span>
       <div className="grid min-w-0 flex-1 gap-3 pt-0.5">
-        <h3 className="m-0 text-[11px] font-bold text-[#829087]">{title}</h3>
+        <h3 className="m-0 text-[11px] font-bold text-[#829087]">{i18n.t(title)}</h3>
         <p dir={dir} className={`m-0 min-h-5 max-w-full break-words font-bold ${tones[tone] || tones.default} ${dir === 'ltr' ? 'text-left text-[12px] sm:text-[13px]' : 'text-right text-[13px] sm:text-sm'}`}>
-          {value || 'ثبت نشده'}
+          {value || i18n.t('ثبت نشده')}
         </p>
       </div>
       <span className="absolute bottom-0 right-0 h-[2px] w-0 bg-[#d7f36a] transition-all duration-300 group-hover:w-full" />

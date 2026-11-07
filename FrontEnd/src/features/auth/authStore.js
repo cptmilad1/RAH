@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { getProfile, login as loginRequest, logout as logoutRequest } from './authApi'
-import { useSettingsStore } from '../settings/settingsStore'
+import { useSettingsStore } from '../settings/hooks/settingsStore'
 
 const AUTH_STORAGE_KEY = 'rah-auth-storage'
 

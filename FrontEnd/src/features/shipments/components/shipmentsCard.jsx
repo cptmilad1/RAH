@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import Card from "../../../global/Card"
 import { useShipmentPage } from "../hooks/useShipmentPage"
 import ShipmentFilters from "./ShipmentFilters"
@@ -12,7 +13,7 @@ function ShipmentCards({ user, openCreateDialog }) {
             page.setCancelReason('')
         }
     return (
-        <Card as="section" aria-label="فهرست مرسوله‌ها" variant="unstyled" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
+        <Card as="section" aria-label={i18n.t("فهرست مرسوله‌ها")} variant="unstyled" className="overflow-hidden rounded-[24px] border border-[#e5ebe3] bg-white/90 shadow-[0_18px_52px_rgba(22,57,43,.055)]">
             <ShipmentFilters
                 activeFilter={page.activeFilter}
                 onFilterChange={page.setActiveFilter}
@@ -23,7 +24,7 @@ function ShipmentCards({ user, openCreateDialog }) {
                 shipments={page.filteredShipments}
                 allShipments={page.shipments}
                 loading={page.loading}
-                error={page.error}
+                error={i18n.t(page.error)}
                 onRetry={page.fetchShipments}
                 onCreate={openCreateDialog}
                 user={user}

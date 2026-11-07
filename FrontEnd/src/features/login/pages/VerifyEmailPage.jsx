@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -49,27 +50,26 @@ function VerifyEmailPage() {
         eyebrow: 'فقط یک قدم مانده',
         title: 'تأیید ایمیل',
         description: email
-          ? `کد ارسال‌شده به ${email} را وارد کنید تا حساب شما فعال شود.`
+          ? i18n.t('VerifyEmailPrompt {{email}}', { email })
           : 'کد ارسال‌شده به ایمیلتان را وارد کنید تا حساب شما فعال شود.',
       }}
     >
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <AuthField
-          label="کد تأیید"
+          label={i18n.t("کد تأیید")}
           dir="ltr"
           type="text"
           inputMode="numeric"
           maxLength={6}
           pattern="[0-9]{6}"
-          placeholder="کد ۶ رقمی"
+          placeholder={i18n.t("کد ۶ رقمی")}
           autoComplete="one-time-code"
           registration={register('code')}
-          error={errors.code?.message}
+          error={i18n.t(errors.code?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>تأیید و فعال‌سازی حساب</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("تأیید و فعال‌سازی حساب")}</AuthSubmitButton>
       </form>
-      <p data-form-item className="mt-[17px] text-center text-[10px] text-[#829087]">
-        هنوز حساب نساخته‌اید؟ <Link to="/signup" className="font-bold text-[#326249] hover:underline">ثبت‌نام</Link>
+      <p data-form-item className="mt-[17px] text-center text-[10px] text-[#829087]">{i18n.t("هنوز حساب نساخته‌اید؟")}{' '}<Link to="/signup" className="font-bold text-[#326249] hover:underline">{i18n.t("ثبت‌نام")}</Link>
       </p>
     </AuthShell>
   )

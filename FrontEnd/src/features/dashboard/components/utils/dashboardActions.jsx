@@ -1,3 +1,4 @@
+import i18n from '../../../settings/locals/i18n.js'
 import { Link } from "react-router-dom"
 const actionBaseClass = 'flex min-h-[72px] items-center justify-between rounded-[17px] px-5 text-right text-sm font-extrabold shadow-[0_8px_24px_rgba(22,57,43,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(22,57,43,0.12)]'
 
@@ -15,7 +16,7 @@ function DashboardActionCard({ to, onClick, icon, label, variant = 'default' }) 
     >
       <span className="flex items-center gap-3">
         <span className={`grid size-10 place-items-center rounded-xl text-lg ${variant === 'dark' ? 'bg-white/10 text-[#d7f36a]' : 'bg-white/60'}`} aria-hidden="true">{icon}</span>
-        {label}
+        {i18n.t(label)}
       </span>
       <span className={`text-xl ${variant === 'dark' ? 'text-[#d7f36a]' : ''}`} aria-hidden="true">←</span>
     </Element>

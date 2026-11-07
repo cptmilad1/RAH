@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
@@ -562,15 +563,11 @@ function AboutPage() {
     <main ref={rootRef} dir="rtl" className="min-h-screen overflow-x-clip bg-[#f7f8f2] text-[#17352e]">
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.24]" aria-hidden="true" style={{ backgroundImage: 'radial-gradient(#9aa995 0.65px, transparent 0.65px)', backgroundSize: '22px 22px', maskImage: 'linear-gradient(to bottom, black, transparent 70%)' }} />
       <div className="relative z-10 mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-14">
-        <nav data-about-nav className="flex items-center justify-between py-5 sm:py-7" aria-label="ناوبری درباره">
+        <nav data-about-nav className="flex items-center justify-between py-5 sm:py-7" aria-label={i18n.t("ناوبری درباره")}>
           <Link to="/dashboard" className="group inline-flex items-center gap-3 text-sm font-bold text-[#557365] no-underline transition hover:text-[#17352e]">
-            <span className="grid size-10 place-items-center rounded-full border border-[#dfe8dc] bg-white transition group-hover:-translate-x-1" aria-hidden="true">←</span>
-            بازگشت به داشبورد
-          </Link>
+            <span className="grid size-10 place-items-center rounded-full border border-[#dfe8dc] bg-white transition group-hover:-translate-x-1" aria-hidden="true">←</span>{i18n.t("بازگشت به داشبورد")}</Link>
           <Link to="/dashboard" className="flex items-center gap-2.5 text-lg font-black text-[#17352e] no-underline">
-            <span className="grid size-9 place-items-center rounded-xl bg-[#d7f36a] text-xl shadow-[0_8px_24px_rgba(80,115,49,.16)]">ر</span>
-            راه
-          </Link>
+            <span className="grid size-9 place-items-center rounded-xl bg-[#d7f36a] text-xl shadow-[0_8px_24px_rgba(80,115,49,.16)]">{i18n.t("ر")}</span>{i18n.t("راه")}</Link>
         </nav>
 
         <section className="relative grid min-h-[620px] items-center gap-4 pb-14 pt-7 sm:pt-12 lg:min-h-[690px] lg:grid-cols-[1fr_0.95fr] lg:gap-0 lg:pb-20 lg:pt-4">
@@ -579,46 +576,31 @@ function AboutPage() {
               <span className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#9bc34d] opacity-60" />
                 <span className="relative inline-flex size-2 rounded-full bg-[#83ae3d]" />
-              </span>
-              مسیر ارسال، روشن‌تر از همیشه
-            </div>
-            <h1 className="m-0 max-w-[650px] text-[clamp(2.8rem,6.6vw,6.4rem)] font-black leading-[1.14] tracking-[-0.065em] text-[#163a30]">
-              هر مسیر،
-              <br />
-              <span className="relative inline-block text-[#769a3e]">
-                یک قدم
-                <svg className="absolute -bottom-2 right-0 h-3 w-full text-[#d7f36a]" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
+              </span>{i18n.t("مسیر ارسال، روشن‌تر از همیشه")}</div>
+            <h1 className="m-0 max-w-[650px] text-[clamp(2.8rem,6.6vw,6.4rem)] font-black leading-[1.14] tracking-[-0.065em] text-[#163a30]">{i18n.t("هر مسیر،")}<br />
+              <span className="relative inline-block text-[#769a3e]">{i18n.t("یک قدم")}<svg className="absolute -bottom-2 right-0 h-3 w-full text-[#d7f36a]" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
                   <path d="M3 8C79 1 199 1 297 7" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
                 </svg>
-              </span>{' '}
-              نزدیک‌تر.
-            </h1>
-            <p className="mt-7 max-w-[510px] text-sm leading-8 text-[#718078] sm:text-base sm:leading-9">
-              راه، تجربهٔ ارسال را از یک کار پراکنده به مسیری ساده و قابل پیگیری تبدیل می‌کند؛
-              از ثبت مرسوله تا رسیدن آن به مقصد، همه‌چیز شفاف و کنار شماست.
-            </p>
+              </span>{' '}{i18n.t("نزدیک‌تر.")}</h1>
+            <p className="mt-7 max-w-[510px] text-sm leading-8 text-[#718078] sm:text-base sm:leading-9">{i18n.t("راه، تجربهٔ ارسال را از یک کار پراکنده به مسیری ساده و قابل پیگیری تبدیل می‌کند؛\n              از ثبت مرسوله تا رسیدن آن به مقصد، همه‌چیز شفاف و کنار شماست.")}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link to="/shipments" className="group inline-flex min-h-13 items-center gap-3 rounded-2xl bg-[#173f32] px-6 py-3.5 text-sm font-extrabold text-white no-underline shadow-[0_14px_30px_rgba(23,63,50,.18)] transition duration-300 hover:-translate-y-1 hover:bg-[#225741] hover:shadow-[0_18px_38px_rgba(23,63,50,.25)]">
-                شروع تجربهٔ راه
-                <span className="transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
+              <Link to="/shipments" className="group inline-flex min-h-13 items-center gap-3 rounded-2xl bg-[#173f32] px-6 py-3.5 text-sm font-extrabold text-white no-underline shadow-[0_14px_30px_rgba(23,63,50,.18)] transition duration-300 hover:-translate-y-1 hover:bg-[#225741] hover:shadow-[0_18px_38px_rgba(23,63,50,.25)]">{i18n.t("شروع تجربهٔ راه")}<span className="transition-transform group-hover:-translate-x-1" aria-hidden="true">←</span>
               </Link>
-              <Link to="/driver-application" className="inline-flex min-h-13 items-center gap-2 rounded-2xl border border-[#dfe8dc] bg-white/80 px-5 py-3.5 text-sm font-bold text-[#456554] no-underline transition hover:border-[#b6ca9b] hover:bg-white">
-                همکاری با ما
-                <span aria-hidden="true">↗</span>
+              <Link to="/driver-application" className="inline-flex min-h-13 items-center gap-2 rounded-2xl border border-[#dfe8dc] bg-white/80 px-5 py-3.5 text-sm font-bold text-[#456554] no-underline transition hover:border-[#b6ca9b] hover:bg-white">{i18n.t("همکاری با ما")}<span aria-hidden="true">↗</span>
               </Link>
             </div>
             <div className="mt-12 flex flex-wrap gap-x-9 gap-y-5 border-t border-[#e4e9e0] pt-6">
               <div data-about-stat>
-                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">ساده</p>
-                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">از ثبت تا پیگیری</p>
+                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">{i18n.t("ساده")}</p>
+                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">{i18n.t("از ثبت تا پیگیری")}</p>
               </div>
               <div data-about-stat>
-                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">شفاف</p>
-                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">در تمام مراحل مسیر</p>
+                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">{i18n.t("شفاف")}</p>
+                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">{i18n.t("در تمام مراحل مسیر")}</p>
               </div>
               <div data-about-stat>
-                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">همراه</p>
-                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">برای همهٔ نقش‌ها</p>
+                <p className="m-0 text-2xl font-black tracking-tight text-[#234d3b]">{i18n.t("همراه")}</p>
+                <p className="mb-0 mt-1 text-[11px] font-medium text-[#89968d]">{i18n.t("برای همهٔ نقش‌ها")}</p>
               </div>
             </div>
           </div>
@@ -629,14 +611,14 @@ function AboutPage() {
             <div className="absolute inset-[19%] rounded-full border border-dashed border-[#b7c8b3]/60" />
             <div className="absolute right-[13%] top-[23%] z-10 flex items-center gap-2 rounded-2xl border border-white/80 bg-white/85 px-3.5 py-2.5 shadow-[0_14px_40px_rgba(32,66,48,.1)] backdrop-blur">
               <span className="grid size-8 place-items-center rounded-xl bg-[#eef5dd] text-sm text-[#61843e]" aria-hidden="true">✓</span>
-              <span className="grid gap-0.5"><b className="text-[10px] text-[#365541]">مسیر مشخص</b><small className="text-[9px] text-[#8a988e]">از مبدأ تا مقصد</small></span>
+              <span className="grid gap-0.5"><b className="text-[10px] text-[#365541]">{i18n.t("مسیر مشخص")}</b><small className="text-[9px] text-[#8a988e]">{i18n.t("از مبدأ تا مقصد")}</small></span>
             </div>
             <div className="absolute bottom-[18%] left-[5%] z-10 flex items-center gap-2 rounded-2xl border border-white/80 bg-white/85 px-3.5 py-2.5 shadow-[0_14px_40px_rgba(32,66,48,.1)] backdrop-blur">
               <span className="grid size-8 place-items-center rounded-xl bg-[#e6f4ee] text-sm text-[#3d8e6e]" aria-hidden="true">↗</span>
-              <span className="grid gap-0.5"><b className="text-[10px] text-[#365541]">ارتباط آسان</b><small className="text-[9px] text-[#8a988e]">همراه در هر قدم</small></span>
+              <span className="grid gap-0.5"><b className="text-[10px] text-[#365541]">{i18n.t("ارتباط آسان")}</b><small className="text-[9px] text-[#8a988e]">{i18n.t("همراه در هر قدم")}</small></span>
             </div>
             <div className="absolute inset-0">
-              <canvas ref={canvasRef} className="size-full" aria-label="تصویر سه‌بعدی یک مرسوله در مسیر ارسال" role="img" />
+              <canvas ref={canvasRef} className="size-full" aria-label={i18n.t("تصویر سه‌بعدی یک مرسوله در مسیر ارسال")} role="img" />
             </div>
             <div className="absolute bottom-[9%] right-1/2 h-6 w-[45%] translate-x-1/2 rounded-[50%] bg-[#31513d]/15 blur-xl" />
             <span className="absolute left-[17%] top-[18%] size-2 rounded-full bg-[#a2c46b] shadow-[0_0_22px_5px_rgba(162,196,107,.32)]" />
@@ -648,13 +630,11 @@ function AboutPage() {
 
       <section
         ref={storyRef}
-        aria-label="داستان راه"
+        aria-label={i18n.t("داستان راه")}
         className="relative left-1/2 mt-5 h-[100svh] min-h-[650px] w-screen -translate-x-1/2 overflow-hidden bg-[#123d32] motion-reduce:h-auto motion-reduce:min-h-0 motion-reduce:overflow-visible"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between px-5 pt-5 sm:px-9 sm:pt-7 lg:px-14" aria-hidden="true">
-          <span className="rounded-full border border-white/15 bg-black/[0.08] px-3 py-1.5 text-[10px] font-bold text-white/70 backdrop-blur">
-            راه، در پنج قاب
-          </span>
+          <span className="rounded-full border border-white/15 bg-black/[0.08] px-3 py-1.5 text-[10px] font-bold text-white/70 backdrop-blur">{i18n.t("راه، در پنج قاب")}</span>
           <span ref={storyCounterRef} className="font-mono text-xs font-bold tracking-[0.18em] text-white/80">01 / 05</span>
         </div>
         <div ref={storyProgressTrackRef} className="pointer-events-none absolute inset-x-5 top-[58px] z-30 h-[2px] overflow-hidden rounded-full bg-white/20 sm:inset-x-9 sm:top-[72px] lg:inset-x-14">
@@ -662,7 +642,7 @@ function AboutPage() {
         </div>
 
         <div className="pointer-events-none absolute inset-y-[10%] left-0 z-10 w-[65%] sm:w-[59%] motion-reduce:hidden">
-          <canvas ref={storyCanvasRef} className="size-full" aria-label="نمایش‌های سه‌بعدی از امکانات راه" role="img" />
+          <canvas ref={storyCanvasRef} className="size-full" aria-label={i18n.t("نمایش‌های سه‌بعدی از امکانات راه")} role="img" />
         </div>
         <div ref={storyTrackRef} dir="ltr" className="relative z-20 flex h-full w-[500vw] motion-reduce:h-auto motion-reduce:w-full motion-reduce:flex-col motion-reduce:transform-none">
           {stories.map((story) => (
@@ -679,13 +659,13 @@ function AboutPage() {
               <div className="relative z-20 ml-auto w-[72%] max-w-[650px] lg:w-[48%] motion-reduce:w-full motion-reduce:pt-[46svh]">
                 <p className="mb-4 flex items-center gap-3 text-[11px] font-extrabold tracking-wide sm:text-xs" style={{ color: story.kicker }}>
                   <span className="h-px w-8" style={{ backgroundColor: story.accent }} />
-                  {story.eyebrow}
+                  {i18n.t(story.eyebrow)}
                 </p>
                 <h2 className="m-0 max-w-[650px] text-[clamp(2.5rem,5.5vw,5.5rem)] font-black leading-[1.14] tracking-[-0.06em]">
-                  {story.title}
+                  {i18n.t(story.title)}
                 </h2>
                 <p className="mb-0 mt-5 max-w-[510px] text-sm leading-8 sm:mt-7 sm:text-base sm:leading-9" style={{ color: story.muted }}>
-                  {story.description}
+                  {i18n.t(story.description)}
                 </p>
                 <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-current/20 px-3.5 py-2 text-[10px] font-bold opacity-80">
                   <span className="size-1.5 rounded-full" style={{ backgroundColor: story.accent }} />
@@ -695,8 +675,7 @@ function AboutPage() {
             </article>
           ))}
         </div>
-        <p ref={storyHintRef} className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 text-[10px] font-semibold text-white/55 sm:flex motion-reduce:hidden">
-          برای ادامه، اسکرول کنید <span aria-hidden="true">↓</span>
+        <p ref={storyHintRef} className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 text-[10px] font-semibold text-white/55 sm:flex motion-reduce:hidden">{i18n.t("برای ادامه، اسکرول کنید")}{' '}<span aria-hidden="true">↓</span>
         </p>
       </section>
 
@@ -706,24 +685,16 @@ function AboutPage() {
           <div className="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.08] px-3 py-1.5 text-[10px] font-bold text-[#d7f36a]">
-                <span className="size-1.5 rounded-full bg-[#d7f36a]" />
-                مسیر بعدی از شما شروع می‌شود
-              </span>
-              <h2 className="mb-0 mt-4 text-2xl font-black tracking-tight sm:text-3xl">آماده‌اید اولین قدم را بردارید؟</h2>
-              <p className="mb-0 mt-2 text-xs leading-6 text-[#c2d4c9]">مرسولهٔ تازه ثبت کنید یا به‌عنوان راننده به جمع همکاران راه بپیوندید.</p>
+                <span className="size-1.5 rounded-full bg-[#d7f36a]" />{i18n.t("مسیر بعدی از شما شروع می‌شود")}</span>
+              <h2 className="mb-0 mt-4 text-2xl font-black tracking-tight sm:text-3xl">{i18n.t("آماده‌اید اولین قدم را بردارید؟")}</h2>
+              <p className="mb-0 mt-2 text-xs leading-6 text-[#c2d4c9]">{i18n.t("مرسولهٔ تازه ثبت کنید یا به‌عنوان راننده به جمع همکاران راه بپیوندید.")}</p>
             </div>
             <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-              <Link to="/shipments" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#d7f36a] px-5 text-xs font-extrabold text-[#17352e] no-underline transition hover:-translate-y-0.5 hover:bg-[#e2f78f] sm:flex-none">
-                ثبت مرسوله
-                <span aria-hidden="true">←</span>
+              <Link to="/shipments" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-[#d7f36a] px-5 text-xs font-extrabold text-[#17352e] no-underline transition hover:-translate-y-0.5 hover:bg-[#e2f78f] sm:flex-none">{i18n.t("ثبت مرسوله")}<span aria-hidden="true">←</span>
               </Link>
-              <Link to="/driver-application" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-xs font-bold text-white no-underline transition hover:border-white/50 hover:bg-white/[0.07] sm:flex-none">
-                همکاری با راه
-                <span aria-hidden="true">↗</span>
+              <Link to="/driver-application" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-xs font-bold text-white no-underline transition hover:border-white/50 hover:bg-white/[0.07] sm:flex-none">{i18n.t("همکاری با راه")}<span aria-hidden="true">↗</span>
               </Link>
-              <Link to="/messages" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-xs font-bold text-white no-underline transition hover:border-white/50 hover:bg-white/[0.07] sm:flex-none">
-                ارتباط و پیام‌ها
-                <span aria-hidden="true">✉</span>
+              <Link to="/messages" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-xs font-bold text-white no-underline transition hover:border-white/50 hover:bg-white/[0.07] sm:flex-none">{i18n.t("ارتباط و پیام‌ها")}<span aria-hidden="true">✉</span>
               </Link>
             </div>
           </div>
@@ -732,10 +703,10 @@ function AboutPage() {
         <section data-about-pages aria-labelledby="about-pages-heading" className="pb-8 pt-2 sm:pb-12">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="mb-1.5 text-[10px] font-extrabold tracking-wide text-[#86a34f]">یک نگاه به راه</p>
-              <h2 id="about-pages-heading" className="m-0 text-xl font-black text-[#1d4434] sm:text-2xl">از کجا شروع کنیم؟</h2>
+              <p className="mb-1.5 text-[10px] font-extrabold tracking-wide text-[#86a34f]">{i18n.t("یک نگاه به راه")}</p>
+              <h2 id="about-pages-heading" className="m-0 text-xl font-black text-[#1d4434] sm:text-2xl">{i18n.t("از کجا شروع کنیم؟")}</h2>
             </div>
-            <span className="text-[10px] text-[#89968d]">هر مسیر، یک قدم تا مقصد</span>
+            <span className="text-[10px] text-[#89968d]">{i18n.t("هر مسیر، یک قدم تا مقصد")}</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {promotedPages.map((page) => (
@@ -749,17 +720,17 @@ function AboutPage() {
                   <span className="grid size-9 place-items-center rounded-xl bg-[#eff5e5] text-[10px] font-black text-[#678642] transition group-hover:bg-[#d7f36a]">{page.icon}</span>
                   <span className="text-xs text-[#8fa095] transition group-hover:-translate-x-1" aria-hidden="true">←</span>
                 </span>
-                <strong className="mb-1 mt-4 text-xs font-extrabold text-[#31513e]">{page.title}</strong>
-                <span className="text-[10px] leading-5 text-[#829087]">{page.description}</span>
-                <span className="mt-auto pt-3 text-[9px] font-bold text-[#64804e]">{page.label}</span>
+                <strong className="mb-1 mt-4 text-xs font-extrabold text-[#31513e]">{i18n.t(page.title)}</strong>
+                <span className="text-[10px] leading-5 text-[#829087]">{i18n.t(page.description)}</span>
+                <span className="mt-auto pt-3 text-[9px] font-bold text-[#64804e]">{i18n.t(page.label)}</span>
               </Link>
             ))}
           </div>
         </section>
 
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e4e9e0] py-5 text-[10px] text-[#94a097]">
-          <span>راه؛ همراه شما در مسیر ارسال.</span>
-          <Link to="/dashboard" className="font-bold text-[#607968] no-underline hover:text-[#17352e]">رفتن به داشبورد ←</Link>
+          <span>{i18n.t("راه؛ همراه شما در مسیر ارسال.")}</span>
+          <Link to="/dashboard" className="font-bold text-[#607968] no-underline hover:text-[#17352e]">{i18n.t("رفتن به داشبورد ←")}</Link>
         </footer>
       </div>
     </main>

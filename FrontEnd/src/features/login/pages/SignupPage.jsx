@@ -1,3 +1,4 @@
+import i18n from '../../settings/locals/i18n.js'
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -53,49 +54,49 @@ function SignupPage() {
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <div data-form-item className="grid gap-4 sm:grid-cols-2 sm:gap-[13px]">
           <AuthField
-            label="نام و نام خانوادگی"
-            placeholder="مثلاً سارا محمدی"
+            label={i18n.t("نام و نام خانوادگی")}
+            placeholder={i18n.t("مثلاً سارا محمدی")}
             autoComplete="name"
             registration={register('full_name')}
-            error={errors.full_name?.message}
+            error={i18n.t(errors.full_name?.message)}
           />
           <AuthField
-            label="نام کاربری"
+            label={i18n.t("نام کاربری")}
             dir="ltr"
-            placeholder="نام کاربری"
+            placeholder={i18n.t("نام کاربری")}
             autoComplete="username"
             registration={register('username')}
-            error={errors.username?.message}
+            error={i18n.t(errors.username?.message)}
           />
         </div>
         <AuthField
-          label="نشانی ایمیل"
+          label={i18n.t("نشانی ایمیل")}
           type="email"
           dir="ltr"
           placeholder="name@example.com"
           autoComplete="email"
           registration={register('email')}
-          error={errors.email?.message}
+          error={i18n.t(errors.email?.message)}
         />
         <AuthField
-          label={<span>شمارهٔ تماس <small className="mr-1 text-[9px] font-medium text-[#9ba79f]">اختیاری</small></span>}
+          label={<span>{i18n.t("شمارهٔ تماس")}{' '}<small className="mr-1 text-[9px] font-medium text-[#9ba79f]">{i18n.t("اختیاری")}</small></span>}
           type="tel"
           dir="ltr"
           placeholder="+93 700 000 000"
           autoComplete="tel"
           registration={register('phone')}
-          error={errors.phone?.message}
+          error={i18n.t(errors.phone?.message)}
         />
         <AuthField
-          label="گذرواژه"
+          label={i18n.t("گذرواژه")}
           type="password"
           dir="ltr"
-          placeholder="حداقل ۸ نویسه"
+          placeholder={i18n.t("حداقل ۸ نویسه")}
           autoComplete="new-password"
           registration={register('password')}
-          error={errors.password?.message}
+          error={i18n.t(errors.password?.message)}
         />
-        <AuthSubmitButton busy={isSubmitting}>ساخت حساب کاربری</AuthSubmitButton>
+        <AuthSubmitButton busy={isSubmitting}>{i18n.t("ساخت حساب کاربری")}</AuthSubmitButton>
       </form>
     </AuthShell>
   )
