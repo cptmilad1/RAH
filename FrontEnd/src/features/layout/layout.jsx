@@ -10,7 +10,7 @@ function Layout({children}){
     return(
         <div className="flex min-h-screen w-full flex-col lg:flex-row">
             <NavbarSide logout={logout} navItems={navItems}/>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 w-full">
                 {children}
             </div>
         </div>

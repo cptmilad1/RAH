@@ -48,7 +48,7 @@ function ShipmentPage() {
 
   return (
     <main ref={rootRef} dir="rtl" className="min-h-screen bg-[radial-gradient(ellipse_at_85%_0%,rgba(215,243,106,0.2),transparent_32%),#f5f7f1] text-[#17352e]">
-      <div className="mx-auto grid min-h-screen max-w-[1480px] lg:grid-cols-[250px_minmax(0,1fr)]">
+      <div className="mx-auto grid min-h-screen max-w-[1480px] lg:grid-cols-[70vw_minmax(0,1fr)]">
         <section className="min-w-0 px-4 py-7 sm:px-8 sm:py-10 lg:px-[clamp(28px,5vw,76px)] lg:py-12">
           <ShipmentPageHeader onCreate={openCreateDialog} onTrack={(code) => navigate(`/shipments/${encodeURIComponent(code)}`)} />
           <ShipmentStats stats={page.stats} loading={page.loading} />
