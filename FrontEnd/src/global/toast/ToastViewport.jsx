@@ -38,7 +38,7 @@ function ToastItem({ item, t }) {
       >
         <span aria-hidden="true">×</span>
       </button>
-      <span className="absolute inset-inline-start-0 inset-block-end-0 h-[2px] w-full origin-left bg-[var(--toast-accent)] opacity-60 [animation:rah-toast-countdown_var(--toast-duration)_linear_both] rtl:origin-right" aria-hidden="true" />
+      <span className="col-span-full mt-2 h-[2px] w-full origin-left bg-[var(--toast-accent)] opacity-60 [animation:rah-toast-countdown_var(--toast-duration)_linear_both] rtl:origin-right" aria-hidden="true" />
     </article>
   )
 }
@@ -48,7 +48,7 @@ function ToastViewport() {
   const toasts = useToastStore((state) => state.toasts)
 
   return (
-    <div className="pointer-events-none fixed inset-block-start-[2%] inset-inline-start-[-30%] z-[1000] grid w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 gap-[0.7rem]" aria-label={t('toast.notifications')}>
+    <div className="pointer-events-none fixed left-1/2 right-auto top-0 z-[1000] grid w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 gap-[0.7rem]" aria-label={t('toast.notifications')}>
       {toasts.map((item) => <ToastItem key={item.id} item={item} t={t} />)}
     </div>
   )

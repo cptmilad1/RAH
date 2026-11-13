@@ -10,6 +10,7 @@ const VerifyEmailPage = lazy(() => import('../login/pages/VerifyEmailPage'))
 const ResetPasswordPage = lazy(() => import('../login/pages/ResetPasswordPage'))
 const Dashboard = lazy(() => import('../dashboard/dashboard'))
 const AboutPage = lazy(() => import('../dashboard/pages/AboutPage'))
+const HelpPage = lazy(() => import('../dashboard/pages/HelpPage'))
 const InboxPage = lazy(() => import('../dashboard/pages/InboxPage'))
 const InboxChatPage = lazy(() => import('../dashboard/pages/InboxChatPage'))
 const MessagesPage = lazy(() => import('../messages/pages/MessagesPage'))
@@ -33,6 +34,7 @@ const rahRoutes = [
   {path: '/dashboard', element:<ProtectedRoute><Dashboard/></ProtectedRoute>, layout : true},
   {path: '/settings', element:<ProtectedRoute><SettingsPage/></ProtectedRoute>, layout : true},
   {path: '/about', element:<ProtectedRoute><AboutPage/></ProtectedRoute>, layout : false},
+  {path: '/help', element:<ProtectedRoute><HelpPage/></ProtectedRoute>, layout : true},
   {path: '/inbox', element:<ProtectedRoute><InboxPage/></ProtectedRoute>, layout : true},
   {path: '/inbox/:trackingCode', element:<ProtectedRoute><InboxChatPage/></ProtectedRoute>, layout : true},
   {path: '/messages', element:<ProtectedRoute><MessagesPage/></ProtectedRoute>, layout : true},

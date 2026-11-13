@@ -41,8 +41,6 @@ function InboxPage() {
   return (
     <main dir="rtl" className="min-h-screen bg-[#f5f7f1] px-4 py-8 text-[#17352e] sm:px-8 sm:py-12">
       <div className="mx-auto max-w-3xl">
-        <Link to="/dashboard" className="text-sm font-bold text-[#547460] no-underline">{i18n.t("← بازگشت به داشبورد")}</Link>
-        <Link to="/messages" className="mr-4 text-sm font-bold text-[#547460] no-underline">{i18n.t("پیام‌های خصوصی →")}</Link>
         <header className="mt-7 rounded-[26px] bg-[linear-gradient(135deg,#1d5742,#10382e)] p-6 text-white shadow-[0_20px_50px_rgba(23,63,50,.17)] sm:p-9">
           <p className="m-0 text-xs text-[#b9d1c2]">{i18n.t("پیام‌هایی که از دیگران دریافت کرده‌اید")}</p>
           <h1 className="mb-2 mt-2 text-3xl font-black">{i18n.t("صندوق ورودی")}</h1>
