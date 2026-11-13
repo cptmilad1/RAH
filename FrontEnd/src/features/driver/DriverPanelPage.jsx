@@ -11,7 +11,7 @@ function DriverPanelPage() {
   const clearMessages = useDriverParcelsStore((state) => state.clearMessages)
   const { control, register, reset } = useForm({ defaultValues: { search: '' } })
   const search = useWatch({ control, name: 'search' })
-  const { parcels, province, loading, acceptingCode, error, notice, fetchParcels } = useDriverParcels(search || '')
+  const { parcels, province, loading, acceptingCode, error, fetchParcels } = useDriverParcels(search || '')
 
   async function handleAccept(trackingCode) {
     clearMessages()
@@ -50,7 +50,6 @@ function DriverPanelPage() {
         </section>
 
         {error && <p role="alert" className="mb-0 mt-5 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{i18n.t(error)}</p>}
-        {notice && <p role="status" className="mb-0 mt-5 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{i18n.t(notice)}</p>}
 
         {loading ? (
           <p role="status" className="py-16 text-center text-sm text-[#829188]">{i18n.t("در حال دریافت مرسوله‌های ولایت")}{' '}{i18n.t(province || 'شما')}…</p>

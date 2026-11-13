@@ -8,7 +8,6 @@ export function useDriverParcels(search) {
   const loading = useDriverParcelsStore((state) => state.loading)
   const acceptingCode = useDriverParcelsStore((state) => state.acceptingCode)
   const error = useDriverParcelsStore((state) => state.error)
-  const notice = useDriverParcelsStore((state) => state.notice)
   const fetchParcels = useDriverParcelsStore((state) => state.fetchParcels)
   const socket = usePresenceStore((state) => state.socket)
   const deferredSearch = useDeferredValue(search.trim().toLocaleLowerCase())
@@ -28,5 +27,5 @@ export function useDriverParcels(search) {
     return searchable.includes(deferredSearch)
   }), [deferredSearch, parcels])
 
-  return { parcels: filteredParcels, province, loading, acceptingCode, error, notice, fetchParcels }
+  return { parcels: filteredParcels, province, loading, acceptingCode, error, fetchParcels }
 }

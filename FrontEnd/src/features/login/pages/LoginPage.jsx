@@ -10,6 +10,7 @@ import AuthShell from '../components/AuthShell'
 import AuthSubmitButton from '../components/AuthSubmitButton'
 import { loginSchema } from '../schema/authSchemas'
 import translateMessage from '../utils/translator'
+import { toast } from '../../../global/toast/toastStore'
 
 function LoginPage() {
   const location = useLocation()
@@ -34,6 +35,7 @@ function LoginPage() {
     setStatus(null)
     try {
       await loginUser(values)
+      toast.success('toast.signedIn')
       navigate('/dashboard', { replace: true })
     } catch (error) {
       setStatus({

@@ -14,8 +14,8 @@ import UsersAndDriversDetails from './components/users&driverDetails'
 function AdminPanelPage() {
   const rootRef = useRef(null)
   const {currentUser} = useAuthStore()
-  const {users, loading, 
-        updatingId, error, notice, fetchUsers, 
+  const {users, loading,
+        updatingId, error, fetchUsers,
         setUserRole, approveDriver, rejectDriver, 
         setAccountActive} = useAdminStore()
   const [activeTab, setActiveTab] = useState('all')
@@ -99,7 +99,6 @@ function AdminPanelPage() {
         <Header fetchUsers={fetchUsers} loading={loading} filteredUsers={filteredUsers} />
         <DetailsCard users={users} />
         {error && <p role="alert" className="mb-4 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{i18n.t(error)}</p>}
-        {notice && <p role="status" className="mb-4 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{i18n.t(notice)}</p>}
         <Card as="section" variant="unstyled" className="overflow-hidden rounded-[22px] border border-[#e5ebe3] bg-white shadow-[0_18px_52px_rgba(22,57,43,.045)]">
           <FindForm
             searchInput={searchInput}

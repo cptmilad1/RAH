@@ -497,7 +497,7 @@ async function resetPassword(req,res, next) {
 async function getSessions(req,res, next) {
     try{
         const id = req.user.userId
-        const result = await db.query(`select id, device, ip_address, created_at, expires_at from refresh_tokens where user_id=$1 order by created_at desc`,[id])
+        const result = await db.query(`select id, device, ip_address, created_at from refresh_tokens where user_id=$1 order by created_at desc`,[id])
         return HandleResult({ status: 200, data: result.rows, res })
     }catch(err){
         next(err)

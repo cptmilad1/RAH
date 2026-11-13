@@ -2,8 +2,8 @@ import i18n from '../../settings/locals/i18n.js'
 import { useEffect } from "react"
 import DashboardNavItem from "./utils/dashboearNavItems"
 import gsap from 'gsap'
-import { IoSettingsSharp } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { IoHelpCircleOutline, IoSettingsSharp } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next'
 
 function NavbarSide({navItems}) {
@@ -32,15 +32,15 @@ function NavbarSide({navItems}) {
           </button>
         </div>
 
-        <nav data-dashboard-nav aria-label={t('ناوبری اصلی')} className="dashboard-nav-scroll mt-[19px] flex gap-[7px] overflow-x-auto overflow-y-hidden pb-2 lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible lg:pb-0">
+        <nav data-dashboard-nav aria-label={t('ناوبری اصلی')} className="mt-[19px] flex gap-[7px] overflow-x-auto overflow-y-hidden pb-2 scroll-smooth [scrollbar-color:var(--app-accent)_rgb(255_255_255_/_12%)] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-[6px] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[rgb(255_255_255_/_10%)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border [&::-webkit-scrollbar-thumb]:border-[rgb(255_255_255_/_30%)] [&::-webkit-scrollbar-thumb]:bg-[linear-gradient(90deg,var(--app-accent),#9ec64f)] [&::-webkit-scrollbar-thumb:hover]:bg-[var(--app-accent)] lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible lg:pb-0">
           {navItems.map((item) => <DashboardNavItem key={item.label} {...item} />)}
         </nav>
 
         <div className="mt-auto hidden lg:block">
-          <div className="mb-[17px] flex items-center gap-[11px] rounded-[15px] border border-white/[0.09] bg-white/[0.045] px-3 py-[15px]">
-            <span className="grid size-8 place-items-center rounded-[11px] bg-[#d7f36a]/[0.14] font-extrabold text-[#d7f36a]">{i18n.t("؟")}</span>
+          <Link to="/help" className="mb-[17px] flex items-center gap-[11px] rounded-[15px] border border-white/[0.09] bg-white/[0.045] px-3 py-[15px] text-white no-underline transition hover:bg-white/[0.09]">
+            <span className="grid size-8 shrink-0 place-items-center rounded-[11px] bg-white/10 text-xl text-white"><IoHelpCircleOutline aria-hidden="true" /></span>
             <span className="grid gap-1"><strong className="text-[10px]">{i18n.t("نیاز به راهنمایی دارید؟")}</strong><small className="text-[9px] text-[#a7bcb0]">{i18n.t("ما کنار شما هستیم.")}</small></span>
-          </div>
+          </Link>
         </div>
       </aside>
     )

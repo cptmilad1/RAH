@@ -7,6 +7,7 @@ import ShipmentConversation from '../components/ShipmentConversation'
 import ShipmentDetailsHeader from '../components/ShipmentDetailsHeader'
 import ShipmentInformation from '../components/ShipmentInformation'
 import ShipmentStatusHistory from '../components/ShipmentStatusHistory'
+import { toast } from '../../../global/toast/toastStore'
 import {
   confirmShipmentDelivery,
   confirmShipmentHandoff,
@@ -20,7 +21,6 @@ function ShipmentDetailsPage() {
   const socket = usePresenceStore((state) => state.socket)
   const [result, setResult] = useState(null)
   const [actionError, setActionError] = useState('')
-  const [realtimeNotice, setRealtimeNotice] = useState('')
   const [saving, setSaving] = useState(false)
 
   const refreshShipment = useCallback(() => {
@@ -40,16 +40,15 @@ function ShipmentDetailsPage() {
     const handleParcelUpdate = (payload) => {
       if (payload.trackingCode !== trackingCode) return
       const noticeByStatus = {
-        assigned: 'راننده مرسوله را پذیرفت.',
-        picked_up: 'تحویل مرسوله به راننده تأیید شد.',
-        in_transit: 'وضعیت مرسوله به «در مسیر» تغییر کرد.',
-        delivery_pending_confirmation: 'راننده تحویل مرسوله را ثبت کرده؛ دریافت را تأیید کن.',
-        delivered: 'دریافت نهایی مرسوله تأیید شد.',
+        assigned: 'toast.shipmentAssigned',
+        picked_up: 'toast.shipmentPickedUp',
+        in_transit: 'toast.shipmentInTransit',
+        delivery_pending_confirmation: 'toast.shipmentDeliveryPending',
+        delivered: 'toast.shipmentDelivered',
       }
-      setRealtimeNotice({
-        trackingCode,
-        message: noticeByStatus[payload.status] || 'وضعیت مرسوله به‌روزرسانی شد.',
-      })
+      const notice = noticeByStatus[payload.status] || 'toast.shipmentUpdated'
+      if (payload.status === 'delivered') toast.success(notice)
+      else toast.info(notice)
       refreshShipment()
     }
     socket.on('parcel:updated', handleParcelUpdate)
@@ -83,7 +82,6 @@ function ShipmentDetailsPage() {
         ) : shipment && (
           <>
             <ShipmentDetailsHeader trackingCode={shipment.trackingCode} status={shipment.status} />
-            {realtimeNotice?.trackingCode === trackingCode && <p role="status" className="mt-5 rounded-xl border border-[#dce9cf] bg-[#f2f8e9] p-4 text-sm font-bold text-[#557460]">{i18n.t(realtimeNotice.message)}</p>}
             {shipment.isSender || shipment.isReceiver || shipment.isAssignedDriver || user?.role === 'admin' || user?.role === 'driver'
               ? <ShipmentInformation shipment={shipment} />
               : <p className="mt-5 rounded-2xl border border-[#e5ebe3] bg-white p-5 text-sm leading-7 text-[#71867c]">{i18n.t("این صفحه رهگیری عمومی است و فقط وضعیت و تاریخچهٔ مرسوله را نشان می‌دهد.")}</p>}

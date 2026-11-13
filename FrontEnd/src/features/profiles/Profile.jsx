@@ -1,21 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import useProfile from './hooks/UseProfile'
 import roleChecker from './utils/roleChecker'
 import { useAuthStore } from '../auth/authStore'
+import { usePresenceStore } from '../presence/presenceStore'
 import { getUserBlockStatus } from './api/profileApi'
 import ProfileInfoCards from './components/profileInfoCards'
 import ProfileDetails from './components/ProfileDetails'
+import { toast } from '../../global/toast/toastStore'
 
 
 
 function Profile() {
   const { id } = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
   const users = useProfile((state) => state.users)
   const setUsers = useProfile((state) => state.setUsers)
   const currentUser = useAuthStore((state) => state.user)
+  const isOnline = usePresenceStore((state) => Boolean(users?.id && state.onlineUsers[String(users.id)]))
   const profileRef = useRef(null)
+  const handledNoticeRef = useRef(null)
   const isOwnProfile = String(currentUser?.id) === String(id)
   const [blockState, setBlockState] = useState({
     profileId: null,
@@ -34,6 +40,13 @@ function Profile() {
   useEffect(() => {
     setUsers(id).catch(() => undefined)
   }, [id, setUsers])
+
+  useEffect(() => {
+    if (!location.state?.notice || handledNoticeRef.current === location.key) return
+    handledNoticeRef.current = location.key
+    toast.success(location.state.notice)
+    navigate(location.pathname, { replace: true, state: null })
+  }, [location.key, location.pathname, location.state, navigate])
 
   useEffect(() => {
     let active = true
@@ -84,6 +97,7 @@ function Profile() {
         <ProfileDetails
           users={users}
           roleLabel={roleLabel}
+          isOnline={isOnline}
           isOwnProfile={isOwnProfile}
           blockState={activeBlockState}
           setBlockState={setBlockState}
