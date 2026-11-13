@@ -28,9 +28,10 @@ function ProfileEditPage() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [profileImage, setProfileImage] = useState('')
+  const [profileRole, setProfileRole] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarPreview, setAvatarPreview] = useState('')
-  const canEdit = currentUser?.role === 'admin' || String(currentUser?.id) === String(id)
+  const canEdit = String(currentUser?.id) === String(id) || currentUser?.role === 'admin'
   const {
     register,
     handleSubmit,
@@ -38,7 +39,7 @@ function ProfileEditPage() {
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(currentUser?.role === 'driver' ? driverProfileEditSchema : profileEditSchema),
+    resolver: zodResolver(profileRole === 'driver' ? driverProfileEditSchema : profileEditSchema),
     defaultValues: { full_name: '', username: '', phone: '', user_address: '', driver_province: '' },
   })
 
@@ -54,6 +55,7 @@ function ProfileEditPage() {
         const profile = await setUsers(id)
         if (isCurrent) {
           setProfileImage(profile.image || '/imgs/default-avatar.svg')
+          setProfileRole(profile.role || '')
           reset({
             full_name: profile.name || '',
             username: profile.username || '',
@@ -99,7 +101,7 @@ function ProfileEditPage() {
       Object.entries(values).forEach(([key, value]) => formData.append(key, value || ''))
       if (avatarFile) formData.append('avatar', avatarFile)
       await updateUser(id, formData)
-      navigate(`/profile/${id}`, { replace: true, state: { notice: 'اطلاعات پروفایل ذخیره شد.' } })
+      navigate(`/profile/${id}`, { replace: true, state: { notice: 'toast.profileSaved' } })
     } catch (error) {
       setError('root.server', {
         message: error.message || 'ذخیرهٔ تغییرات انجام نشد. دوباره تلاش کنید.',
@@ -153,7 +155,7 @@ function ProfileEditPage() {
                   </label>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {currentUser?.role === 'driver' && (
+                  {profileRole === 'driver' && (
                     <label className="grid min-w-0 gap-2 text-[11px] font-bold text-[#385247]">
                       <span>{i18n.t("ولایت کاری راننده")}</span>
                       <select {...register('driver_province')} required className="min-h-12 w-full rounded-xl border border-[#e1e8e0] bg-[#fbfcf9] px-3.5 text-xs text-[#244738] focus:border-[#8eae91] focus:outline-none focus:ring-4 focus:ring-[#82aa85]/[0.12]">

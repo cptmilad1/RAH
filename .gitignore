@@ -1,5 +1,6 @@
 /node_modules
 BackEnd/uploads/avatars/
+/docs
 .env
 .env.*
 !.env.example

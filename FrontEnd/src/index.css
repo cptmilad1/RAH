@@ -72,55 +72,6 @@ html[dir="ltr"] main [class~="text-right"]:not([dir="ltr"]):not([dir="rtl"]) {
   text-align: left !important;
 }
 
-.dashboard-nav-scroll {
-  scrollbar-color: var(--app-accent) rgb(255 255 255 / 12%);
-  scrollbar-width: thin;
-  scroll-behavior: smooth;
-}
-
-.dashboard-nav-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.dashboard-nav-scroll::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgb(255 255 255 / 10%);
-}
-
-.dashboard-nav-scroll::-webkit-scrollbar-thumb {
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--app-accent), #9ec64f);
-}
-
-.dashboard-nav-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--app-accent);
-}
-
-.dashboard-nav-item {
-  border-color: transparent;
-  color: rgb(243 247 239 / 82%);
-}
-
-.dashboard-nav-item:not(.is-active):hover {
-  background-color: color-mix(in srgb, var(--app-accent) 14%, transparent);
-  color: #fff;
-}
-
-.dashboard-nav-item.is-active {
-  border-color: color-mix(in srgb, var(--app-accent) 72%, white);
-  background-image: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--app-accent) 88%, white),
-    var(--app-accent)
-  );
-  color: var(--app-brand-deep);
-}
-
-.dashboard-nav-item.is-active .dashboard-nav-icon {
-  color: inherit;
-}
-
 :root[data-app-theme="dark"] {
   color-scheme: dark;
   --app-page-bg: #111916;
@@ -197,6 +148,15 @@ main[class*="bg-[linear-gradient"] {
   color: var(--app-ink) !important;
   background-color: var(--app-surface) !important;
   border-color: var(--app-line) !important;
+}
+
+@keyframes rah-toast-enter {
+  from { opacity: 0; transform: translateY(-0.5rem) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes rah-toast-countdown {
+  to { transform: scaleX(0); }
 }
 
 /* Keep legacy page utilities connected to the active global theme tokens. */

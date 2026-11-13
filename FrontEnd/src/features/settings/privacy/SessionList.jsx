@@ -13,6 +13,14 @@ function formatDate(value, language) {
   }).format(date)
 }
 
+function formatDeviceName(device) {
+  if (!device) return ''
+
+  if (/android|iphone|ipad|ipod|mobile/i.test(device)) return 'Mobile'
+  if (/windows/i.test(device)) return 'Windows'
+  return 'Desktop'
+}
+
 function SessionList({ sessions, onLogout, loading, error, onRefresh, isRemovingSession }) {
   const { t } = useTranslation()
 
@@ -54,15 +62,28 @@ function SessionList({ sessions, onLogout, loading, error, onRefresh, isRemoving
           key={session.id}
           className="rounded-2xl border border-[var(--settings-line)] bg-[var(--settings-surface)] p-4"
         >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0 flex-1">
               <p className="m-0 text-sm font-bold text-[var(--settings-ink)]">
-                {session.device || t('settings.privacySection.sessions.unknownDevice')}
+                {formatDeviceName(session.device) || t('settings.privacySection.sessions.unknownDevice')}
               </p>
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-[var(--settings-muted)]">
-                <span>{t('settings.privacySection.sessions.ip')}: {session.ip_address || '—'}</span>
-                <span>{t('settings.privacySection.sessions.createdAt')}: {formatDate(session.created_at, i18n.language)}</span>
-                <span>{t('settings.privacySection.sessions.expiresAt')}: {formatDate(session.expires_at, i18n.language)}</span>
+              <div className="mt-3 grid min-w-0 gap-2 text-xs text-[var(--settings-muted)]">
+                <p className="m-0 grid min-w-0 gap-1 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-start">
+                  <span className="font-semibold">{t('settings.privacySection.sessions.device')}:</span>
+                  <span dir="ltr" className="block min-w-0 max-w-full whitespace-normal break-all font-mono text-[var(--settings-ink)] [overflow-wrap:anywhere]">
+                    {session.device || '—'}
+                  </span>
+                </p>
+                <p className="m-0 grid min-w-0 gap-1 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-start">
+                  <span className="font-semibold">{t('settings.privacySection.sessions.ip')}:</span>
+                  <code dir="ltr" className="block min-w-0 max-w-full whitespace-normal break-all font-mono text-[var(--settings-ink)] [overflow-wrap:anywhere]">
+                    {session.ip_address || '—'}
+                  </code>
+                </p>
+                <p className="m-0 grid min-w-0 gap-1 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-start">
+                  <span className="font-semibold">{t('settings.privacySection.sessions.createdAt')}:</span>
+                  <span className="whitespace-normal text-[var(--settings-ink)]">{formatDate(session.created_at, i18n.language)}</span>
+                </p>
               </div>
             </div>
 

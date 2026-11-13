@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { approveDriver, getAdminUsers, rejectDriver, updateAccountStatus, updateUserRole } from '../api/adminApi'
+import { toast } from '../../../global/toast/toastStore'
 
 export const useAdminStore = create((set, get) => ({
   users: [],
   loading: false,
   updatingId: null,
   error: '',
-  notice: '',
   fetchUsers: async () => {
     set({ loading: true, error: '' })
     try {
@@ -19,13 +19,11 @@ export const useAdminStore = create((set, get) => ({
     }
   },
   setUserRole: async (userId, role) => {
-    set({ updatingId: userId, error: '', notice: '' })
+    set({ updatingId: userId, error: '' })
     try {
       await updateUserRole(userId, role)
-      set({
-        users: get().users.map((user) => user.id === userId ? { ...user, role } : user),
-        notice: role === 'admin' ? 'دسترسی مدیر برای کاربر فعال شد.' : 'دسترسی مدیر از کاربر گرفته شد.',
-      })
+      set({ users: get().users.map((user) => user.id === userId ? { ...user, role } : user) })
+      toast.success(role === 'admin' ? 'toast.driverRoleGranted' : 'toast.driverRoleRemoved')
       return true
     } catch (error) {
       set({ error: error.message || 'تغییر نقش کاربر ناموفق بود.' })
@@ -35,15 +33,15 @@ export const useAdminStore = create((set, get) => ({
     }
   },
   approveDriver: async (userId) => {
-    set({ updatingId: userId, error: '', notice: '' })
+    set({ updatingId: userId, error: '' })
     try {
       await approveDriver(userId)
       set({
         users: get().users.map((user) => user.id === userId
           ? { ...user, role: 'driver', driverStatus: 'approved' }
           : user),
-        notice: 'درخواست رانندگی تأیید شد.',
       })
+      toast.success('toast.driverApproved')
       return true
     } catch (error) {
       set({ error: error.message || 'تأیید درخواست رانندگی ناموفق بود.' })
@@ -53,13 +51,11 @@ export const useAdminStore = create((set, get) => ({
     }
   },
   rejectDriver: async (userId) => {
-    set({ updatingId: userId, error: '', notice: '' })
+    set({ updatingId: userId, error: '' })
     try {
       await rejectDriver(userId)
-      set({
-        users: get().users.map((user) => user.id === userId ? { ...user, driverStatus: 'rejected' } : user),
-        notice: 'درخواست رانندگی رد شد و به کاربر اطلاع داده شد.',
-      })
+      set({ users: get().users.map((user) => user.id === userId ? { ...user, driverStatus: 'rejected' } : user) })
+      toast.info('toast.driverRejected')
       return true
     } catch (error) {
       set({ error: error.message || 'رد درخواست رانندگی ناموفق بود.' })
@@ -69,13 +65,11 @@ export const useAdminStore = create((set, get) => ({
     }
   },
   setAccountActive: async (userId, isActive) => {
-    set({ updatingId: userId, error: '', notice: '' })
+    set({ updatingId: userId, error: '' })
     try {
       await updateAccountStatus(userId, isActive)
-      set({
-        users: get().users.map((user) => user.id === userId ? { ...user, isActive } : user),
-        notice: isActive ? 'حساب کاربر فعال شد.' : 'حساب غیرفعال شد و نشست‌های فعال آن بسته شدند.',
-      })
+      set({ users: get().users.map((user) => user.id === userId ? { ...user, isActive } : user) })
+      toast.success(isActive ? 'toast.accountActivated' : 'toast.accountDeactivated')
       return true
     } catch (error) {
       set({ error: error.message || 'تغییر وضعیت حساب ناموفق بود.' })

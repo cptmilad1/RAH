@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { acceptDriverParcel, getAvailableDriverParcels } from '../api/driverParcelsApi'
+import { toast } from '../../../global/toast/toastStore'
 
 export const useDriverParcelsStore = create((set, get) => ({
   parcels: [],
@@ -7,7 +8,6 @@ export const useDriverParcelsStore = create((set, get) => ({
   loading: false,
   acceptingCode: '',
   error: '',
-  notice: '',
   fetchParcels: async () => {
     set({ loading: true, error: '' })
     try {
@@ -20,13 +20,13 @@ export const useDriverParcelsStore = create((set, get) => ({
     }
   },
   acceptParcel: async (trackingCode) => {
-    set({ acceptingCode: trackingCode, error: '', notice: '' })
+    set({ acceptingCode: trackingCode, error: '' })
     try {
       await acceptDriverParcel(trackingCode)
       set({
         parcels: get().parcels.filter((parcel) => parcel.trackingCode !== trackingCode),
-        notice: `مرسولهٔ ${trackingCode} به شما واگذار شد.`,
       })
+      toast.success('toast.parcelAccepted', { values: { trackingCode } })
       return true
     } catch (error) {
       set({ error: error.message || 'قبول مرسوله ناموفق بود.' })
@@ -35,5 +35,5 @@ export const useDriverParcelsStore = create((set, get) => ({
       set({ acceptingCode: '' })
     }
   },
-  clearMessages: () => set({ error: '', notice: '' }),
+  clearMessages: () => set({ error: '' }),
 }))

@@ -32,7 +32,7 @@ function NavbarSide({navItems}) {
           </button>
         </div>
 
-        <nav data-dashboard-nav aria-label={t('ناوبری اصلی')} className="dashboard-nav-scroll mt-[19px] flex gap-[7px] overflow-x-auto overflow-y-hidden pb-2 lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible lg:pb-0">
+        <nav data-dashboard-nav aria-label={t('ناوبری اصلی')} className="mt-[19px] flex gap-[7px] overflow-x-auto overflow-y-hidden pb-2 scroll-smooth [scrollbar-color:var(--app-accent)_rgb(255_255_255_/_12%)] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-[6px] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[rgb(255_255_255_/_10%)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border [&::-webkit-scrollbar-thumb]:border-[rgb(255_255_255_/_30%)] [&::-webkit-scrollbar-thumb]:bg-[linear-gradient(90deg,var(--app-accent),#9ec64f)] [&::-webkit-scrollbar-thumb:hover]:bg-[var(--app-accent)] lg:mt-[58px] lg:grid lg:gap-[9px] lg:overflow-visible lg:pb-0">
           {navItems.map((item) => <DashboardNavItem key={item.label} {...item} />)}
         </nav>
 

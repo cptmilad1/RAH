@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { getDriverApplication, submitDriverApplication } from '../api/driverApplicationApi'
+import { toast } from '../../../global/toast/toastStore'
 
 export const useDriverApplicationStore = create((set) => ({
   application: null,
   loading: false,
   saving: false,
   error: '',
-  notice: '',
   fetchApplication: async () => {
     set({ loading: true, error: '' })
     try {
@@ -21,10 +21,11 @@ export const useDriverApplicationStore = create((set) => ({
     }
   },
   submitApplication: async (payload) => {
-    set({ saving: true, error: '', notice: '' })
+    set({ saving: true, error: '' })
     try {
       const result = await submitDriverApplication(payload)
-      set({ application: result.data, notice: result.message })
+      set({ application: result.data })
+      toast.success(result.message || 'toast.driverApplicationSubmitted')
       return true
     } catch (error) {
       set({ error: error.message || 'ثبت درخواست رانندگی ناموفق بود.' })

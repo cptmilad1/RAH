@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { cancelShipment, createShipment, getShipments } from '../api/shipmentsApi'
+import { toast } from '../../../global/toast/toastStore'
 
 export const useShipmentsStore = create((set, get) => ({
   shipments: [],
@@ -22,6 +23,7 @@ export const useShipmentsStore = create((set, get) => ({
     try {
       const shipment = await createShipment(payload)
       set({ shipments: [shipment, ...get().shipments] })
+      toast.success('toast.parcelCreated')
       return shipment
     } catch (error) {
       set({ error: error.message || 'ثبت مرسوله ناموفق بود.' })
@@ -39,6 +41,7 @@ export const useShipmentsStore = create((set, get) => ({
           shipment.trackingCode === trackingCode ? { ...shipment, status: 'cancelled' } : shipment,
         ),
       })
+      toast.info('toast.parcelCancelled')
     } catch (error) {
       set({ error: error.message || 'لغو مرسوله ناموفق بود.' })
       throw error

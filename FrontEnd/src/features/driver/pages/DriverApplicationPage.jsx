@@ -26,7 +26,6 @@ function DriverApplicationPage() {
   const loading = useDriverApplicationStore((state) => state.loading)
   const saving = useDriverApplicationStore((state) => state.saving)
   const error = useDriverApplicationStore((state) => state.error)
-  const notice = useDriverApplicationStore((state) => state.notice)
   const fetchApplication = useDriverApplicationStore((state) => state.fetchApplication)
   const submitApplication = useDriverApplicationStore((state) => state.submitApplication)
   const refreshSession = useAuthStore((state) => state.refreshSession)
@@ -87,14 +86,12 @@ function DriverApplicationPage() {
               <DriverApplicationField label={i18n.t("نمبر پلیت")} {...register('plateNumber')} error={i18n.t(errors.plateNumber?.message)} />
             </div>
             {error && <p role="alert" className="m-0 rounded-xl border border-[#f0d7d0] bg-[#fff7f4] px-4 py-3 text-sm text-[#a94f3d]">{i18n.t(error)}</p>}
-            {notice && <p role="status" className="m-0 rounded-xl border border-[#d5e8ce] bg-[#f3f8ed] px-4 py-3 text-sm text-[#416d43]">{i18n.t(notice)}</p>}
             <button type="submit" disabled={saving} className="min-h-12 rounded-xl bg-[#174c3c] px-5 text-sm font-extrabold text-white transition hover:bg-[#103b30] disabled:cursor-wait disabled:opacity-60">
               {i18n.t(saving ? 'در حال ارسال…' : 'ارسال درخواست برای تأیید')}
             </button>
           </form>
         )}
         {error && !application && <p role="alert" className="mt-5 text-sm text-[#a94f3d]">{i18n.t(error)}</p>}
-        {notice && application?.status === 'pending' && <p role="status" className="mt-5 text-sm text-[#416d43]">{i18n.t(notice)}</p>}
       </Card>
     </main>
   )

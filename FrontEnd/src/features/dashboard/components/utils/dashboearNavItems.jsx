@@ -1,7 +1,7 @@
 import i18n from '../../../settings/locals/i18n.js'
 import { NavLink } from 'react-router-dom'
-const navBaseClass = 'dashboard-nav-item flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] border px-3 py-2.5 text-[11px] transition duration-200 lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]'
-const navIconClass = 'dashboard-nav-icon grid mb-1.5 size-[19px] place-items-center rounded-lg text-[18px] lg:size-[23px] lg:text-[17px]'
+const navBaseClass = 'flex w-auto shrink-0 items-center gap-[7px] rounded-[14px] border border-transparent px-3 py-2.5 text-[11px] text-[rgb(243_247_239_/_82%)] transition duration-200 [&:not(.is-active):hover]:bg-[color-mix(in_srgb,var(--app-accent)_14%,transparent)] [&:not(.is-active):hover]:text-white [&.is-active]:border-[color-mix(in_srgb,var(--app-accent)_72%,white)] [&.is-active]:bg-[linear-gradient(135deg,color-mix(in_srgb,var(--app-accent)_88%,white),var(--app-accent))] [&.is-active]:text-[var(--app-brand-deep)] lg:w-full lg:gap-[13px] lg:px-4 lg:py-3.5 lg:text-[13px]'
+const navIconClass = 'mb-1.5 grid size-[19px] place-items-center rounded-lg text-[18px] lg:size-[23px] lg:text-[17px]'
 
 function DashboardNavItem({ to, onClick, icon, label, active = false, unread = false }) {
   const content = () => (
