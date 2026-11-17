@@ -79,7 +79,7 @@ function SignupPage() {
           error={i18n.t(errors.email?.message)}
         />
         <AuthField
-          label={<span>{i18n.t("شمارهٔ تماس")}{' '}<small className="mr-1 text-[9px] font-medium text-[#9ba79f]">{i18n.t("اختیاری")}</small></span>}
+          label={i18n.t("شمارهٔ تماس : اختیاری")}
           type="tel"
           dir="ltr"
           placeholder="+93 700 000 000"

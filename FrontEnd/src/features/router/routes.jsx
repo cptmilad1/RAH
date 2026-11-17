@@ -23,6 +23,8 @@ const DriverPanelPage = lazy(() => import('../driver/DriverPanelPage'))
 const DriverApplicationPage = lazy(() => import('../driver/pages/DriverApplicationPage'))
 const AdminPanelPage = lazy(() => import('../admin/AdminPanelPage'))
 const SettingsPage = lazy(() => import('../settings/pages/SettingsPage'))
+const TaxiPage = lazy(() => import('../taxi/pages/TaxiPage'))
+const TaxiAdminPage = lazy(() => import('../taxi/pages/TaxiAdminPage'))
 
 const rahRoutes = [
   {path : "/login", element:<LoginPage/>, layout : false},
@@ -44,6 +46,8 @@ const rahRoutes = [
   {path: '/driver', element: <ProtectedRoute allowedRoles={['driver']}><DriverPanelPage/></ProtectedRoute>, layout : true},
   {path: '/driver-application', element: <ProtectedRoute allowedRoles={['user']}><DriverApplicationPage/></ProtectedRoute>, layout : true},
   {path: '/admin', element: <ProtectedRoute allowedRoles={['admin']}><AdminPanelPage/></ProtectedRoute>, layout : true},
+  {path: '/taxi', element: <ProtectedRoute allowedRoles={['user', 'driver']}><TaxiPage/></ProtectedRoute>, layout : true},
+  {path: '/taxi/admin', element: <ProtectedRoute allowedRoles={['admin']}><TaxiAdminPage/></ProtectedRoute>, layout : true},
   {path: '*', element: <Navigate to="/dashboard" replace />, layout : true},
   {path: '/', element: <Navigate to="/login" replace />, layout : false}
 ]
