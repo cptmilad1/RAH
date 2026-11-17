@@ -12,7 +12,7 @@ function ProfileInfoCards({ users, roleLabel }) {
                 </div>
                 <span className="text-[10px] text-[#8a9991]">{i18n.t("اطلاعات ثبت‌شده")}</span>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3">
                 <InfoCard data-profile-card title={i18n.t("شناسه حساب")} value={users?.id} icon="#" dir="ltr" />
                 <InfoCard data-profile-card title={i18n.t("نام کاربری")} value={users?.username} icon="@" dir="ltr" />
                 <InfoCard data-profile-card title={i18n.t("نشانی ایمیل")} value={users?.email} icon="✉" dir="ltr" />
