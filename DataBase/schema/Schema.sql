@@ -1,3 +1,5 @@
+
+
 create table password_verify_token(
     id serial primary key,
     user_id int not null,
@@ -323,7 +325,9 @@ CREATE TABLE rides (
     pickup_address_id BIGINT NOT NULL REFERENCES addresses(id) ON DELETE RESTRICT,
     destination_address_id BIGINT NOT NULL REFERENCES addresses(id) ON DELETE RESTRICT,
     status VARCHAR(30) NOT NULL DEFAULT 'requested'
-        CHECK (status IN ('requested','searching','accepted','arrived','started','completed','cancelled')),
+        CHECK (status IN ('requested','searching','accepted','arrived','driver_arriving','driver_arrived','started','completed','cancelled')),
+    taxi_type VARCHAR(20) CHECK (taxi_type IS NULL OR taxi_type IN ('standard', 'vip')),
+    taxi_note TEXT,
     requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     accepted_at TIMESTAMPTZ,
     started_at TIMESTAMPTZ,
@@ -544,6 +548,10 @@ CREATE TABLE app_settings (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+INSERT INTO app_settings (setting_key, setting_value, description)
+VALUES ('taxi.vip_fare', '500', 'Fixed VIP Taxi fare in AFN')
+ON CONFLICT (setting_key) DO NOTHING;
+
 CREATE TABLE audit_logs (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
@@ -593,6 +601,15 @@ CREATE INDEX idx_addresses_user_id ON addresses(user_id);
 CREATE INDEX idx_parcels_sender_id ON parcels(sender_id);
 CREATE INDEX idx_parcels_receiver_id ON parcels(receiver_id);
 CREATE INDEX idx_parcels_status ON parcels(status);
+CREATE INDEX idx_taxi_rides_passenger_requested
+    ON rides (passenger_id, requested_at DESC)
+    WHERE taxi_type IS NOT NULL;
+CREATE UNIQUE INDEX idx_ride_assignments_one_accepted_driver
+    ON ride_assignments (ride_id)
+    WHERE status = 'accepted';
+CREATE UNIQUE INDEX idx_ratings_one_per_ride
+    ON ratings (ride_id)
+    WHERE ride_id IS NOT NULL;
 CREATE INDEX idx_parcel_assignments_driver_id ON parcel_assignments(driver_id);
 CREATE INDEX idx_rides_passenger_id ON rides(passenger_id);
 CREATE INDEX idx_rides_status ON rides(status);
