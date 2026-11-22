@@ -42,7 +42,7 @@ attachPresence(io)
 app.use(helmet())
 app.use(
   cors({
-    origin: "https://rah-7inzp81ej-avengers-38d0.vercel.app",
+    origin: "https://rah-nine.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
