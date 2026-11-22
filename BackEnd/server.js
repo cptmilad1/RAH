@@ -40,13 +40,14 @@ const io = new Server(server, {
 app.set('io', io)
 attachPresence(io)
 app.use(helmet())
-const corsOptions = {
-  origin : ["https://rah-pckm3qkbe-avengers-38d0.vercel.app/"],
+app.use(
+  cors({
+    origin: "https://rah-7inzp81ej-avengers-38d0.vercel.app",
     credentials: true,
-    methods : ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders : ["Content-Type", "Authorization"]
-}
-app.use(cors(corsOptions))
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json({ limit: '20kb' }))
 app.use(express.urlencoded({ extended: true, limit: '20kb' }))
 app.use(cookieParser())
