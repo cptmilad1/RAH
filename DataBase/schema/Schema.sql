@@ -619,3 +619,180 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
 CREATE INDEX idx_support_tickets_user_id ON support_tickets(user_id);
 CREATE INDEX idx_audit_logs_user_id ON audit_logs(user_id);
+
+CREATE TABLE IF NOT EXISTS user_settings (
+    user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    theme VARCHAR(20) NOT NULL DEFAULT 'light'
+        CHECK (theme IN ('light', 'dark', 'system', 'sepia', 'contrast')),
+    font VARCHAR(20) NOT NULL DEFAULT 'vazirmatn'
+        CHECK (font IN ('vazirmatn', 'tahoma', 'arial', 'system', 'serif')),
+    language VARCHAR(5) NOT NULL DEFAULT 'fa'
+        CHECK (language IN ('fa', 'en')),
+    color VARCHAR(20) NOT NULL DEFAULT 'forest'
+        CHECK (color IN ('forest', 'ocean', 'violet', 'sunset', 'monochrome')),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+
+ALTER TABLE parcels
+    ALTER COLUMN receiver_id DROP NOT NULL,
+    ADD COLUMN IF NOT EXISTS receiver_name VARCHAR(100),
+    ADD COLUMN IF NOT EXISTS receiver_phone VARCHAR(30);
+
+
+ALTER TABLE driver_profiles
+    ADD COLUMN IF NOT EXISTS province VARCHAR(100);
+
+INSERT INTO driver_profiles (user_id, status)
+SELECT id, 'approved'
+FROM users
+WHERE role = 'driver'
+ON CONFLICT (user_id) DO NOTHING;
+
+ALTER TABLE driver_profiles
+    ADD COLUMN IF NOT EXISTS vehicle_make VARCHAR(100),
+    ADD COLUMN IF NOT EXISTS vehicle_model VARCHAR(100),
+    ADD COLUMN IF NOT EXISTS vehicle_year INTEGER CHECK (vehicle_year IS NULL OR vehicle_year >= 1900),
+    ADD COLUMN IF NOT EXISTS vehicle_color VARCHAR(50),
+    ADD COLUMN IF NOT EXISTS plate_number VARCHAR(50);
+
+CREATE UNIQUE INDEX IF NOT EXISTS driver_profiles_plate_number_unique
+    ON driver_profiles (plate_number)
+    WHERE plate_number IS NOT NULL;
+
+
+ALTER TABLE parcels
+    DROP CONSTRAINT IF EXISTS parcels_status_check;
+
+ALTER TABLE parcels
+    ADD CONSTRAINT parcels_status_check
+    CHECK (status IN (
+        'created',
+        'assigned',
+        'picked_up',
+        'in_transit',
+        'delivery_pending_confirmation',
+        'delivered',
+        'cancelled'
+    ));
+
+CREATE TABLE IF NOT EXISTS parcel_messages (
+    id BIGSERIAL PRIMARY KEY,
+    parcel_id BIGINT NOT NULL REFERENCES parcels(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message TEXT NOT NULL CHECK (char_length(message) BETWEEN 1 AND 2000),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_parcel_messages_parcel_created
+    ON parcel_messages (parcel_id, created_at, id);
+
+
+ALTER TABLE direct_messages
+    ADD COLUMN IF NOT EXISTS read_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_direct_messages_unread
+    ON direct_messages (conversation_id, sender_id)
+    WHERE read_at IS NULL;
+
+
+ALTER TABLE users
+    ALTER COLUMN avatar_url SET DEFAULT '/imgs/default-avatar.svg';
+
+UPDATE users
+SET avatar_url = '/imgs/default-avatar.svg'
+WHERE avatar_url IS NULL OR BTRIM(avatar_url) = '';
+
+CREATE TABLE IF NOT EXISTS user_blocks (
+    blocker_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    blocked_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (blocker_id, blocked_id),
+    CHECK (blocker_id <> blocked_id)
+);
+
+CREATE TABLE IF NOT EXISTS direct_conversations (
+    id BIGSERIAL PRIMARY KEY,
+    user_one_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_two_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CHECK (user_one_id < user_two_id),
+    UNIQUE (user_one_id, user_two_id)
+);
+
+CREATE TABLE IF NOT EXISTS direct_messages (
+    id BIGSERIAL PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES direct_conversations(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    body TEXT NOT NULL CHECK (char_length(body) BETWEEN 1 AND 2000),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_direct_messages_conversation_created
+    ON direct_messages (conversation_id, created_at, id);
+
+CREATE INDEX IF NOT EXISTS idx_user_blocks_blocked
+    ON user_blocks (blocked_id, blocker_id);
+
+
+-- Invalidate existing raw reset tokens before the application starts storing SHA-256 hashes.
+DELETE FROM password_reset_token;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_password_reset_token_user_id
+    ON password_reset_token(user_id);
+
+COMMENT ON COLUMN password_reset_token.token IS
+    'SHA-256 hash of the password reset bearer token; never store the raw token.';
+
+
+CREATE TABLE IF NOT EXISTS user_settings (
+    user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    theme VARCHAR(20) NOT NULL DEFAULT 'light'
+        CHECK (theme IN ('light', 'dark', 'system', 'sepia', 'contrast')),
+    font VARCHAR(20) NOT NULL DEFAULT 'vazirmatn'
+        CHECK (font IN ('vazirmatn', 'tahoma', 'arial', 'system', 'serif')),
+    language VARCHAR(5) NOT NULL DEFAULT 'fa'
+        CHECK (language IN ('fa', 'en')),
+    color VARCHAR(20) NOT NULL DEFAULT 'forest'
+        CHECK (color IN ('forest', 'ocean', 'violet', 'sunset', 'monochrome')),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+
+ALTER TABLE rides
+    ADD COLUMN IF NOT EXISTS taxi_type VARCHAR(20),
+    ADD COLUMN IF NOT EXISTS taxi_note TEXT;
+
+ALTER TABLE rides
+    DROP CONSTRAINT IF EXISTS rides_status_check;
+
+ALTER TABLE rides
+    ADD CONSTRAINT rides_status_check
+    CHECK (status IN (
+        'requested', 'searching', 'accepted', 'arrived', 'driver_arriving',
+        'driver_arrived', 'started', 'completed', 'cancelled'
+    ));
+
+ALTER TABLE rides
+    DROP CONSTRAINT IF EXISTS rides_taxi_type_check;
+
+ALTER TABLE rides
+    ADD CONSTRAINT rides_taxi_type_check
+    CHECK (taxi_type IS NULL OR taxi_type IN ('standard', 'vip'));
+
+CREATE INDEX IF NOT EXISTS idx_taxi_rides_passenger_requested
+    ON rides (passenger_id, requested_at DESC)
+    WHERE taxi_type IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_ride_assignments_one_accepted_driver
+    ON ride_assignments (ride_id)
+    WHERE status = 'accepted';
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_ratings_one_per_ride
+    ON ratings (ride_id)
+    WHERE ride_id IS NOT NULL;
+
+INSERT INTO app_settings (setting_key, setting_value, description)
+VALUES ('taxi.vip_fare', '500', 'Fixed VIP Taxi fare in AFN')
+ON CONFLICT (setting_key) DO NOTHING;
+

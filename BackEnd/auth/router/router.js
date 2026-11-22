@@ -69,6 +69,6 @@ authRouter.post("/auth/reset-password", authLimit, validator(resetPasswordSchema
 authRouter.get('/sessions', authentication, getSessions)
 authRouter.get('/sessions/:id', authentication, getSessions)
 authRouter.delete('/sessions/:id', authentication, deleteSession)
-authRouter.get('/auth/delete-session/:id', authentication, deleteSession)
+authRouter.delete('/auth/delete-session/:id', authentication, deleteSession)
 
 module.exports = authRouter;

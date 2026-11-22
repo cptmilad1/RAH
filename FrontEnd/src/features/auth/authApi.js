@@ -30,3 +30,7 @@ export function getProfile(id){
 export function updateProfile(id, data) {
   return request(`/profile/${id}`, { method: 'PATCH', body: data })
 }
+
+export function refreshToken(){
+  return request(`/auth/refresh`, {method : 'GET'})
+}
