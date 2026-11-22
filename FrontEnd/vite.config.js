@@ -6,12 +6,12 @@ export default defineConfig({
   plugins: [react(),tailwindcss()],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': ' https://rah-qegm.onrender.com',
       '/socket.io': {
-        target: 'http://localhost:3000',
+        target: ' https://rah-qegm.onrender.com',
         ws: true,
       },
-      '/uploads': 'http://localhost:3000',
+      '/uploads': ' https://rah-qegm.onrender.com',
     },
     host: true
   },
