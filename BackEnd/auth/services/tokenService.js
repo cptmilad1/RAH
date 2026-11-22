@@ -23,8 +23,8 @@ function hashToken(token) {
 function cookieOptions(sameSite) {
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite,
+    secure: process.env.NODE_ENV === 'production' && true,
+    sameSite : 'none',
     path: '/',
   }
 }

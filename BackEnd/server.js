@@ -40,9 +40,18 @@ const io = new Server(server, {
 app.set('io', io)
 attachPresence(io)
 app.use(helmet())
+const allowedCors = ["https://rah-pckm3qkbe-avengers-38d0.vercel.app/" || process.env.FRONTEND_URL]
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, cb)=>{
+    if(!origin || allowedCors.includes(origin)){
+      cb(null, true)
+    }else{
+      cb(new Error("not allowed by cors"))
+    }
+  },
   credentials: true,
+  methods : ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders : ["Content-Type", "Authorization"]
 }))
 app.use(express.json({ limit: '20kb' }))
 app.use(express.urlencoded({ extended: true, limit: '20kb' }))
