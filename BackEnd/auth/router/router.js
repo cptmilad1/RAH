@@ -59,7 +59,7 @@ authRouter.post('/direct-messages/:userId', authentication, directMessages.creat
 authRouter.post("/auth/register", authLimit, validator(registerShema), registerUser);
 authRouter.post("/auth/login", authLimit, validator(loginSchema), loginUser);
 authRouter.post("/logout", authentication, logoutUser);
-authRouter.post("/auth/refresh", refreshToken);
+authRouter.get("/auth/refresh", refreshToken);
 authRouter.post("/change-password", authentication, changePassword);
 authRouter.post("/forgot-password", authLimit, forgotPassword);
 authRouter.post("/logout-all", authentication, logoutAll);
