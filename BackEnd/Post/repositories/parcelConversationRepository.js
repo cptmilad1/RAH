@@ -1,4 +1,4 @@
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 
 async function findChatAccess(userId, trackingCode, role) {
   const result = await db.query(

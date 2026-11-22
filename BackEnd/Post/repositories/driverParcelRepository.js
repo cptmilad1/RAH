@@ -1,4 +1,4 @@
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 const { createHttpError, normalizeProvince } = require('../services/parcelValidation')
 
 async function findAvailableParcels(userId) {

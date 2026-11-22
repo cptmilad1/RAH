@@ -1,4 +1,4 @@
-const db = require("../../../DataBase/base/dbBase");
+const db = require('../../db.js');
 const jwt = require("jsonwebtoken");
 const { sendResetEmail, sendVerificationEmail } = require('./utils/emailVerifySenter')
 const { createAccessToken, createRefreshToken, hashToken, setAuthCookies, clearAuthCookies } = require('../services/tokenService');

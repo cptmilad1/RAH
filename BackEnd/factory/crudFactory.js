@@ -1,4 +1,4 @@
-const pool = require('../../DataBase/base/dbBase')
+const pool = require('../db.js')
 const AppError = require('./AppError')
 
 const allowedTables = new Set([
