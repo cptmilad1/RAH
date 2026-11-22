@@ -1,7 +1,7 @@
 require('../../config/loadEnv')
 
 const jwt = require('jsonwebtoken')
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 
 const authentication = async(req,res,next)=>{
     try{

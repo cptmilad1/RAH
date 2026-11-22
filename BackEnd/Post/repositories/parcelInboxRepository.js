@@ -1,4 +1,4 @@
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 
 async function findConversationsForUser(userId, role) {
   const result = await db.query(

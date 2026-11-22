@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 const { createHttpError } = require('../services/parcelValidation')
 
 async function createParcel(userId, data) {

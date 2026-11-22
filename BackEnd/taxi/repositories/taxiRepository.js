@@ -1,4 +1,4 @@
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 
 const rideDetailsSql = `
   SELECT r.id, r.passenger_id AS "passengerId", r.taxi_type AS "taxiType",

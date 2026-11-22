@@ -1,4 +1,4 @@
-const db = require('../../../DataBase/base/dbBase')
+const db = require('../../db.js')
 const HandleResult = require('./utils/authResHandler')
 
 const settingColumns = new Set(['theme', 'font', 'language', 'color'])
