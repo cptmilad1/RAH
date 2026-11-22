@@ -14,8 +14,10 @@ function PresenceConnection() {
       return undefined
     }
 
-    const socket = io({ withCredentials: true })
-    usePresenceStore.getState().setSocket(socket)
+    const socket = io(
+      import.meta.env.VITE_BACKEND_URL,
+      { withCredentials: true })
+    usePresenceStore.getState().setSocket(true)
     let accessRefreshAttempted = false
 
     socket.on('connect', () => {
