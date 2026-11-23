@@ -13,7 +13,7 @@ export function verifyEmail(code) {
 }
 
 export function forgotPassword(email) {
-  return request('/auth/forgot-password', { method: 'POST', body: { email } })
+  return request('/reset-password', { method: 'POST', body: { email } })
 }
 
 export function resetPassword(token, newPassword) {
