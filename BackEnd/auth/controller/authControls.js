@@ -378,7 +378,6 @@ async function forgotPassword(req,res, next) {
         return HandleResult({
           status: 200,
           message: "If the account exists, a reset link has been sent.",
-          // ...(process.env.NODE_ENV !== 'production' && !emailSent && { resetToken }),
           res
         })
     }catch(err){

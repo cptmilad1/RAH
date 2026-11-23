@@ -58,7 +58,7 @@ async function sendMail(email, subject, value, route, description, queryName = '
     const transporter = createTransporter()
     const appUrl = new URL(process.env.APP_URL)
     const link = new URL(route, appUrl)
-    if (route === '/reset-password') {
+    if (route === '/reset-password' || route === '/forgot-password') {
         link.hash = new URLSearchParams({ [queryName]: value }).toString()
     } else {
         link.searchParams.set(queryName, value)

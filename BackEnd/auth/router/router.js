@@ -61,7 +61,7 @@ authRouter.post("/auth/login", authLimit, validator(loginSchema), loginUser);
 authRouter.post("/logout", authentication, logoutUser);
 authRouter.get("/auth/refresh", refreshToken);
 authRouter.post("/change-password", authentication, changePassword);
-authRouter.post("/forgot-password", authLimit, forgotPassword);
+authRouter.post("/reset-password", authLimit, forgotPassword);
 authRouter.post("/logout-all", authentication, logoutAll);
 authRouter.post("/auth/verify-email", authLimit, validator(verifyEmailSchema), verifyEmail);
 authRouter.post("/users/:id/role", authentication, authorize("admin"), validator(roleChangeSchema), changeRole);
