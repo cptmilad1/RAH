@@ -364,16 +364,10 @@ async function forgotPassword(req,res, next) {
     try{
         const {email} = req.body
         const result = await db.query(`select id from users where email=$1`,[email])
-        if (result.rowCount === 0) {
-          return HandleResult({ status: 200, message: "If the account exists, a reset link has been sent.", res })
-        }
         const userId = result.rows[0].id
-        const resetToken = crypto.randomBytes(32).toString('hex')
+        const resetToken = createVerificationCode()
         await db.query(`insert into password_reset_token (user_id, token, expire_at)
-          values ($1, $2, NOW() + INTERVAL '15 minutes')
-          on conflict (user_id) do update
-          set token = EXCLUDED.token, expire_at = EXCLUDED.expire_at, used_at = NULL`,
-          [userId, hashToken(resetToken)])
+          values ($1, $2, NOW() + INTERVAL '15 minutes')`, [userId, hashToken(resetToken)])
         await sendResetEmail(email, resetToken)
         return HandleResult({
           status: 200,
