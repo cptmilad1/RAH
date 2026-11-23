@@ -16,39 +16,58 @@ function PresenceConnection() {
 
     const socket = io(
       import.meta.env.VITE_BACKEND_URL,
-      { withCredentials: true })
-    usePresenceStore.getState().setSocket(true)
+      { withCredentials: true }
+    )
+
+    usePresenceStore.getState().setSocket(socket)
     let accessRefreshAttempted = false
 
-    socket.on('connect', () => {
+    const handleConnect = () => {
       accessRefreshAttempted = false
       usePresenceStore.getState().setConnected(true)
-    })
-    socket.on('disconnect', () => {
+    }
+
+    const handleDisconnect = () => {
       usePresenceStore.getState().setConnected(false)
-    })
-    socket.on('presence:sync', ({ userId, isOnline }) => {
+    }
+
+    const handlePresence = ({ userId, isOnline }) => {
       usePresenceStore.getState().setPresence(userId, isOnline)
-    })
-    socket.on('presence:update', ({ userId, isOnline }) => {
-      usePresenceStore.getState().setPresence(userId, isOnline)
-    })
-    socket.on('direct:unread-count', ({ count }) => {
+    }
+
+    const handleUnreadCount = ({ count }) => {
       usePresenceStore.getState().setUnreadDirectMessages(Number(count) || 0)
-    })
-    socket.on('connect_error', (error) => {
+    }
+
+    const handleConnectError = (error) => {
       usePresenceStore.getState().setConnectionError(error.message || 'اتصال سوکت برقرار نشد.')
       if (accessRefreshAttempted) return
       accessRefreshAttempted = true
+
       getProfile(user.id)
         .then(() => socket.connect())
         .catch((refreshError) => {
-          usePresenceStore.getState().setConnectionError(refreshError.message || error.message || 'اتصال سوکت برقرار نشد.')
+          usePresenceStore.getState().setConnectionError(
+            refreshError.message || error.message || 'اتصال سوکت برقرار نشد.'
+          )
           accessRefreshAttempted = false
         })
-    })
+    }
+
+    socket.on('connect', handleConnect)
+    socket.on('disconnect', handleDisconnect)
+    socket.on('presence:sync', handlePresence)
+    socket.on('presence:update', handlePresence)
+    socket.on('direct:unread-count', handleUnreadCount)
+    socket.on('connect_error', handleConnectError)
 
     return () => {
+      socket.off('connect', handleConnect)
+      socket.off('disconnect', handleDisconnect)
+      socket.off('presence:sync', handlePresence)
+      socket.off('presence:update', handlePresence)
+      socket.off('direct:unread-count', handleUnreadCount)
+      socket.off('connect_error', handleConnectError)
       socket.disconnect()
       usePresenceStore.getState().setSocket(null)
       usePresenceStore.getState().setConnected(false)

@@ -13,4 +13,5 @@ export const usePresenceStore = create((set) => ({
   setPresence: (userId, isOnline) => set((state) => ({
     onlineUsers: { ...state.onlineUsers, [String(userId)]: isOnline },
   })),
+  clearPresence: () => set({ onlineUsers: {}, unreadDirectMessages: 0 }),
 }))
